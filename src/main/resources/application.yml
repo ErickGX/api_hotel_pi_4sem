@@ -1,0 +1,20 @@
+## --- MySQL ---
+spring:
+  application:
+    name: Hotel4ma
+  datasource:
+    url: jdbc:mysql://localhost:3306/pihotel
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  output:
+    ansi:
+      enabled: ALWAYS
+server:
+  port: 8081

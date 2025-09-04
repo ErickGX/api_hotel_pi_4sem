@@ -49,12 +49,12 @@ public class ReservaHospedagemService {
         reserva.setQuarto(quartoCompleto);
 
         // Carrega o recepcionista completo (opcional, se necessário)
-        Funcionario funcionarioCompleto = funcionarioRepository.findById(reserva.getFuncionario().getIdFuncionario())
+        Funcionario funcionarioCompleto = funcionarioRepository.findById(reserva.getFuncionario().getId())
                 .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
         reserva.setFuncionario(funcionarioCompleto);
 
         // Carrega o cliente completo (opcional, se necessário)
-        Cliente clienteCompleto = clienteRepository.findById(reserva.getCliente().getIdCliente())
+        Cliente clienteCompleto = clienteRepository.findById(reserva.getCliente().getId())
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
         reserva.setCliente(clienteCompleto);
 

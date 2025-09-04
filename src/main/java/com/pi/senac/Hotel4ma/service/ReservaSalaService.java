@@ -89,14 +89,14 @@ public class ReservaSalaService {
             reserva.setSala(salaCompleta);
         }
 
-        if (reserva.getFuncionario() != null && reserva.getFuncionario().getIdFuncionario() != null) {
-            Funcionario funcionarioCompleto = funcionarioRepository.findById(reserva.getFuncionario().getIdFuncionario())
+        if (reserva.getFuncionario() != null && reserva.getFuncionario().getId() != null) {
+            Funcionario funcionarioCompleto = funcionarioRepository.findById(reserva.getFuncionario().getId())
                     .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
             reserva.setFuncionario(funcionarioCompleto);
         }
 
-        if (reserva.getCliente() != null && reserva.getCliente().getIdCliente() != null) {
-            Cliente clienteCompleto = clienteRepository.findById(reserva.getCliente().getIdCliente())
+        if (reserva.getCliente() != null && reserva.getCliente().getId() != null) {
+            Cliente clienteCompleto = clienteRepository.findById(reserva.getCliente().getId())
                     .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
             reserva.setCliente(clienteCompleto);
         }

@@ -25,6 +25,7 @@ public class HotelService {
     public Hotel salvar(Hotel hotel) {
         if (hotel.getQuartos() == null || hotel.getQuartos().isEmpty()) {
             throw new IllegalArgumentException("O hotel deve possuir pelo menos um quarto.");
+            //Para criar um hotel é obrigatorio ter 1 quarto ? N
         }
 
         if (hotel.getFuncionarios() != null) {

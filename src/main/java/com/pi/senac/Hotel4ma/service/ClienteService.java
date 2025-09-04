@@ -23,9 +23,11 @@ public class ClienteService {
     }
 
     public Cliente salvar(Cliente cliente) {
-        if (!cliente.validarDocumento()) {
-            throw new IllegalArgumentException("Documento inválido (CPF ou CNPJ).");
-        }
+//        if (!cliente.validarDocumento()) {
+//            throw new IllegalArgumentException("Documento inválido (CPF ou CNPJ).");
+//        }
+
+
         return clienteRepository.save(cliente);
     }
 
@@ -36,13 +38,17 @@ public class ClienteService {
             cliente.setTelefone(clienteAtualizado.getTelefone());
             cliente.setEndereco(clienteAtualizado.getEndereco());
 
-            // Atualiza CPF e/ou CNPJ, caso sejam informados
-            cliente.setCpf(clienteAtualizado.getCpf());
-            cliente.setCnpj(clienteAtualizado.getCnpj());
 
-            if (!cliente.validarDocumento()) {
-                throw new IllegalArgumentException("Documento inválido (CPF ou CNPJ).");
-            }
+            //Isso sera decidido pelo campo enviado na DTO pelo frontend
+            //A escolha devera ser feita usando os campos enviados da DTO
+
+            // Atualiza CPF e/ou CNPJ, caso sejam informados
+                   // cliente.setcpf(clienteAtualizado.getCpf());
+                   // cliente.setCnpj(clienteAtualizado.getCnpj());
+
+//            if (!cliente.validarDocumento()) {
+//                throw new IllegalArgumentException("Documento inválido (CPF ou CNPJ).");
+//            }
 
             // Atualiza reservas de hospedagem
             if (cliente.getReservasHospedagem() != null) {
@@ -73,4 +79,23 @@ public class ClienteService {
     public void deletar(Long id) {
         clienteRepository.deleteById(id);
     }
+
+//    public boolean validarDocumento(Cliente cliente) {
+
+    // teste de outra maneira de verificar os campos para decisao do tipo cliente -- n testado
+//    if (cpf != null && cnpj != null) {
+//        throw new IllegalStateException("Cliente não pode ter CPF e CNPJ ao mesmo tempo.");
+//    }
+//        if (cpf == null && cnpj == null) {
+//        throw new IllegalStateException("Cliente deve ter CPF ou CNPJ.");
+
+
+//        // Só é válido se tiver CPF OU CNPJ, não os dois nulos
+//        if (cliente.getCpf() != null) {
+//            return cliente.getCpf().validarDoc();
+//        } else if (cnpj != null) {
+//            return cnpj.validarDoc();
+//        }
+//        return false;
+//    }
 }
