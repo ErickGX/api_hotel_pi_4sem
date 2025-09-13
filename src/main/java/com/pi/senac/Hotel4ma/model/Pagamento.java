@@ -1,12 +1,16 @@
 package com.pi.senac.Hotel4ma.model;
 
+import com.pi.senac.Hotel4ma.enums.TipoPagamento;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
+import org.hibernate.annotations.CreationTimestamp;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "pagamento")
 public class Pagamento {
@@ -15,23 +19,24 @@ public class Pagamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "forma_pagamento", nullable = false, length = 30)
-    private String formaPagamento;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_pagamento", nullable = false)
+    private TipoPagamento tipoPagamento;
 
     @Column(nullable = false)
-    private Double valor;
+    private BigDecimal valor;
 
-    @Column(name = "data_pagamento", nullable = false)
-    private LocalDate dataPagamento;
+    @CreationTimestamp
+    @Column(name = "hora_pagamento", nullable = false)
+    private LocalDateTime horaPagamento;
 
-    @Column(name = "status_pagamento", nullable = false, length = 20)
-    private String status;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_cliente") //FK na tabela cliente
+    private Cliente cliente; // sempre existe
 
-    @OneToOne
-    @JoinColumn(name = "id_reserva_sala")
-    private ReservaSala reservaSala;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "reserva_id", nullable = false, unique = true) // FK
+    private Reserva reserva;
 
-    @OneToOne
-    @JoinColumn(name = "id_reserva_hospedagem")
-    private ReservaHospedagem reservaHospedagem;
+
 }

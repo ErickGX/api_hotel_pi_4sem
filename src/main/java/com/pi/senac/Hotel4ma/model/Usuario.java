@@ -19,8 +19,8 @@ public abstract class Usuario {
 
     // ver se o uso de @Email vai compensar pela complexidade dessas classes de validation manuais
     //Por algum motivo email nao ta indo pro banco de dados , verificar depois
-//    @Embedded
-//    protected Email email;
+    //@Embedded
+    //protected Email email;
 
     @Email
     @Column(unique = true)

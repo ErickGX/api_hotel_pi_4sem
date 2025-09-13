@@ -1,41 +1,29 @@
 package com.pi.senac.Hotel4ma.model;
 
+import com.pi.senac.Hotel4ma.enums.TipoQuarto;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 @Entity
-@Table(name = "quartos")
-public class Quarto {
+public class Quarto extends InstalacaoAlugavel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idQuarto;
+    @Enumerated(EnumType.STRING)
+    private TipoQuarto tipoQuarto;
 
-    @ManyToOne(optional = false) // quarto sempre pertence a um hotel
-    @JoinColumn(name = "id_hotel", nullable = false)
-    private Hotel hotel;
+    private Integer numeroQuarto;
 
-    @Column(nullable = false, length = 10)
-    private String numero;
-
-    @Column(nullable = false, length = 30)
-    private String tipo; // Ex: Presidencial, Normal
-
-    @Column(length = 255)
-    private String descricao;
-
-    @Column(nullable = false)
-    private Double valorDiaria;
-
-    @Column(nullable = false, length = 20)
-    private String status; // Ex: Disponível, Ocupado, Em Manutenção
-
-    @OneToMany(mappedBy = "quarto", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReservaHospedagem> reservasHospedagem;
+    //calcula o preço total multiplicando o preco base pelo fator e diarias
+    @Override
+    protected BigDecimal calcularCustoTotal(int diarias) {
+        return getPrecoBase()
+                .multiply(BigDecimal.valueOf(tipoQuarto.getFator()))
+                .multiply(BigDecimal.valueOf(diarias));
+    }
 }
 
 

@@ -1,10 +1,7 @@
 
 package com.pi.senac.Hotel4ma.model;
 
-import com.pi.senac.Hotel4ma.validation.Cnpj;
-import com.pi.senac.Hotel4ma.validation.Cpf;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +14,6 @@ import java.util.List;
 //Estrategia para manter clientes em uma unica tabela diferenciando pelo campo tipo_cliente no banco de dados
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_cliente", length = 10)
-
 @Table(name = "clientes")
 public abstract class Cliente extends Usuario {
 
@@ -28,11 +24,11 @@ public abstract class Cliente extends Usuario {
     @Column(length = 200, nullable = false)
     private String endereco;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReservaHospedagem> reservasHospedagem = new ArrayList<>();
-
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReservaSala> reservasSala = new ArrayList<>();
+//    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<ReservaHospedagem> reservasHospedagem = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<ReservaSala> reservasSala = new ArrayList<>();
 
 
 }

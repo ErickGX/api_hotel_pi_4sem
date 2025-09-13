@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
+
 import java.util.List;
 
 @Getter
@@ -19,20 +20,20 @@ public class Funcionario extends Usuario {
     @Column(nullable = false, length = 50)
     private String cargo;
 
-    // Funcionário precisa obrigatoriamente estar vinculado a um hotel
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_hotel", nullable = false)
-    private Hotel hotel;
-
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @CPF
     private String cpf;
 
-    //repeticao de codigo que podia usar cliente
-    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReservaHospedagem> reservasHospedagem;
+    // Funcionário precisa obrigatoriamente estar vinculado a um hotel
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_hotel", nullable = false)
+    private Hotel hotel;
 
-    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReservaSala> reservasSala;
+//    //repeticao de codigo que podia usar cliente
+//    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<ReservaHospedagem> reservasHospedagem;
+//
+//    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<ReservaSala> reservasSala;
 }
 
