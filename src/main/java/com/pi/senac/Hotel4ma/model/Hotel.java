@@ -2,6 +2,8 @@ package com.pi.senac.Hotel4ma.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -23,8 +25,11 @@ public class Hotel {
     private List<Espacos> espacos; //Relação forte
 
 
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InstalacaoAlugavel> instalacaoAlugavels; //Relação Forte
+    @OneToMany(mappedBy = "hotel",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true)
+    private List<InstalacaoAlugavel> instalacaoAlugavels = new ArrayList<>(); //Relação Forte
 
 
 //    Hotel hotel = hotelRepo.findById(1L).orElseThrow(); //puxar todas as instalacoes do hotel

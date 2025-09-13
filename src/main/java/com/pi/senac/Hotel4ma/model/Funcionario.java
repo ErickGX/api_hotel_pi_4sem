@@ -5,7 +5,6 @@ import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 
-import java.util.List;
 
 @Getter
 @Setter

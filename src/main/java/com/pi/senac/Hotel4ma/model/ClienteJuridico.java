@@ -2,16 +2,20 @@ package com.pi.senac.Hotel4ma.model;
 
 import com.pi.senac.Hotel4ma.validation.Cnpj;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 @Entity
+@Getter
+@Setter
 @DiscriminatorValue("JURIDICO")
 public class ClienteJuridico extends Cliente  {
 
 //    @Embedded
-//    @AttributeOverride(name = "numero", column = @Column(name = "cnpj", length = 14, unique = true))
+//    @AttributeOverride(name = "numeros", column = @Column(name = "cnpj", length = 14, unique = true))
     @Column(nullable = false, length = 14)
     @CNPJ
-    private Cnpj cnpj;
+    private String cnpj;
 
 }

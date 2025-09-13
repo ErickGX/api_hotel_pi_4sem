@@ -1,35 +1,76 @@
 package com.pi.senac.Hotel4ma.service;
 
+import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteFisicoRequest;
+import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteJuridicoRequest;
+import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
+import com.pi.senac.Hotel4ma.mappers.ClienteMapper;
 import com.pi.senac.Hotel4ma.model.Cliente;
+import com.pi.senac.Hotel4ma.model.ClienteFisico;
+import com.pi.senac.Hotel4ma.model.ClienteJuridico;
 import com.pi.senac.Hotel4ma.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ClienteService {
-    private final ClienteRepository clienteRepository;
-
+    private final ClienteRepository repository;
+    private final ClienteMapper mapper;
     
 
-    public List<Cliente> listarTodos() {
-        return (List<Cliente>) clienteRepository.findAll();
+//    public List<Cliente> listarTodos() {
+//        return (List<Cliente>) clienteRepository.findAll();
+//    }
+//
+//    public Cliente buscarPorId(Long id) {
+//        return clienteRepository.findById(id).orElse(null);
+//    }
+
+    public ClienteResponseDTO salvarFisico(ClienteFisicoRequest dto) {
+
+        ClienteFisico cliente = mapper.toEntity(dto);
+        //salvo cliente , pego resultado e converto para response
+        ClienteFisico clienteSalvo = repository.save(cliente);
+        // 3. Entity -> Response DTO
+        return mapper.toDTO(clienteSalvo);
+
     }
 
-    public Cliente buscarPorId(Long id) {
-        return clienteRepository.findById(id).orElse(null);
+    public ClienteResponseDTO salvarJuridico(ClienteJuridicoRequest dto) {
+
+        ClienteJuridico clienteJuridico = mapper.toEntity(dto);
+        //salvo cliente , pego resultado e converto para response
+        ClienteJuridico clienteSalvo = repository.save(clienteJuridico);
+        // 3. Entity -> Response DTO
+        return mapper.toDTO(clienteSalvo);
     }
 
-    public Cliente salvar(Cliente cliente) {
-        // if (!cliente.validarDocumento()) {
-        //       throw new IllegalArgumentException("Documento inválido (CPF ou CNPJ).");
-        //  }
-
-
-        return clienteRepository.save(cliente);
+    public List<ClienteResponseDTO> listAll(){
+        List<Cliente> clientes = repository.findAll();
+        return clientes.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
+
+    public ClienteResponseDTO buscarPorId(Long id) {
+         return  mapper.toDTO(repository.findById(id).orElse(null));
+   }
+
+   public Boolean deletarPorId(Long id) {
+       if (!repository.existsById(id)) {
+           return false;
+       }
+       repository.deleteById(id);
+       return true;
+   }
+
+
+//    public void deletar(Long id) {
+//        clienteRepository.deleteById(id);
+//    }
 
 //    public Cliente atualizar(Long id, Cliente clienteAtualizado) {
 //        return clienteRepository.findById(id).map(cliente -> {
@@ -76,9 +117,6 @@ public class ClienteService {
 //        }).orElse(null);
 //    }
 
-    public void deletar(Long id) {
-        clienteRepository.deleteById(id);
-    }
 
 //    public boolean validarDocumento(Cliente cliente) {
 

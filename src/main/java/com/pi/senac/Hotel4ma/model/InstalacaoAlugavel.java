@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
-@MappedSuperclass
+//@MappedSuperclass
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class InstalacaoAlugavel {
 
@@ -29,8 +29,8 @@ public abstract class InstalacaoAlugavel {
     @Column(nullable = false)
     private String descricao;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_hotel") //FK na tabela Espacos
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_hotel", nullable = false) //FK na tabela Espacos
     private Hotel hotel;
 
     //campo para subir a imagem do local sera feita futuramente

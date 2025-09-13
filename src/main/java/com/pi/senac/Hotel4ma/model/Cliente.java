@@ -1,6 +1,7 @@
 
 package com.pi.senac.Hotel4ma.model;
 
+import com.pi.senac.Hotel4ma.enums.TipoCliente;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +13,9 @@ import java.util.List;
 @Getter
 @Entity
 //Estrategia para manter clientes em uma unica tabela diferenciando pelo campo tipo_cliente no banco de dados
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_cliente", length = 10)
+//necessario mudar porque acabou criando complexidade de validacao
+@Inheritance(strategy = InheritanceType.JOINED)
+//@DiscriminatorColumn(name = "tipo_cliente", length = 10)
 @Table(name = "clientes")
 public abstract class Cliente extends Usuario {
 
@@ -23,6 +25,9 @@ public abstract class Cliente extends Usuario {
 
     @Column(length = 200, nullable = false)
     private String endereco;
+
+    @Enumerated(EnumType.STRING)
+    private TipoCliente tipoCliente;
 
 //    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<ReservaHospedagem> reservasHospedagem = new ArrayList<>();
