@@ -54,7 +54,6 @@ public class Reserva {
     private Pagamento pagamento;
 
 
-
     //metodo para calcular valor total baseado nos espacos alugados ira para a service
 
 

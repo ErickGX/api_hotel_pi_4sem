@@ -2,7 +2,10 @@ package com.pi.senac.Hotel4ma.service;
 
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteFisicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteJuridicoRequest;
+import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
+import com.pi.senac.Hotel4ma.exceptions.DuplicateEmailException;
+import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.ClienteMapper;
 import com.pi.senac.Hotel4ma.model.Cliente;
 import com.pi.senac.Hotel4ma.model.ClienteFisico;
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,7 +23,7 @@ import java.util.stream.Collectors;
 public class ClienteService {
     private final ClienteRepository repository;
     private final ClienteMapper mapper;
-    
+
 
 //    public List<Cliente> listarTodos() {
 //        return (List<Cliente>) clienteRepository.findAll();
@@ -48,7 +52,25 @@ public class ClienteService {
         return mapper.toDTO(clienteSalvo);
     }
 
-    public List<ClienteResponseDTO> listAll(){
+    public ClienteResponseDTO atualizarFisico(ClienteUpdateRequest dto, Long idCliente) {
+        //verifico se o cliente Existe
+        ClienteFisico cliente = (ClienteFisico) repository.findById(idCliente)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com este ID"));
+
+        //Valida unicidade do novo e-mail (se o DTO trouxe um e-mail diferente)
+        if (repository.existsByEmailAndIdNot(dto.email(), idCliente)) {
+            throw new DuplicateEmailException("Email já existente, tente novamente");
+        }
+
+        //Mescla os novos valores
+        mapper.updateEntidadeFromDto(dto, cliente);
+
+        //Persiste e retorna a resposta
+        Cliente atualizado = repository.save(cliente);
+        return mapper.toUpdatedDto(atualizado);
+    }
+
+    public List<ClienteResponseDTO> listAll() {
         List<Cliente> clientes = repository.findAll();
         return clientes.stream()
                 .map(mapper::toDTO)
@@ -56,16 +78,16 @@ public class ClienteService {
     }
 
     public ClienteResponseDTO buscarPorId(Long id) {
-         return  mapper.toDTO(repository.findById(id).orElse(null));
-   }
+        return mapper.toDTO(repository.findById(id).orElse(null));
+    }
 
-   public Boolean deletarPorId(Long id) {
-       if (!repository.existsById(id)) {
-           return false;
-       }
-       repository.deleteById(id);
-       return true;
-   }
+    public Boolean deletarPorId(Long id) {
+        if (!repository.existsById(id)) {
+            return false;
+        }
+        repository.deleteById(id);
+        return true;
+    }
 
 
 //    public void deletar(Long id) {

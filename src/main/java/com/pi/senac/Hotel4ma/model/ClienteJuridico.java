@@ -14,7 +14,7 @@ public class ClienteJuridico extends Cliente  {
 
 //    @Embedded
 //    @AttributeOverride(name = "numeros", column = @Column(name = "cnpj", length = 14, unique = true))
-    @Column(nullable = false, length = 14)
+    @Column(nullable = false, length = 14, unique = true)
     @CNPJ
     private String cnpj;
 

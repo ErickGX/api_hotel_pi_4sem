@@ -23,9 +23,9 @@ public record ClienteResponseDTO(
         TipoCliente tipoCliente,
 
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-        LocalDateTime dataCadastro,    // Data de criação do registro
+        LocalDateTime dataCadastro    // Data de criação do registro
 
-        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-        LocalDateTime dataAtualizacao // Data da última atualização
+//        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+//        LocalDateTime dataAtualizacao // Data da última atualização
 ) {
 }

@@ -1,9 +1,7 @@
 package com.pi.senac.Hotel4ma.model;
 
 
-import com.pi.senac.Hotel4ma.validation.Senha;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.Email;

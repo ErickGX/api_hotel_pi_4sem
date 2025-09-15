@@ -3,6 +3,7 @@ package com.pi.senac.Hotel4ma.controller.old;
 
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteFisicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteJuridicoRequest;
+import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
 import com.pi.senac.Hotel4ma.mappers.ClienteMapper;
 import com.pi.senac.Hotel4ma.service.ClienteService;
@@ -19,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClienteController implements GenericController {
 
-    private final ClienteMapper mapper;
     private final ClienteService service;
 
     @PostMapping("/fisico")
@@ -62,5 +62,10 @@ public class ClienteController implements GenericController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<Void> atualizar(@PathVariable("id") Long id, @RequestBody @Valid ClienteUpdateRequest request){
+            service.atualizarFisico(request, id);
+            return ResponseEntity.ok().build();
+    }
 
 }
