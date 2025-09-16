@@ -45,6 +45,37 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorApi, HttpStatus.CONFLICT);
     }
 
+
+    @ExceptionHandler(DuplicateCpfException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ApiError> handleDuplicateCpf(DuplicateCpfException ex, HttpServletRequest request) {
+        ApiError errorApi = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Registro Duplicado",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+        return new ResponseEntity<>(errorApi, HttpStatus.CONFLICT);
+    }
+
+
+
+    @ExceptionHandler(DuplicateCnpjException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ApiError> handleDuplicateEmail(DuplicateCnpjException ex, HttpServletRequest request) {
+        ApiError errorApi = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Registro Duplicado",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+        return new ResponseEntity<>(errorApi, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidationErrors(MethodArgumentNotValidException ex, WebRequest request) {
 

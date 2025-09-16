@@ -47,7 +47,6 @@ public abstract class Usuario {
     private String telefone;
 
 
-
     @CreatedDate //Spring preenche a data automaticamente ao criar
     @Column(name = "data_cadastro", nullable = false)
     private LocalDateTime dataCadastro;

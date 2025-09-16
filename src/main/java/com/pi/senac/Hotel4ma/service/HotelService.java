@@ -1,17 +1,27 @@
 package com.pi.senac.Hotel4ma.service;
 
+import com.pi.senac.Hotel4ma.dtos.Hotel.Request.HotelRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.Hotel.Response.HotelResponseDTO;
+import com.pi.senac.Hotel4ma.mappers.HotelMapper;
 import com.pi.senac.Hotel4ma.model.Hotel;
 import com.pi.senac.Hotel4ma.repository.HotelRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class HotelService {
-    private final HotelRepository hotelRepository;
+    private final HotelRepository repository;
+    private final HotelMapper mapper;
 
-    public HotelService(HotelRepository hotelRepository) {
-        this.hotelRepository = hotelRepository;
+
+
+    //criação de metodo e retorno na variação em 1 linha
+    public HotelResponseDTO saveHotel(HotelRequestDTO dto) {
+        Hotel hotel = repository.save(mapper.toEntity(dto));
+        return mapper.toDTO(hotel);
     }
 
 //    public List<Hotel> listarTodos() {

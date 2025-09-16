@@ -8,14 +8,11 @@ import com.pi.senac.Hotel4ma.model.Cliente;
 import com.pi.senac.Hotel4ma.model.ClienteFisico;
 import com.pi.senac.Hotel4ma.model.ClienteJuridico;
 import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
+import java.util.List;
 
 //transforma em um componente spring em tempo de compilação
-
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = "spring")
 public interface ClienteMapper {
-
-    ClienteMapper INSTANCE = Mappers.getMapper(ClienteMapper.class);
 
     @Mapping(target = "cpf", expression = "java(cliente instanceof ClienteFisico ? ((ClienteFisico) cliente).getCpf() : null)")
     @Mapping(target = "cnpj", expression = "java(cliente instanceof ClienteJuridico ? ((ClienteJuridico) cliente).getCnpj() : null)")
@@ -28,19 +25,7 @@ public interface ClienteMapper {
     ClienteJuridico toEntity(ClienteJuridicoRequest dto);
 
     void updateEntidadeFromDto(ClienteUpdateRequest dto, @MappingTarget ClienteFisico cliente);
+    void updateEntidadeFromDto(ClienteUpdateRequest dto, @MappingTarget ClienteJuridico cliente);
+    List<ClienteResponseDTO> toList(List<Cliente> clientes);
 
-    ClienteResponseDTO toUpdatedDto(Cliente atualizado);
-
-//    @Named("documentMapping")
-//    default String mapDocumento(Cliente cliente) {
-//        if (cliente == null) {
-//            return null;
-//        }
-//        if (cliente instanceof ClienteFisico fisico) {
-//            return fisico.getCpf();
-//        } else if (cliente instanceof ClienteJuridico juridico) {
-//            return juridico.getCnpj();
-//        }
-//        return null; // ou lança exception se for inesperado
-//    }
 }

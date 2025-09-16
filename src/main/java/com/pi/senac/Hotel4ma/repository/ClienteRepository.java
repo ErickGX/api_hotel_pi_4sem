@@ -10,14 +10,9 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     //Permite verificar colisão sem bloquear quando o valor é do próprio cliente.
     boolean existsByEmailAndIdNot(String email, Long id);
+
+    boolean existsByEmail(String email);
     //boolean existsByCpfAndIdNot(String cpf, Long id);
 
-    //Buscam cpf e email existentes , usado para cadastro quando nao se tem ID
-    boolean existsByEmail(String email);
-   // boolean existsByCpf(String cpf);
-
-    // Opcional: se quiser buscar por email ou CPF sem ID
-    Optional<Cliente> findByEmail(String email);
-   // Optional<Cliente> findByCpf(String cpf);
 
 }

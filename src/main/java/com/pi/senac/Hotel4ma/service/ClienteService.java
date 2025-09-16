@@ -4,158 +4,130 @@ import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteFisicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteJuridicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
+import com.pi.senac.Hotel4ma.exceptions.DuplicateCpfException;
 import com.pi.senac.Hotel4ma.exceptions.DuplicateEmailException;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.ClienteMapper;
 import com.pi.senac.Hotel4ma.model.Cliente;
 import com.pi.senac.Hotel4ma.model.ClienteFisico;
 import com.pi.senac.Hotel4ma.model.ClienteJuridico;
+import com.pi.senac.Hotel4ma.repository.ClienteFisicoRepository;
+import com.pi.senac.Hotel4ma.repository.ClienteJuridicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ClienteService {
     private final ClienteRepository repository;
+    private final ClienteFisicoRepository fisicoRepository;
+    private final ClienteJuridicoRepository juridicoRepository;
     private final ClienteMapper mapper;
 
 
-//    public List<Cliente> listarTodos() {
-//        return (List<Cliente>) clienteRepository.findAll();
-//    }
-//
-//    public Cliente buscarPorId(Long id) {
-//        return clienteRepository.findById(id).orElse(null);
-//    }
+    //futuramente possivel refatorção das exceptions de codigo 409 em uma
+    //validação de email e cpf existentes
+    public ClienteResponseDTO createFisico(ClienteFisicoRequest dto) {
+        //verificação completa para cpf e email duplicados
+        validadeCpfAndEmailOnCreate(dto.cpf(), dto.email());
 
-    public ClienteResponseDTO salvarFisico(ClienteFisicoRequest dto) {
-
-        ClienteFisico cliente = mapper.toEntity(dto);
-        //salvo cliente , pego resultado e converto para response
-        ClienteFisico clienteSalvo = repository.save(cliente);
-        // 3. Entity -> Response DTO
-        return mapper.toDTO(clienteSalvo);
-
+        //Fiz uma refatoração deste codigo no createJuridico para 1 linha (Bom) ?
+//        ClienteFisico cliente = repository.save(mapper.toEntity(dto));
+        return mapper.toDTO(repository.save(mapper.toEntity(dto)));
     }
 
-    public ClienteResponseDTO salvarJuridico(ClienteJuridicoRequest dto) {
-
-        ClienteJuridico clienteJuridico = mapper.toEntity(dto);
-        //salvo cliente , pego resultado e converto para response
-        ClienteJuridico clienteSalvo = repository.save(clienteJuridico);
-        // 3. Entity -> Response DTO
-        return mapper.toDTO(clienteSalvo);
-    }
-
-    public ClienteResponseDTO atualizarFisico(ClienteUpdateRequest dto, Long idCliente) {
-        //verifico se o cliente Existe
-        ClienteFisico cliente = (ClienteFisico) repository.findById(idCliente)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com este ID"));
-
-        //Valida unicidade do novo e-mail (se o DTO trouxe um e-mail diferente)
-        if (repository.existsByEmailAndIdNot(dto.email(), idCliente)) {
+    //validação de email e cnpj existentes
+    public ClienteResponseDTO createJuridico(ClienteJuridicoRequest dto) {
+        //Verifica se o email já esta cadastrado - failfast
+        if (repository.existsByEmail(dto.email())) {
             throw new DuplicateEmailException("Email já existente, tente novamente");
         }
+        //Verifica se o cnpj já esta cadastrado
+        if (juridicoRepository.existsByCnpj(dto.cnpj())) {
+            throw new DuplicateCpfException("CNPJ já existente, tente novamente");
+        }
+        return mapper.toDTO(repository.save(mapper.toEntity(dto)));
+    }
 
-        //Mescla os novos valores
+    public ClienteResponseDTO updateClientFisico(ClienteUpdateRequest dto, Long idCliente) {
+        //verifico se o func Existe
+        ClienteFisico cliente = fisicoRepository.findById(idCliente)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente Fisico não encontrado com este ID"));
+
+        //Valida unicidade do novo e-mail (se o DTO trouxe um e-mail diferente)
+        if (!dto.email().equals(cliente.getEmail()) && repository.existsByEmailAndIdNot(dto.email(), idCliente)) {
+            throw new DuplicateEmailException("Email já existente, tente novamente");
+        }
+        //Mescla os novos valores automaticamente
         mapper.updateEntidadeFromDto(dto, cliente);
 
         //Persiste e retorna a resposta
-        Cliente atualizado = repository.save(cliente);
-        return mapper.toUpdatedDto(atualizado);
+        return mapper.toDTO(repository.save(cliente));
     }
+
+
+    public ClienteResponseDTO updateClientJuridico(ClienteUpdateRequest dto, Long idCliente) {
+
+        ClienteJuridico cliente = juridicoRepository.findById(idCliente)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente Juridico não encontrado com este ID"));
+
+        //encapsulamento em metodo generelatista
+        validateEmailOnUpdate(dto.email(), cliente);
+        //Mescla os novos valores automaticamente
+        mapper.updateEntidadeFromDto(dto, cliente);
+
+        //Persiste e retorna a resposta
+        return mapper.toDTO(repository.save(cliente));
+    }
+
 
     public List<ClienteResponseDTO> listAll() {
         List<Cliente> clientes = repository.findAll();
-        return clientes.stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+        return mapper.toList(clientes);
     }
 
-    public ClienteResponseDTO buscarPorId(Long id) {
-        return mapper.toDTO(repository.findById(id).orElse(null));
+
+    public ClienteResponseDTO findById(Long id) {
+        return mapper.toDTO(repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado com o ID: " + id)));
+
     }
 
-    public Boolean deletarPorId(Long id) {
+    public void deleteById(Long id) {
+        // Verifica se o recurso existe.
         if (!repository.existsById(id)) {
-            return false;
+            throw new ResourceNotFoundException("Recurso não encontrado com o ID: " + id);
         }
+        // Passo 2: Se existe, manda deletar.
         repository.deleteById(id);
-        return true;
     }
 
 
-//    public void deletar(Long id) {
-//        clienteRepository.deleteById(id);
-//    }
+    // METODO PRIVADO REUTILIZADO PARA A VALIDAÇÃO DE E-MAIL
+    // POSSIVEL MUDANÇA PARA UMA CLASSE VALIDATOR
+    private void validateEmailOnUpdate(String newEmail, Cliente existingClient) {
+        // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
+        if (newEmail != null && !newEmail.equalsIgnoreCase(existingClient.getEmail())
+                && repository.existsByEmailAndIdNot(newEmail, existingClient.getId())) {
+            throw new DuplicateEmailException("Email já existente, tente novamente");
+        }
+    }
 
-//    public Cliente atualizar(Long id, Cliente clienteAtualizado) {
-//        return clienteRepository.findById(id).map(cliente -> {
-//            cliente.setNome(clienteAtualizado.getNome());
-//            cliente.setEmail(clienteAtualizado.getEmail());
-//            cliente.setTelefone(clienteAtualizado.getTelefone());
-//            cliente.setEndereco(clienteAtualizado.getEndereco());
-//
-//
-//            //Isso sera decidido pelo campo enviado na DTO pelo frontend
-//            //A escolha devera ser feita usando os campos enviados da DTO
-//
-//            // Atualiza CPF e/ou CNPJ, caso sejam informados
-//                   // cliente.setcpf(clienteAtualizado.getCpf());
-//                   // cliente.setCnpj(clienteAtualizado.getCnpj());
-//
-//            //if (!cliente.validarDocumento()) {
-//            //    throw new IllegalArgumentException("Documento inválido (CPF ou CNPJ).");
-//            // }
-//
-//            // Atualiza reservas de hospedagem
-//            if (cliente.getReservasHospedagem() != null) {
-//                cliente.getReservasHospedagem().clear();
-//            }
-//            if (clienteAtualizado.getReservasHospedagem() != null) {
-//                clienteAtualizado.getReservasHospedagem().forEach(reserva -> {
-//                    reserva.setCliente(cliente);
-//                    cliente.getReservasHospedagem().add(reserva);
-//                });
-//            }
-//
-//            // Atualiza reservas de sala
-//            if (cliente.getReservasSala() != null) {
-//                cliente.getReservasSala().clear();
-//            }
-//            if (clienteAtualizado.getReservasSala() != null) {
-//                clienteAtualizado.getReservasSala().forEach(reserva -> {
-//                    reserva.setCliente(cliente);
-//                    cliente.getReservasSala().add(reserva);
-//                });
-//            }
-//
-//            return clienteRepository.save(cliente);
-//        }).orElse(null);
-//    }
+    //metodo comum a todos usuarios, menos juridico.
+    //achar um lugar para reaproveitar com acesso global
+    private void validadeCpfAndEmailOnCreate(String cpf, String email){
+        //Verifica se o cpf já esta cadastrado
+        if (fisicoRepository.existsByCpf(cpf)) {
+            throw new DuplicateCpfException("CPF já existente, tente novamente");
+        }
+
+        if (repository.existsByEmail(email)) {
+            throw new DuplicateEmailException("Email já existente, tente novamente");
+        }
+    }
 
 
-//    public boolean validarDocumento(Cliente cliente) {
-
-    // teste de outra maneira de verificar os campos para decisao do tipo cliente -- n testado
-//    if (cpf != null && cnpj != null) {
-//        throw new IllegalStateException("Cliente não pode ter CPF e CNPJ ao mesmo tempo.");
-//    }
-//        if (cpf == null && cnpj == null) {
-//        throw new IllegalStateException("Cliente deve ter CPF ou CNPJ.");
-
-
-//        // Só é válido se tiver CPF OU CNPJ, não os dois nulos
-//        if (cliente.getCpf() != null) {
-//            return cliente.getCpf().validarDoc();
-//        } else if (cnpj != null) {
-//            return cnpj.validarDoc();
-//        }
-//        return false;
-//    }
 }
