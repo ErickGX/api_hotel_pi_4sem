@@ -14,6 +14,7 @@ import com.pi.senac.Hotel4ma.model.ClienteJuridico;
 import com.pi.senac.Hotel4ma.repository.ClienteFisicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteJuridicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteRepository;
+import com.pi.senac.Hotel4ma.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,13 +27,14 @@ public class ClienteService {
     private final ClienteFisicoRepository fisicoRepository;
     private final ClienteJuridicoRepository juridicoRepository;
     private final ClienteMapper mapper;
+    private final ValidationService validationService;
 
 
     //futuramente possivel refatorção das exceptions de codigo 409 em uma
     //validação de email e cpf existentes
     public ClienteResponseDTO createFisico(ClienteFisicoRequest dto) {
         //verificação completa para cpf e email duplicados
-        validadeCpfAndEmailOnCreate(dto.cpf(), dto.email());
+        validationService.validateNewClienteFisico(dto.cpf(), dto.email());
 
         //Fiz uma refatoração deste codigo no createJuridico para 1 linha (Bom) ?
 //        ClienteFisico cliente = repository.save(mapper.toEntity(dto));
@@ -57,10 +59,8 @@ public class ClienteService {
         ClienteFisico cliente = fisicoRepository.findById(idCliente)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente Fisico não encontrado com este ID"));
 
-        //Valida unicidade do novo e-mail (se o DTO trouxe um e-mail diferente)
-        if (!dto.email().equals(cliente.getEmail()) && repository.existsByEmailAndIdNot(dto.email(), idCliente)) {
-            throw new DuplicateEmailException("Email já existente, tente novamente");
-        }
+        //encapsulamento em metodo generelatista
+        validationService.validateEmailOnUpdateCliente(dto.email(), cliente);
         //Mescla os novos valores automaticamente
         mapper.updateEntidadeFromDto(dto, cliente);
 
@@ -75,7 +75,8 @@ public class ClienteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente Juridico não encontrado com este ID"));
 
         //encapsulamento em metodo generelatista
-        validateEmailOnUpdate(dto.email(), cliente);
+        validationService.validateEmailOnUpdateCliente(dto.email(), cliente);
+
         //Mescla os novos valores automaticamente
         mapper.updateEntidadeFromDto(dto, cliente);
 
@@ -112,19 +113,6 @@ public class ClienteService {
         // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
         if (newEmail != null && !newEmail.equalsIgnoreCase(existingClient.getEmail())
                 && repository.existsByEmailAndIdNot(newEmail, existingClient.getId())) {
-            throw new DuplicateEmailException("Email já existente, tente novamente");
-        }
-    }
-
-    //metodo comum a todos usuarios, menos juridico.
-    //achar um lugar para reaproveitar com acesso global
-    private void validadeCpfAndEmailOnCreate(String cpf, String email){
-        //Verifica se o cpf já esta cadastrado
-        if (fisicoRepository.existsByCpf(cpf)) {
-            throw new DuplicateCpfException("CPF já existente, tente novamente");
-        }
-
-        if (repository.existsByEmail(email)) {
             throw new DuplicateEmailException("Email já existente, tente novamente");
         }
     }

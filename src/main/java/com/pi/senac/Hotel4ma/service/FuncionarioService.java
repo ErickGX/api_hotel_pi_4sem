@@ -9,6 +9,7 @@ import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.FuncionarioMapper;
 import com.pi.senac.Hotel4ma.model.Funcionario;
 import com.pi.senac.Hotel4ma.repository.FuncionarioRepository;
+import com.pi.senac.Hotel4ma.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +21,11 @@ public class FuncionarioService {
 
     private final FuncionarioRepository repository;
     private final FuncionarioMapper mapper;
+    private final ValidationService validationService;
 
 
     public FuncionarioResponseDTO saveFuncionario(FuncionarioRequest dto) {
-        validadeCpfAndEmailOnCreate(dto.cpf(), dto.email());
+        validationService.validateNewFuncionario(dto.cpf(), dto.email());
         return mapper.toDTO(repository.save(mapper.toEntity(dto)));
     }
 
@@ -34,7 +36,7 @@ public class FuncionarioService {
         Funcionario funcionario = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Funcionario não encontrado com este ID"));
 
-        validateEmailOnUpdate(dto.email(), funcionario);
+        validationService.validateEmailOnUpdateFuncionario(dto.email(), funcionario);
 
         //Mescla os novos valores
         mapper.updateEntidadeFromDto(dto, funcionario);

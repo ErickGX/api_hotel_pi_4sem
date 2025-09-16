@@ -1,9 +1,11 @@
 package com.pi.senac.Hotel4ma.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
+@Getter
 public class Administrador extends Usuario{
 
 
