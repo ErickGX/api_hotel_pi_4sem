@@ -65,7 +65,7 @@ public class ValidationService {
     public void validateEmailOnUpdateCliente(String newEmail, Cliente existingClient) {
         // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
         if (newEmail != null && !newEmail.equalsIgnoreCase(existingClient.getEmail())
-                && funcionarioRepository.existsByEmailAndIdNot(newEmail, existingClient.getId())) {
+                && clienteRepository.existsByEmailAndIdNot(newEmail, existingClient.getId())) {
             throw new DuplicateEmailException("Email já existente, tente novamente");
         }
     }
@@ -74,7 +74,7 @@ public class ValidationService {
     public void validateEmailOnUpdateAdmin(String newEmail, Administrador existingAdmin) {
         // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
         if (newEmail != null && !newEmail.equalsIgnoreCase(existingAdmin.getEmail())
-                && funcionarioRepository.existsByEmailAndIdNot(newEmail, existingAdmin.getId())) {
+                && administradorRepository.existsByEmailAndIdNot(newEmail, existingAdmin.getId())) {
             throw new DuplicateEmailException("Email já existente, tente novamente");
         }
     }
