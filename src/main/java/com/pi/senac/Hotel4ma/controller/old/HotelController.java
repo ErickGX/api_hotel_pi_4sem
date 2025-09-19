@@ -2,7 +2,6 @@ package com.pi.senac.Hotel4ma.controller.old;
 
 import com.pi.senac.Hotel4ma.dtos.Hotel.Request.HotelRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.Hotel.Response.HotelResponseDTO;
-import com.pi.senac.Hotel4ma.model.Hotel;
 import com.pi.senac.Hotel4ma.service.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
