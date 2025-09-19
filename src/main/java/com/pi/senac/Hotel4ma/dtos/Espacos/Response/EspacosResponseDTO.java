@@ -1,4 +1,4 @@
-package com.pi.senac.Hotel4ma.dtos.Funcionario.Response;
+package com.pi.senac.Hotel4ma.dtos.Espacos.Response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pi.senac.Hotel4ma.dtos.Hotel.Response.HotelResumoDTO;
@@ -6,7 +6,7 @@ import com.pi.senac.Hotel4ma.enums.TipoEspacos;
 
 import java.time.LocalDateTime;
 
-public record FuncionarioResponseDTO(
+public record EspacosResponseDTO(
         Long id,
         TipoEspacos tipoEspacos,
         String descricao,

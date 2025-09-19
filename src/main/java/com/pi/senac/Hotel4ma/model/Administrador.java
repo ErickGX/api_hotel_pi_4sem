@@ -2,12 +2,13 @@ package com.pi.senac.Hotel4ma.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
 @Getter
+@Setter
 public class Administrador extends Usuario{
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
