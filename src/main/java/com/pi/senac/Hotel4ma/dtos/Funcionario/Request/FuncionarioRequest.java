@@ -1,6 +1,7 @@
 package com.pi.senac.Hotel4ma.dtos.Funcionario.Request;
 
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.br.CPF;
 
 public record FuncionarioRequest(
 
@@ -14,13 +15,14 @@ public record FuncionarioRequest(
         String cargo,
 
         @NotBlank(message = "CPF é obrigatório")
+        @CPF(message = "CPF inválido")
         @Pattern(regexp = "^[0-9]{11}$", message = "CPF deve conter exatamente 11 dígitos numéricos")
         String cpf,
-
 
         @NotBlank(message = "Campo email é obrigatório")
         @Email(message = "Campo email inválido")
         String email,
+
 
         @NotBlank(message = "Telefone é obrigatório")
         @Pattern(regexp = "^[0-9]{11}$", message = "Telefone deve conter exatamente 11 dígitos numéricos")

@@ -25,16 +25,18 @@ public class FuncionarioController implements GenericController{
     @PostMapping
     public ResponseEntity<FuncionarioResponseDTO> create
             (@RequestBody @Valid FuncionarioRequest dto){
-
         FuncionarioResponseDTO response  = service.saveFuncionario(dto);
         URI location =  gerarHeaderLocation(base_path, response.id());
         return ResponseEntity.created(location).body(response);
     }
 
+
+
     @GetMapping
     public ResponseEntity<List<FuncionarioResponseDTO>> findAll(){
         return ResponseEntity.ok(service.listAll());
     }
+
 
     @GetMapping("{id}")
     public ResponseEntity<FuncionarioResponseDTO> findById(@PathVariable("id") Long id) {
