@@ -5,6 +5,7 @@ import com.pi.senac.Hotel4ma.enums.TipoSalaConferencia;
 import java.math.BigDecimal;
 
 public record SalaoResponseDTO(
+        Long id,
         TipoSalaConferencia tipoSalaConferencia,
         String nome,
         BigDecimal precoBase,

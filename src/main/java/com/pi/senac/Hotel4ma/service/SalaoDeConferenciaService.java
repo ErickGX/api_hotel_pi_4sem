@@ -3,49 +3,47 @@ package com.pi.senac.Hotel4ma.service;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.SalaoRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoCustoResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoResponseDTO;
+import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.SalaoDeConferenciaMapper;
 import com.pi.senac.Hotel4ma.model.Hotel;
 import com.pi.senac.Hotel4ma.model.SalaoDeConferencia;
 import com.pi.senac.Hotel4ma.repository.HotelRepository;
 import com.pi.senac.Hotel4ma.repository.SalaoDeConferenciaRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SalaoDeConferenciaService {
 
-    @Autowired
-    private SalaoDeConferenciaRepository salaoRepository;
 
-    @Autowired
-    private HotelRepository hotelRepository;
-
-    @Autowired
-    private SalaoDeConferenciaMapper mapper;
+    private final SalaoDeConferenciaRepository repository;
+    private final HotelRepository hotelRepository;
+    private final SalaoDeConferenciaMapper mapper;
 
     public SalaoResponseDTO cadastrar(SalaoRequestDTO request) {
         Hotel hotel = hotelRepository.findById(request.id_hotel())
-                .orElseThrow(() -> new EntityNotFoundException("Hotel não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado"));
 
         SalaoDeConferencia salao = mapper.toEntity(request);
         salao.setHotel(hotel);
 
-        SalaoDeConferencia salvo = salaoRepository.save(salao);
+        SalaoDeConferencia salvo = repository.save(salao);
         return mapper.toDTO(salvo);
     }
 
     public SalaoCustoResponseDTO cadastrarComCusto(SalaoRequestDTO request) {
         Hotel hotel = hotelRepository.findById(request.id_hotel())
-                .orElseThrow(() -> new EntityNotFoundException("Hotel não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado"));
 
         SalaoDeConferencia salao = mapper.toEntity(request);
         salao.setHotel(hotel);
 
-        SalaoDeConferencia salvo = salaoRepository.save(salao);
+        SalaoDeConferencia salvo = repository.save(salao);
 
         BigDecimal custo = salvo.calcularCustoTotal(request.horas());
 
@@ -58,33 +56,33 @@ public class SalaoDeConferenciaService {
     }
 
     public List<SalaoResponseDTO> listarTodos() {
-        return mapper.toList(salaoRepository.findAll());
+        return mapper.toList(repository.findAll());
     }
 
     public SalaoResponseDTO buscarPorId(Long id) {
-        SalaoDeConferencia salao = salaoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Salão não encontrado"));
+        SalaoDeConferencia salao = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Salão não encontrado"));
         return mapper.toDTO(salao);
     }
 
     public SalaoResponseDTO atualizar(Long id, SalaoRequestDTO request) {
-        SalaoDeConferencia salao = salaoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Salão não encontrado"));
+        SalaoDeConferencia salao = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Salão não encontrado"));
 
         mapper.updateEntityFromDTO(request, salao);
 
         Hotel hotel = hotelRepository.findById(request.id_hotel())
-                .orElseThrow(() -> new EntityNotFoundException("Hotel não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado"));
         salao.setHotel(hotel);
 
-        SalaoDeConferencia atualizado = salaoRepository.save(salao);
+        SalaoDeConferencia atualizado = repository.save(salao);
         return mapper.toDTO(atualizado);
     }
 
 
     public SalaoCustoResponseDTO calcularCusto(Long id, int horas) {
-        SalaoDeConferencia salao = salaoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Salão não encontrado"));
+        SalaoDeConferencia salao = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Salão não encontrado"));
 
         BigDecimal custo = salao.calcularCustoTotal(horas);
 
@@ -97,9 +95,9 @@ public class SalaoDeConferenciaService {
     }
 
     public void deletar(Long id) {
-        if (!salaoRepository.existsById(id)) {
-            throw new EntityNotFoundException("Salão não encontrado");
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("Salão não encontrado");
         }
-        salaoRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }
