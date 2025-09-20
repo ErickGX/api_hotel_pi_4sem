@@ -3,16 +3,14 @@ package com.pi.senac.Hotel4ma.service;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Request.FuncionarioRequest;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Request.FuncionarioUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResponseDTO;
-import com.pi.senac.Hotel4ma.exceptions.DuplicateCpfException;
-import com.pi.senac.Hotel4ma.exceptions.DuplicateEmailException;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.FuncionarioMapper;
 import com.pi.senac.Hotel4ma.model.Funcionario;
 import com.pi.senac.Hotel4ma.repository.FuncionarioRepository;
 import com.pi.senac.Hotel4ma.validation.ValidationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -24,11 +22,10 @@ public class FuncionarioService {
     private final ValidationService validationService;
 
 
-    public FuncionarioResponseDTO saveFuncionario(FuncionarioRequest dto) {
-        validationService.validateNewFuncionario(dto.cpf(), dto.email());
-        return mapper.toDTO(repository.save(mapper.toEntity(dto)));
+    public FuncionarioResponseDTO saveFuncionario(@Valid FuncionarioRequest dto) {
+        Funcionario funcionario = repository.save(mapper.toEntity(dto));
+        return mapper.toDTO(funcionario);
     }
-
 
     public FuncionarioResponseDTO update(FuncionarioUpdateRequest dto, Long id) {
 
@@ -44,6 +41,7 @@ public class FuncionarioService {
         //Persiste e retorna a resposta
         return mapper.toDTO(repository.save(funcionario));
     }
+
 
     public List<FuncionarioResponseDTO> listAll() {
         List<Funcionario> funcionarios = repository.findAll();
@@ -68,24 +66,24 @@ public class FuncionarioService {
 
     // METODO PRIVADO REUTILIZADO PARA A VALIDAÇÃO DE E-MAIL
     // POSSIVEL MUDANÇA PARA UMA CLASSE VALIDATOR
-    private void validateEmailOnUpdate(String newEmail, Funcionario existingFuncionario) {
-        // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
-        if (newEmail != null && !newEmail.equalsIgnoreCase(existingFuncionario.getEmail())
-                && repository.existsByEmailAndIdNot(newEmail, existingFuncionario.getId())) {
-            throw new DuplicateEmailException("Email já existente, tente novamente");
-        }
-    }
-
-    private void validadeCpfAndEmailOnCreate(String cpf, String email){
-        //Verifica se o cpf já esta cadastrado
-        if (repository.existsByCpf(cpf)) {
-            throw new DuplicateCpfException("CPF já existente, tente novamente");
-        }
-
-        if (repository.existsByEmail(email)) {
-            throw new DuplicateEmailException("Email já existente, tente novamente");
-        }
-    }
+//    private void validateEmailOnUpdate(String newEmail, Funcionario existingFuncionario) {
+//        // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
+//        if (newEmail != null && !newEmail.equalsIgnoreCase(existingFuncionario.getEmail())
+//                && repository.existsByEmailAndIdNot(newEmail, existingFuncionario.getId())) {
+//            throw new DuplicateEmailException("Email já existente, tente novamente");
+//        }
+//    }
+//
+//    private void validadeCpfAndEmailOnCreate(String cpf, String email){
+//        //Verifica se o cpf já esta cadastrado
+//        if (repository.existsByCpf(cpf)) {
+//            throw new DuplicateCpfException("CPF já existente, tente novamente");
+//        }
+//
+//        if (repository.existsByEmail(email)) {
+//            throw new DuplicateEmailException("Email já existente, tente novamente");
+//        }
+//    }
 
 //    public List<FuncionarioResponseDTO> listarTodos() {
 //        return mapper.toList(repository.findAll());
