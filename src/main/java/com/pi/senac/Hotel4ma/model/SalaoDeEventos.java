@@ -19,7 +19,7 @@ public class SalaoDeEventos extends InstalacaoAlugavel{
 
     //calcula o preço total multiplicando o preco base pelo fator e diarias
     @Override
-    protected BigDecimal calcularCustoTotal(int horas) {
+    public BigDecimal calcularCustoTotal(int horas) {
         return getPrecoBase()
                 .multiply(BigDecimal.valueOf(tipoSalaoEventos.getFator()))
                 .multiply(BigDecimal.valueOf(horas));

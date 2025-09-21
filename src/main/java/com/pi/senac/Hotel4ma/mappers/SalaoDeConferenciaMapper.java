@@ -3,20 +3,48 @@ package com.pi.senac.Hotel4ma.mappers;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.SalaoRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoResponseDTO;
 import com.pi.senac.Hotel4ma.model.SalaoDeConferencia;
-import org.mapstruct.*;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface SalaoDeConferenciaMapper {
+@Component
+public class SalaoDeConferenciaMapper {
 
-    @Mapping(source = "id_hotel", target = "hotel.id")
-    SalaoDeConferencia toEntity(SalaoRequestDTO dto);
+    public SalaoDeConferencia toEntity(SalaoRequestDTO dto) {
+        SalaoDeConferencia salao = new SalaoDeConferencia();
 
-    @Mapping(source = "hotel.id", target = "id_hotel")
-    SalaoResponseDTO toDTO(SalaoDeConferencia entity);
+        salao.setNome(dto.instalacao().nome());
+        salao.setPrecoBase(dto.instalacao().precoBase());
+        salao.setIsDisponivel(dto.instalacao().isDisponivel());
+        salao.setDescricao(dto.instalacao().descricao());
+        salao.setTipoSalaConferencia(dto.tipoSalaConferencia());
 
-    void updateEntityFromDTO(SalaoRequestDTO dto, @MappingTarget SalaoDeConferencia entity);
+        return salao;
+    }
 
-    List<SalaoResponseDTO> toList(List<SalaoDeConferencia> entidades);
+    public void updateEntityFromDTO(SalaoRequestDTO dto, SalaoDeConferencia salao) {
+        salao.setNome(dto.instalacao().nome());
+        salao.setPrecoBase(dto.instalacao().precoBase());
+        salao.setIsDisponivel(dto.instalacao().isDisponivel());
+        salao.setDescricao(dto.instalacao().descricao());
+        salao.setTipoSalaConferencia(dto.tipoSalaConferencia());
+    }
+
+    public SalaoResponseDTO toDTO(SalaoDeConferencia salao) {
+        return new SalaoResponseDTO(
+                salao.getTipoSalaConferencia(),
+                salao.getNome(),
+                salao.getPrecoBase(),
+                salao.getDescricao(),
+                salao.getIsDisponivel(),
+                salao.getHotel().getId()
+        );
+    }
+
+    public List<SalaoResponseDTO> toList(List<SalaoDeConferencia> lista) {
+        return lista.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
 }

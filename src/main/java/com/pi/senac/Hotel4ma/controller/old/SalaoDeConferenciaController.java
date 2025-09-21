@@ -1,27 +1,55 @@
 package com.pi.senac.Hotel4ma.controller.old;
 
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.SalaoCustoRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.SalaoRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoCustoResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoResponseDTO;
+import com.pi.senac.Hotel4ma.enums.TipoSalaConferencia;
 import com.pi.senac.Hotel4ma.service.SalaoDeConferenciaService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/saloes")
+@RequiredArgsConstructor
 public class SalaoDeConferenciaController {
 
-    @Autowired
-    private SalaoDeConferenciaService service;
+    private final SalaoDeConferenciaService service;
 
     @PostMapping
     public ResponseEntity<SalaoResponseDTO> cadastrar(@RequestBody @Valid SalaoRequestDTO request) {
         SalaoResponseDTO response = service.cadastrar(request);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/custo")
+    public ResponseEntity<SalaoCustoResponseDTO> cadastrarComCusto(@RequestBody @Valid SalaoCustoRequestDTO request) {
+        SalaoCustoResponseDTO response = service.cadastrarComCusto(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/simulacao/{tipo}/{precoBase}/{horas}")
+    public ResponseEntity<SalaoCustoResponseDTO> simularCustoGenerico(
+            @PathVariable TipoSalaConferencia tipo,
+            @PathVariable BigDecimal precoBase,
+            @PathVariable int horas
+    ) {
+        BigDecimal custo = precoBase.multiply(BigDecimal.valueOf(horas));
+
+        SalaoCustoResponseDTO dto = new SalaoCustoResponseDTO(
+                null,
+                tipo.name(),
+                horas,
+                custo
+        );
+
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping
@@ -45,7 +73,6 @@ public class SalaoDeConferenciaController {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
-
 
     @GetMapping("/{id}/custo/{horas}")
     public ResponseEntity<SalaoCustoResponseDTO> calcularCusto(@PathVariable Long id, @PathVariable int horas) {
