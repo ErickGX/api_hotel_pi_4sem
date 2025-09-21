@@ -1,17 +1,18 @@
 package com.pi.senac.Hotel4ma.service;
 
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoCustoRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoCustoResponseDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.request.InstalacaoCustoSpaRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.request.SpaRequestDTO;
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.request.SpaCustoRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.response.SpaResponseDTO;
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.response.SpaCustoResponseDTO;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
+import com.pi.senac.Hotel4ma.model.Hotel;
 import com.pi.senac.Hotel4ma.model.Spa;
 import com.pi.senac.Hotel4ma.repository.InstalacaoRepository;
 import com.pi.senac.Hotel4ma.mappers.SpaMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -20,7 +21,6 @@ import java.util.List;
 public class SpaService {
 
     private final InstalacaoRepository repository;
-
     private final SpaMapper mapper;
 
     public SpaResponseDTO cadastrar(SpaRequestDTO dto) {
@@ -29,11 +29,21 @@ public class SpaService {
         return mapper.toResponse(salvo);
     }
 
+    public InstalacaoCustoResponseDTO cadastrarComCusto(InstalacaoCustoSpaRequestDTO dto) {
+        Spa spa = new Spa();
+        spa.setNome(dto.nome());
+        spa.setPrecoBase(dto.precoBase());
+        spa.setIsDisponivel(dto.isDisponivel());
+        spa.setDescricao(dto.descricao());
+        spa.setTipoSpa(dto.tipoSpa());
 
-    public SpaCustoResponseDTO cadastrarComCusto(SpaCustoRequestDTO dto) {
-        Spa spa = mapper.toEntity(dto);
+        Hotel hotel = new Hotel();
+        hotel.setId(dto.id_hotel());
+        spa.setHotel(hotel);
+
         Spa salvo = (Spa) repository.save(spa);
-        return new SpaCustoResponseDTO(
+
+        return new InstalacaoCustoResponseDTO(
                 salvo.getId(),
                 salvo.getNome(),
                 dto.horas(),
@@ -41,11 +51,11 @@ public class SpaService {
         );
     }
 
-    public SpaCustoResponseDTO calcularCusto(Long id, int horas) {
+    public InstalacaoCustoResponseDTO calcularCusto(Long id, int horas) {
         Spa spa = (Spa) repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada"));
 
-        return new SpaCustoResponseDTO(
+        return new InstalacaoCustoResponseDTO(
                 spa.getId(),
                 spa.getNome(),
                 horas,
@@ -53,16 +63,14 @@ public class SpaService {
         );
     }
 
-
     public SpaResponseDTO atualizar(Long id, SpaRequestDTO dto) {
         Spa spa = (Spa) repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada"));
 
-        mapper.updateEntityFromDTO(spa, dto);
+        mapper.updateEntityFromDTO(dto, spa);
         Spa atualizado = (Spa) repository.save(spa);
         return mapper.toResponse(atualizado);
     }
-
 
     public SpaResponseDTO buscarPorId(Long id) {
         Spa spa = (Spa) repository.findById(id)

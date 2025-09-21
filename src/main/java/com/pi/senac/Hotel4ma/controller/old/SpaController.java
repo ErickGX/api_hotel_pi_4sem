@@ -1,12 +1,13 @@
 package com.pi.senac.Hotel4ma.controller.old;
 
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.request.SpaCustoRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoCustoRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoCustoResponseDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.request.InstalacaoCustoSpaRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.request.SpaRequestDTO;
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.response.SpaCustoResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.response.SpaResponseDTO;
 import com.pi.senac.Hotel4ma.service.SpaService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/spas")
+@RequiredArgsConstructor
 public class SpaController {
 
-    @Autowired
-    private SpaService service;
+    private final SpaService service;
 
     @PostMapping
     public ResponseEntity<SpaResponseDTO> cadastrar(@RequestBody @Valid SpaRequestDTO dto) {
@@ -25,12 +26,14 @@ public class SpaController {
     }
 
     @PostMapping("/custo")
-    public ResponseEntity<SpaCustoResponseDTO> cadastrarComCusto(@RequestBody @Valid SpaCustoRequestDTO dto) {
+    public ResponseEntity<InstalacaoCustoResponseDTO> cadastrarComCusto(
+            @RequestBody @Valid InstalacaoCustoSpaRequestDTO dto
+    ) {
         return ResponseEntity.ok(service.cadastrarComCusto(dto));
     }
 
     @GetMapping("/{id}/custo/{horas}")
-    public ResponseEntity<SpaCustoResponseDTO> calcularCusto(@PathVariable Long id, @PathVariable int horas) {
+    public ResponseEntity<InstalacaoCustoResponseDTO> calcularCusto(@PathVariable Long id, @PathVariable int horas) {
         return ResponseEntity.ok(service.calcularCusto(id, horas));
     }
 

@@ -1,6 +1,7 @@
 package com.pi.senac.Hotel4ma.mappers;
 
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.request.SpaCustoRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoAlugavelRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoAlugavelResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.request.SpaRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.response.SpaResponseDTO;
 import com.pi.senac.Hotel4ma.model.Hotel;
@@ -11,53 +12,51 @@ import org.springframework.stereotype.Component;
 public class SpaMapper {
 
     public Spa toEntity(SpaRequestDTO dto) {
+        InstalacaoAlugavelRequestDTO base = dto.instalacao();
+
         Spa spa = new Spa();
         spa.setTipoSpa(dto.tipoSpa());
-        spa.setNome(dto.nome());
-        spa.setPrecoBase(dto.precoBase());
-        spa.setIsDisponivel(dto.isDisponivel());
-        spa.setDescricao(dto.descricao());
+        spa.setNome(base.nome());
+        spa.setPrecoBase(base.precoBase());
+        spa.setIsDisponivel(base.isDisponivel());
+        spa.setDescricao(base.descricao());
 
-        // Associa o hotel via ID recebido no DTO
         Hotel hotel = new Hotel();
-        hotel.setId(dto.id_hotel());
+        hotel.setId(base.id_hotel());
         spa.setHotel(hotel);
 
         return spa;
     }
 
-    public Spa toEntity(SpaCustoRequestDTO dto) {
-        return toEntity(new SpaRequestDTO(
-                dto.tipoSpa(),
-                dto.nome(),
-                dto.precoBase(),
-                dto.isDisponivel(),
-                dto.descricao(),
-                dto.id_hotel()
-        ));
+    public void updateEntityFromDTO(SpaRequestDTO dto, Spa spa) {
+        InstalacaoAlugavelRequestDTO base = dto.instalacao();
+
+        spa.setTipoSpa(dto.tipoSpa());
+        spa.setNome(base.nome());
+        spa.setPrecoBase(base.precoBase());
+        spa.setIsDisponivel(base.isDisponivel());
+        spa.setDescricao(base.descricao());
+
+        if (spa.getHotel() == null) {
+            spa.setHotel(new Hotel());
+        }
+        spa.getHotel().setId(base.id_hotel());
     }
 
     public SpaResponseDTO toResponse(Spa spa) {
-        return new SpaResponseDTO(
+        InstalacaoAlugavelResponseDTO base = new InstalacaoAlugavelResponseDTO(
                 spa.getId(),
                 spa.getNome(),
-                spa.getTipoSpa(),
                 spa.getPrecoBase(),
+                spa.getDescricao(),
                 spa.getIsDisponivel(),
-                spa.getDescricao()
+                spa.getHotel().getId(),
+                "SPA" // ou spa.getTipoSpa().name() se quiser o valor do enum
         );
-    }
 
-    public void updateEntityFromDTO(Spa spa, SpaRequestDTO dto) {
-        spa.setTipoSpa(dto.tipoSpa());
-        spa.setNome(dto.nome());
-        spa.setPrecoBase(dto.precoBase());
-        spa.setIsDisponivel(dto.isDisponivel());
-        spa.setDescricao(dto.descricao());
-
-        // Atualiza a associação com o hotel
-        Hotel hotel = new Hotel();
-        hotel.setId(dto.id_hotel());
-        spa.setHotel(hotel);
+        return new SpaResponseDTO(
+                spa.getTipoSpa(),
+                base
+        );
     }
 }

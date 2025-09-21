@@ -1,10 +1,10 @@
 package com.pi.senac.Hotel4ma.service;
 
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.InstalacaoRequestDTO;
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.SalaoCustoRequestDTO;
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.SalaoRequestDTO;
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoCustoResponseDTO;
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoResponseDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoAlugavelRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoCustoRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoCustoResponseDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.SalaoDeConferenciaRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoDeConferenciaResponseDTO;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.SalaoDeConferenciaMapper;
 import com.pi.senac.Hotel4ma.model.Hotel;
@@ -24,23 +24,21 @@ import java.util.stream.Collectors;
 public class SalaoDeConferenciaService {
 
     private final InstalacaoRepository repository;
-
     private final HotelRepository hotelRepository;
-
     private final SalaoDeConferenciaMapper mapper;
 
-    public SalaoResponseDTO cadastrar(SalaoRequestDTO request) {
+    public SalaoDeConferenciaResponseDTO cadastrar(SalaoDeConferenciaRequestDTO request) {
         Hotel hotel = hotelRepository.findById(request.instalacao().id_hotel())
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado"));
 
         SalaoDeConferencia salao = mapper.toEntity(request);
         salao.setHotel(hotel);
 
-        InstalacaoAlugavel salvo = repository.save(salao);
-        return mapper.toDTO((SalaoDeConferencia) salvo);
+        SalaoDeConferencia salvo = (SalaoDeConferencia) repository.save(salao);
+        return mapper.toDTO(salao);
     }
 
-    public SalaoCustoResponseDTO cadastrarComCusto(SalaoCustoRequestDTO request) {
+    public InstalacaoCustoResponseDTO cadastrarComCusto(InstalacaoCustoRequestDTO request) {
         Hotel hotel = hotelRepository.findById(request.id_hotel())
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado"));
 
@@ -52,76 +50,69 @@ public class SalaoDeConferenciaService {
         salao.setTipoSalaConferencia(request.tipoSalaConferencia());
         salao.setHotel(hotel);
 
-        InstalacaoAlugavel salvo = repository.save(salao);
-        BigDecimal custo = ((SalaoDeConferencia) salvo).calcularCustoTotal(request.horas());
+        SalaoDeConferencia salvo = (SalaoDeConferencia) repository.save(salao);
+        BigDecimal custo = salvo.calcularCustoTotal(request.horas());
 
-        return new SalaoCustoResponseDTO(
+        return new InstalacaoCustoResponseDTO(
                 salvo.getId(),
                 salvo.getNome(),
                 request.horas(),
                 custo
         );
     }
-    public List<SalaoResponseDTO> listarTodos() {
+
+    public List<SalaoDeConferenciaResponseDTO> listarTodos() {
         return repository.findAll().stream()
                 .filter(i -> i instanceof SalaoDeConferencia)
                 .map(i -> mapper.toDTO((SalaoDeConferencia) i))
                 .collect(Collectors.toList());
     }
 
-    public SalaoResponseDTO buscarPorId(Long id) {
+    public SalaoDeConferenciaResponseDTO buscarPorId(Long id) {
         InstalacaoAlugavel instalacao = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada"));
 
-        if (!(instalacao instanceof SalaoDeConferencia)) {
+        if (!(instalacao instanceof SalaoDeConferencia salao)) {
             throw new ResourceNotFoundException("Instalação não é um Salão de Conferência");
         }
 
-        SalaoDeConferencia salao = (SalaoDeConferencia) instalacao;
         return mapper.toDTO(salao);
     }
 
-    public SalaoResponseDTO atualizar(Long id, SalaoRequestDTO request) {
+    public SalaoDeConferenciaResponseDTO atualizar(Long id, SalaoDeConferenciaRequestDTO request) {
         InstalacaoAlugavel instalacao = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada"));
 
-        if (!(instalacao instanceof SalaoDeConferencia)) {
+        if (!(instalacao instanceof SalaoDeConferencia salao)) {
             throw new ResourceNotFoundException("Instalação não é um Salão de Conferência");
         }
 
-        SalaoDeConferencia salao = (SalaoDeConferencia) instalacao;
-
-        // Atualiza os campos comuns da instalação
-        InstalacaoRequestDTO base = request.instalacao();
+        InstalacaoAlugavelRequestDTO base = request.instalacao();
         salao.setNome(base.nome());
         salao.setPrecoBase(base.precoBase());
         salao.setIsDisponivel(base.isDisponivel());
         salao.setDescricao(base.descricao());
-
-        // Atualiza o campo específico do salão
         salao.setTipoSalaConferencia(request.tipoSalaConferencia());
 
-        // Atualiza o hotel
         Hotel hotel = hotelRepository.findById(base.id_hotel())
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado"));
         salao.setHotel(hotel);
 
-        InstalacaoAlugavel atualizado = repository.save(salao);
-        return mapper.toDTO((SalaoDeConferencia) atualizado);
+        SalaoDeConferencia atualizado = (SalaoDeConferencia) repository.save(salao);
+        return mapper.toDTO(atualizado);
     }
 
-    public SalaoCustoResponseDTO calcularCusto(Long id, int horas) {
+    public InstalacaoCustoResponseDTO calcularCusto(Long id, int horas) {
         InstalacaoAlugavel instalacao = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada"));
 
-        if (!(instalacao instanceof SalaoDeConferencia)) {
+        if (!(instalacao instanceof SalaoDeConferencia salao)) {
             throw new ResourceNotFoundException("Instalação não é um Salão de Conferência");
         }
 
-        SalaoDeConferencia salao = (SalaoDeConferencia) instalacao;
         BigDecimal custo = salao.calcularCustoTotal(horas);
 
-        return new SalaoCustoResponseDTO(
+        return new InstalacaoCustoResponseDTO(
                 salao.getId(),
                 salao.getNome(),
                 horas,

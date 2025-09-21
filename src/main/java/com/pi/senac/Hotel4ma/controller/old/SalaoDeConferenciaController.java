@@ -1,14 +1,13 @@
 package com.pi.senac.Hotel4ma.controller.old;
 
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.SalaoCustoRequestDTO;
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.SalaoRequestDTO;
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoCustoResponseDTO;
-import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoResponseDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoCustoRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoCustoResponseDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request.SalaoDeConferenciaRequestDTO;
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Response.SalaoDeConferenciaResponseDTO;
 import com.pi.senac.Hotel4ma.enums.TipoSalaConferencia;
 import com.pi.senac.Hotel4ma.service.SalaoDeConferenciaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,49 +22,44 @@ public class SalaoDeConferenciaController {
     private final SalaoDeConferenciaService service;
 
     @PostMapping
-    public ResponseEntity<SalaoResponseDTO> cadastrar(@RequestBody @Valid SalaoRequestDTO request) {
-        SalaoResponseDTO response = service.cadastrar(request);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<SalaoDeConferenciaResponseDTO> cadastrar(@RequestBody @Valid SalaoDeConferenciaRequestDTO request) {
+        return ResponseEntity.ok(service.cadastrar(request));
     }
 
     @PostMapping("/custo")
-    public ResponseEntity<SalaoCustoResponseDTO> cadastrarComCusto(@RequestBody @Valid SalaoCustoRequestDTO request) {
-        SalaoCustoResponseDTO response = service.cadastrarComCusto(request);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<InstalacaoCustoResponseDTO> cadastrarComCusto(@RequestBody @Valid InstalacaoCustoRequestDTO request) {
+        return ResponseEntity.ok(service.cadastrarComCusto(request));
     }
 
     @GetMapping("/simulacao/{tipo}/{precoBase}/{horas}")
-    public ResponseEntity<SalaoCustoResponseDTO> simularCustoGenerico(
+    public ResponseEntity<InstalacaoCustoResponseDTO> simularCustoGenerico(
             @PathVariable TipoSalaConferencia tipo,
             @PathVariable BigDecimal precoBase,
             @PathVariable int horas
     ) {
         BigDecimal custo = precoBase.multiply(BigDecimal.valueOf(horas));
-
-        SalaoCustoResponseDTO dto = new SalaoCustoResponseDTO(
+        InstalacaoCustoResponseDTO dto = new InstalacaoCustoResponseDTO(
                 null,
                 tipo.name(),
                 horas,
                 custo
         );
-
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping
-    public ResponseEntity<List<SalaoResponseDTO>> listarTodos() {
+    public ResponseEntity<List<SalaoDeConferenciaResponseDTO>> listarTodos() {
         return ResponseEntity.ok(service.listarTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SalaoResponseDTO> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<SalaoDeConferenciaResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SalaoResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid SalaoRequestDTO request) {
-        SalaoResponseDTO atualizado = service.atualizar(id, request);
-        return ResponseEntity.ok(atualizado);
+    public ResponseEntity<SalaoDeConferenciaResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid SalaoDeConferenciaRequestDTO request) {
+        return ResponseEntity.ok(service.atualizar(id, request));
     }
 
     @DeleteMapping("/{id}")
@@ -75,8 +69,7 @@ public class SalaoDeConferenciaController {
     }
 
     @GetMapping("/{id}/custo/{horas}")
-    public ResponseEntity<SalaoCustoResponseDTO> calcularCusto(@PathVariable Long id, @PathVariable int horas) {
-        SalaoCustoResponseDTO dto = service.calcularCusto(id, horas);
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<InstalacaoCustoResponseDTO> calcularCusto(@PathVariable Long id, @PathVariable int horas) {
+        return ResponseEntity.ok(service.calcularCusto(id, horas));
     }
 }

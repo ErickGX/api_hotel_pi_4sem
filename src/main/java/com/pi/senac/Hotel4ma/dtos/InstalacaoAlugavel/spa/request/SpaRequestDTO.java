@@ -1,14 +1,12 @@
 package com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.spa.request;
 
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoAlugavelRequestDTO;
 import com.pi.senac.Hotel4ma.enums.TipoSpa;
-
-import java.math.BigDecimal;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 public record SpaRequestDTO(
-        TipoSpa tipoSpa,
-        String nome,
-        BigDecimal precoBase,
-        Boolean isDisponivel,
-        String descricao,
-        Long id_hotel
+        @NotNull TipoSpa tipoSpa,
+        @Valid InstalacaoAlugavelRequestDTO instalacao
 ) {}
+
