@@ -19,7 +19,7 @@ public class Quarto extends InstalacaoAlugavel {
 
     //calcula o preço total multiplicando o preco base pelo fator e diarias
     @Override
-    protected BigDecimal calcularCustoTotal(int diarias) {
+    public BigDecimal calcularCustoTotal(int diarias) {
         return getPrecoBase()
                 .multiply(BigDecimal.valueOf(tipoQuarto.getFator()))
                 .multiply(BigDecimal.valueOf(diarias));

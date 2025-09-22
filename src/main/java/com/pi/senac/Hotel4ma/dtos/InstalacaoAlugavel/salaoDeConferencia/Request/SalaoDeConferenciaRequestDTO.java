@@ -1,11 +1,11 @@
 package com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.salaoDeConferencia.Request;
 
+import com.pi.senac.Hotel4ma.dtos.InstalacaoAlugavel.dtoGenerics.InstalacaoAlugavelRequestDTO;
 import com.pi.senac.Hotel4ma.enums.TipoSalaConferencia;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-public record SalaoRequestDTO(
+public record SalaoDeConferenciaRequestDTO(
         @NotNull TipoSalaConferencia tipoSalaConferencia,
-        @NotNull InstalacaoRequestDTO instalacao
-
+        @Valid InstalacaoAlugavelRequestDTO instalacao
 ) {}
