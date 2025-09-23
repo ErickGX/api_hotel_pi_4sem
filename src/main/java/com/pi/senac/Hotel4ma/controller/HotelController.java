@@ -1,9 +1,7 @@
-package com.pi.senac.Hotel4ma.controller.old;
+package com.pi.senac.Hotel4ma.controller;
 
-import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.Hotel.Request.HotelRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.Hotel.Response.HotelResponseDTO;
-import com.pi.senac.Hotel4ma.model.Hotel;
 import com.pi.senac.Hotel4ma.service.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/hotel")
-public class HotelController implements GenericController{
+public class HotelController implements GenericController {
 
     private final HotelService service;
     private static String base_path = "/api/hotel";

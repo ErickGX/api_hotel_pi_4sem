@@ -17,6 +17,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class EspacosMapper {
 
+    //Conversao de classe e montagem de classe concreta
     @Autowired
     private HotelRepository hotelRepository;
 
@@ -31,6 +32,7 @@ public abstract class EspacosMapper {
     public abstract HotelResumoDTO toHotelResumoDTO(Hotel hotel);
 
     public abstract List<EspacosResponseDTO> toList(List<Espacos> espacos);
+
 
     //na composicao de mapeamento o espaco tem referencia ao Hotel
     //Responsabilidade do mapper montar a entidade completa e nao a service

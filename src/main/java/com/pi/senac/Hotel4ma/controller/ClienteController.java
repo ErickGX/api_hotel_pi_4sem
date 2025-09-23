@@ -1,4 +1,4 @@
-package com.pi.senac.Hotel4ma.controller.old;
+package com.pi.senac.Hotel4ma.controller;
 
 
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteFisicoRequest;
@@ -21,12 +21,14 @@ public class ClienteController implements GenericController {
 
     private final ClienteService service;
 
+    private static final String base_path = "api/clientes";
+
     @PostMapping("/fisico")
     public ResponseEntity<Void> createFisico(
             @RequestBody @Valid ClienteFisicoRequest request) {
 
         ClienteResponseDTO response = service.createFisico(request);
-        URI location = gerarHeaderLocation("/api/clientes", response.id());
+        URI location = gerarHeaderLocation(base_path, response.id());
         return ResponseEntity.created(location).build();
     }
 
@@ -34,7 +36,7 @@ public class ClienteController implements GenericController {
     public ResponseEntity<ClienteResponseDTO> createJuridico(@RequestBody @Valid ClienteJuridicoRequest request) {
         ClienteResponseDTO response = service.createJuridico(request);
 
-        URI location = gerarHeaderLocation("/api/clientes", response.id());
+        URI location = gerarHeaderLocation(base_path, response.id());
         return ResponseEntity.created(location).body(response);
     }
 

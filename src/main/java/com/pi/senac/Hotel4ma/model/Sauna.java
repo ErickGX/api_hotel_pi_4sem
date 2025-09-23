@@ -5,9 +5,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
-
+@Getter
+@Setter
 @Entity
 public class Sauna extends InstalacaoAlugavel{
 
@@ -15,12 +18,10 @@ public class Sauna extends InstalacaoAlugavel{
     @Column(nullable = false)
     private TipoSauna tipoSauna;
 
-    //calcula o preço total multiplicando o preco base pelo fator e diarias
     @Override
-    public BigDecimal calcularCustoTotal(int horas) {
-        return getPrecoBase()
-                .multiply(BigDecimal.valueOf(tipoSauna.getFator()))
-                .multiply(BigDecimal.valueOf(horas));
+    protected double getFator() {
+        return tipoSauna.getFator();
     }
+
 }
 

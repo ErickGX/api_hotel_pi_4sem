@@ -1,8 +1,7 @@
-package com.pi.senac.Hotel4ma.controller.old;
+package com.pi.senac.Hotel4ma.controller;
 
 
 import com.pi.senac.Hotel4ma.dtos.Administrador.Request.AdminRequestDTO;
-import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
 import com.pi.senac.Hotel4ma.service.AdministradorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("api/admin")

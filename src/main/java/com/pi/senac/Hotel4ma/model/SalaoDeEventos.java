@@ -1,14 +1,17 @@
 package com.pi.senac.Hotel4ma.model;
 
-import com.pi.senac.Hotel4ma.enums.TipoAuditorio;
 import com.pi.senac.Hotel4ma.enums.TipoSalaoEventos;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
+@Getter
+@Setter
 @Entity
 public class SalaoDeEventos extends InstalacaoAlugavel{
 
@@ -17,11 +20,8 @@ public class SalaoDeEventos extends InstalacaoAlugavel{
     private TipoSalaoEventos tipoSalaoEventos;
 
 
-    //calcula o preço total multiplicando o preco base pelo fator e diarias
     @Override
-    public BigDecimal calcularCustoTotal(int horas) {
-        return getPrecoBase()
-                .multiply(BigDecimal.valueOf(tipoSalaoEventos.getFator()))
-                .multiply(BigDecimal.valueOf(horas));
+    protected double getFator() {
+        return tipoSalaoEventos.getFator();
     }
 }

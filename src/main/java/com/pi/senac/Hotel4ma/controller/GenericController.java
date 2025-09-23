@@ -1,4 +1,4 @@
-package com.pi.senac.Hotel4ma.controller.old;
+package com.pi.senac.Hotel4ma.controller;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 

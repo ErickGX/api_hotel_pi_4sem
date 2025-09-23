@@ -8,21 +8,20 @@ import java.math.BigDecimal;
 import java.util.List;
 
 
-
+@Getter
+@Setter
 @Entity
 public class Quarto extends InstalacaoAlugavel {
 
     @Enumerated(EnumType.STRING)
     private TipoQuarto tipoQuarto;
 
-    private Integer numeroQuarto;
+    private String numeroQuarto;
 
-    //calcula o preço total multiplicando o preco base pelo fator e diarias
+
     @Override
-    public BigDecimal calcularCustoTotal(int diarias) {
-        return getPrecoBase()
-                .multiply(BigDecimal.valueOf(tipoQuarto.getFator()))
-                .multiply(BigDecimal.valueOf(diarias));
+    protected double getFator() {
+        return tipoQuarto.getFator() ;
     }
 }
 

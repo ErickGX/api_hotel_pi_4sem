@@ -1,7 +1,6 @@
-package com.pi.senac.Hotel4ma.controller.old;
+package com.pi.senac.Hotel4ma.controller;
 
 
-import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Request.FuncionarioRequest;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Request.FuncionarioUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResponseDTO;
@@ -17,7 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/funcionario")
-public class FuncionarioController implements GenericController{
+public class FuncionarioController implements GenericController {
 
     private final FuncionarioService service;
     private static String base_path = "/api/funcionario";

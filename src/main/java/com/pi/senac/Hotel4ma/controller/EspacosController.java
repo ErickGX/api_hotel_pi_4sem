@@ -1,4 +1,4 @@
-package com.pi.senac.Hotel4ma.controller.old;
+package com.pi.senac.Hotel4ma.controller;
 
 import com.pi.senac.Hotel4ma.dtos.Espacos.Request.EspacosRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.Espacos.Response.EspacosResponseDTO;

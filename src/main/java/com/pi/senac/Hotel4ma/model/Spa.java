@@ -20,9 +20,7 @@ public class Spa extends InstalacaoAlugavel {
 
 
     @Override
-    public BigDecimal calcularCustoTotal(int horas) {
-        return getPrecoBase()
-                .multiply(BigDecimal.valueOf(tipoSpa.getFator()))
-                .multiply(BigDecimal.valueOf(horas));
+    protected double getFator() {
+        return tipoSpa.getFator();
     }
 }

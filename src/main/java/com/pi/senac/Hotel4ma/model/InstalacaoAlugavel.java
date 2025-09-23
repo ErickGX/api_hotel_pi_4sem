@@ -3,13 +3,17 @@ package com.pi.senac.Hotel4ma.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@EntityListeners(AuditingEntityListener.class)
 public abstract class InstalacaoAlugavel {
 
     @Id
@@ -32,15 +36,26 @@ public abstract class InstalacaoAlugavel {
     @JoinColumn(name = "id_hotel", nullable = false)
     private Hotel hotel;
 
-    /**
-     * Método auxiliar para cálculo padrão com fator e multiplicador.
-     */
-    protected BigDecimal calcularBaseComFator(BigDecimal fator, int multiplicador) {
-        return precoBase.multiply(fator).multiply(BigDecimal.valueOf(multiplicador));
+
+    @CreatedDate //Spring preenche a data automaticamente ao criar
+    @Column(name = "data_cadastro", nullable = false)
+    private LocalDateTime dataCadastro;
+
+    @LastModifiedDate //Spring preenche a data automaticamente ao atualizar
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
+
+    // Multiplicador: diárias, horas, etc.
+    public BigDecimal calcularCustoTotal(int multiplicador) {
+        return calcularCusto(precoBase, getFator(), multiplicador);
     }
 
-    /**
-     * Método abstrato que cada instalação deve implementar.
-     */
-    public abstract BigDecimal calcularCustoTotal(int multiplicador);
+    // Cada subclasse define apenas seu fator
+    protected abstract double getFator();
+
+    // Método centralizado de cálculo
+    private BigDecimal calcularCusto(BigDecimal precoBase, double fator, int multiplicador) {
+        return precoBase.multiply(BigDecimal.valueOf(fator))
+                .multiply(BigDecimal.valueOf(multiplicador));
+    }
 }

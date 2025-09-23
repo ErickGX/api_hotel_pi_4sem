@@ -19,8 +19,9 @@ public class SalaoDeConferencia extends InstalacaoAlugavel {
     @Column(nullable = false)
     private TipoSalaConferencia tipoSalaConferencia;
 
+
     @Override
-    public BigDecimal calcularCustoTotal(int horas) {
-        return calcularBaseComFator(BigDecimal.valueOf(tipoSalaConferencia.getFator()), horas);
+    protected double getFator() {
+        return tipoSalaConferencia.getFator();
     }
 }

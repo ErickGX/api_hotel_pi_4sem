@@ -22,7 +22,7 @@ public class FuncionarioService {
     private final ValidationService validationService;
 
 
-    public FuncionarioResponseDTO saveFuncionario(@Valid FuncionarioRequest dto) {
+    public FuncionarioResponseDTO saveFuncionario(FuncionarioRequest dto) {
         Funcionario funcionario = repository.save(mapper.toEntity(dto));
         return mapper.toDTO(funcionario);
     }
