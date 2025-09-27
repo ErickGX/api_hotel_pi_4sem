@@ -1,6 +1,6 @@
 package com.pi.senac.Hotel4ma.enums;
 
-public enum TipoSauna {
+public enum TipoSauna implements FatorMultiplicador {
     //fator de multiplicação baseado em tipo para o valor base da classe
     SECA(1.0),          // Sauna finlandesa
     VAPOR(1.6),         // Sauna úmida/turca
@@ -12,6 +12,8 @@ public enum TipoSauna {
     TipoSauna(double fator) {
         this.fator = fator;
     }
+
+    @Override
     public double getFator() {
         return fator;
     }

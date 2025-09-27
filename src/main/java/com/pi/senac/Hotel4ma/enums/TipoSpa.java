@@ -1,6 +1,6 @@
 package com.pi.senac.Hotel4ma.enums;
 
-public enum TipoSpa {
+public enum TipoSpa implements FatorMultiplicador {
     //fator de multiplicação baseado em tipo para o valor base da classe
     HIDROTERAPIA(2.0), // Banhos termais, ofurô
     TERAPEUTICO(1.5), // Fisioterapia, recuperação muscular
@@ -11,7 +11,9 @@ public enum TipoSpa {
     TipoSpa(double fator) {
         this.fator = fator;
     }
-     public double getFator() {
+
+    @Override
+    public double getFator() {
         return fator;
      }
 

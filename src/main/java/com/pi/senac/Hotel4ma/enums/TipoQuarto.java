@@ -1,6 +1,6 @@
 package com.pi.senac.Hotel4ma.enums;
 
-public enum TipoQuarto {
+public enum TipoQuarto implements FatorMultiplicador{
     //fator de multiplicação baseado em tipo para o valor base da classe
     PRESIDENCIAL(5.0), // Topo da cadeia, máximo luxo
     DELUXE(3.0), // Mais conforto, decoração premium
@@ -12,7 +12,7 @@ public enum TipoQuarto {
     TipoQuarto(double fator) {
         this.fator = fator;
     }
-
+    @Override
     public double getFator() {
         return fator;
     }
