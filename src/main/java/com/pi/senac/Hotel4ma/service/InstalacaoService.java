@@ -1,13 +1,19 @@
 package com.pi.senac.Hotel4ma.service;
 
 import com.pi.senac.Hotel4ma.dtos.Instalacao.Request.InstalacaoRequest;
+import com.pi.senac.Hotel4ma.dtos.Instalacao.Request.InstalacaoUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Instalacao.Response.InstalacaoResponseDTO;
+import com.pi.senac.Hotel4ma.enums.FatorMultiplicador;
+import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.factory.InstalacaoFactory;
 import com.pi.senac.Hotel4ma.mappers.InstalacaoMapper;
 import com.pi.senac.Hotel4ma.model.InstalacaoAlugavel;
 import com.pi.senac.Hotel4ma.repository.InstalacaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +27,7 @@ public class InstalacaoService {
     public InstalacaoResponseDTO create(InstalacaoRequest dto) {
 
         //Factory escolhe a subclasse Correta
-        InstalacaoAlugavel entity  = factory.criarInstalacao(dto);
+        InstalacaoAlugavel entity = factory.criarInstalacao(dto);
 
         //Mapper preenche campos comuns (nome, preço, hotel etc.)
         mapper.MergeEntidadeFromDto(dto, entity);
@@ -31,6 +37,41 @@ public class InstalacaoService {
 
         //Converte para resposta
         return mapper.toDto(entity);
+    }
+
+    public InstalacaoResponseDTO findById(Long id) {
+        InstalacaoAlugavel entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada com ID: " + id));
+        return mapper.toDto(entity);
+    }
+
+    public List<InstalacaoResponseDTO> findAll() {
+        List<InstalacaoAlugavel> entities = repository.findAll();
+        return mapper.toList(entities);
+    }
+
+    public InstalacaoResponseDTO update(Long id, InstalacaoUpdateRequest dto) {
+        InstalacaoAlugavel entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada com ID: " + id));
+
+        // Aplica apenas a alteração de disponibilidade
+        entity.setIsDisponivel(dto.isDisponivel());
+
+        entity = repository.save(entity);
+        return mapper.toDto(entity);
+    }
+
+    public void delete(Long id) {
+        InstalacaoAlugavel entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada com ID: " + id));
+        repository.delete(entity);
+    }
+
+
+    private static final BigDecimal PRECO_BASE_PADRAO = new BigDecimal("1000.00");
+
+    public BigDecimal calcularValor(FatorMultiplicador tipo) {
+        return PRECO_BASE_PADRAO.multiply(BigDecimal.valueOf(tipo.getFator()));
     }
 
 

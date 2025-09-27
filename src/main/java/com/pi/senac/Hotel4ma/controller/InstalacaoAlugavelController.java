@@ -1,17 +1,19 @@
 package com.pi.senac.Hotel4ma.controller;
 
-
 import com.pi.senac.Hotel4ma.dtos.Instalacao.Request.InstalacaoRequest;
+import com.pi.senac.Hotel4ma.dtos.Instalacao.Request.InstalacaoUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Instalacao.Response.InstalacaoResponseDTO;
+import com.pi.senac.Hotel4ma.dtos.Instalacao.Response.OrcamentoResponseDTO;
+import com.pi.senac.Hotel4ma.enums.*;
 import com.pi.senac.Hotel4ma.service.InstalacaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.net.URI;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequestMapping("/api/instalacoes")
@@ -29,8 +31,74 @@ public class InstalacaoAlugavelController implements GenericController {
 
         URI location = gerarHeaderLocation(base_path, response.id());
         return ResponseEntity.created(location).body(response);
-
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<InstalacaoResponseDTO> findById(@PathVariable Long id) {
+        InstalacaoResponseDTO response = service.findById(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<InstalacaoResponseDTO>> findAll() {
+        List<InstalacaoResponseDTO> response = service.findAll();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<InstalacaoResponseDTO> update(
+            @PathVariable Long id,
+            @RequestBody InstalacaoUpdateRequest dto) {
+
+        InstalacaoResponseDTO response = service.update(id, dto);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/orcamento")
+    public ResponseEntity<?> simularOrcamento(
+            @RequestParam String tipo,
+            @RequestParam String classe) {
+
+        FatorMultiplicador fator;
+
+        try {
+            switch (classe.toLowerCase()) {
+                case "auditorio":
+                    fator = TipoAuditorio.valueOf(tipo.toUpperCase());
+                    break;
+                case "quarto":
+                    fator = TipoQuarto.valueOf(tipo.toUpperCase());
+                    break;
+                case "salaodeconferencia":
+                    fator = TipoSalaConferencia.valueOf(tipo.toUpperCase());
+                    break;
+                case "salaodeeventos":
+                    fator = TipoSalaoEventos.valueOf(tipo.toUpperCase());
+                    break;
+                case "sauna":
+                    fator = TipoSauna.valueOf(tipo.toUpperCase());
+                    break;
+                case "spa":
+                    fator = TipoSpa.valueOf(tipo.toUpperCase());
+                    break;
+                default:
+                    return ResponseEntity.badRequest()
+                            .body("Classe '" + classe + "' não reconhecida.");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body("Categoria '" + tipo + "' não reconhecida para classe '" + classe + "'.");
+        }
+
+        BigDecimal valorFinal = service.calcularValor(fator);
+        OrcamentoResponseDTO response = new OrcamentoResponseDTO(classe, tipo, valorFinal);
+        return ResponseEntity.ok(response);
+    }
 
 }

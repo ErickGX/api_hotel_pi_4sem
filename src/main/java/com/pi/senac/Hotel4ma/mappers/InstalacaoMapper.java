@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-
 @Mapper(componentModel = "spring")
 //abstrata quando preciso compor um objeto que possui outro
 public abstract class InstalacaoMapper {

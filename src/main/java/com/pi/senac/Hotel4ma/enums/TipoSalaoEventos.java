@@ -1,6 +1,6 @@
 package com.pi.senac.Hotel4ma.enums;
 
-public enum TipoSalaoEventos {
+public enum TipoSalaoEventos implements FatorMultiplicador{
     CASAMENTO(3.0),
     FESTA_INFANTIL(1.5),
     FORMATURA(2.0),
@@ -11,7 +11,7 @@ public enum TipoSalaoEventos {
     TipoSalaoEventos(double fator) {
         this.fator = fator;
     }
-
+    @Override
     public double getFator() {
         return fator;
     }
