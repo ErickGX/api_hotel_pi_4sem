@@ -22,8 +22,12 @@ public abstract class EspacosMapper {
     @Autowired
     private HotelRepository hotelRepository;
 
+    @Autowired
+    protected InputSanitizer sanitizer;
+
 
     @Mapping(target = "hotel", source = "id_hotel", qualifiedByName = "mapHotel")
+    @Mapping(target = "descricao", expression = "java(sanitizer.sanitizeText(dto.descricao()))")
     public abstract Espacos toEntity(EspacosRequestDTO dto);
 
     @Mapping(source = "hotel", target = "hotel")
@@ -33,7 +37,6 @@ public abstract class EspacosMapper {
     public abstract HotelResumoDTO toHotelResumoDTO(Hotel hotel);
 
     public abstract List<EspacosResponseDTO> toList(List<Espacos> espacos);
-
 
     //na composicao de mapeamento o espaco tem referencia ao Hotel
     //Responsabilidade do mapper montar a entidade completa e nao a service

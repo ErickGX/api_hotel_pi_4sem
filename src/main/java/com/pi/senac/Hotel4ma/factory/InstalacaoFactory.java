@@ -3,10 +3,16 @@ package com.pi.senac.Hotel4ma.factory;
 import com.pi.senac.Hotel4ma.dtos.Instalacao.Request.InstalacaoRequest;
 import com.pi.senac.Hotel4ma.enums.*;
 import com.pi.senac.Hotel4ma.model.*;
+import com.pi.senac.Hotel4ma.security.sanitizer.InputSanitizer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component //para poder ser injetada nas camadas necessarias
+
+@Component
+@RequiredArgsConstructor//para poder ser injetada nas camadas necessarias
 public class InstalacaoFactory {
+
+    private final InputSanitizer sanitizer;
 
     //Mappers nao lidam com classes abstratas
     //necessario criar uma factory e usar o tipo como decisao
@@ -26,8 +32,9 @@ public class InstalacaoFactory {
             }
             case "QUARTO" -> {
                 Quarto quarto = new Quarto();
+                String numeroQuartoSanitizado = sanitizer.sanitizeText(String.valueOf(dto.numeroQuarto()));
                 quarto.setTipoQuarto(TipoQuarto.valueOf(dto.categoria()));
-                quarto.setNumeroQuarto(String.valueOf(dto.numeroQuarto()));
+                quarto.setNumeroQuarto(numeroQuartoSanitizado);
                 yield quarto;
             }
             case "AUDITORIO" -> {

@@ -53,7 +53,7 @@ public abstract class InstalacaoAlugavel {
     // Cada subclasse define apenas seu fator
     protected abstract double getFator();
 
-    // Método centralizado de cálculo
+    // Metodo centralizado de cálculo
     private BigDecimal calcularCusto(BigDecimal precoBase, double fator, int multiplicador) {
         return precoBase.multiply(BigDecimal.valueOf(fator))
                 .multiply(BigDecimal.valueOf(multiplicador));

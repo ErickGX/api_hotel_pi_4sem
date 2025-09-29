@@ -7,6 +7,7 @@ import com.pi.senac.Hotel4ma.dtos.Instalacao.Response.InstalacaoResponseDTO;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.model.*;
 import com.pi.senac.Hotel4ma.repository.HotelRepository;
+import com.pi.senac.Hotel4ma.security.sanitizer.InputSanitizer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -23,10 +24,15 @@ public abstract class InstalacaoMapper {
     private HotelRepository hotelRepository;
     //metodo toEntity foi substituido pela Factory
 
+    @Autowired
+    protected InputSanitizer sanitizer;
+
 
     // Atualização: mescla dados no objeto existente
     // Criação: usado após a Factory para preencher dados comuns
     @Mapping(target = "hotel", source = "id_hotel", qualifiedByName = "mapHotel")
+    @Mapping(target = "nome", expression = "java(sanitizer.sanitizeText(dto.nome()))")
+    @Mapping(target = "descricao", expression = "java(sanitizer.sanitizeText(dto.descricao()))")
     public abstract void MergeEntidadeFromDto(InstalacaoRequest dto, @MappingTarget InstalacaoAlugavel instalacaoAlugavel);
 
     // DTO -> Response
@@ -47,6 +53,7 @@ public abstract class InstalacaoMapper {
     //Responsabilidade do mapper montar a entidade completa, Mapeia hotel via ID
     @Named("mapHotel")
     protected Hotel mapHotel(Long idHotel) {
+
         return hotelRepository.findById(idHotel)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado"));
     }

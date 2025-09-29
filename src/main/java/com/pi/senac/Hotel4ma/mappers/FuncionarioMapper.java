@@ -22,11 +22,9 @@ public abstract class FuncionarioMapper {
 
     @Autowired
     private HotelRepository hotelRepository;
-    private InputSanitizer sanitizer;
 
-
-
-
+    @Autowired
+    protected InputSanitizer sanitizer;
 
     // Esse metodo é chamado automaticamente para mapear o campo hotel
     public abstract HotelResumoDTO toHotelResumoDTO(Hotel hotel);
@@ -37,17 +35,17 @@ public abstract class FuncionarioMapper {
     public abstract FuncionarioResponseDTO toDTO(Funcionario funcionario);
 
     @Mapping(target = "hotel", source = "id_hotel", qualifiedByName = "mapHotel")
-    @Mapping(target = "nome", expression = "java(sanitizer.textSanitizer(dto.nome()))")
-    @Mapping(target = "cpf", expression = "java(sanitizer.numericSanitizer(dto.cpf()))")
-    @Mapping(target = "email", expression = "java(sanitizer.emailSanitizer(dto.email()))")
-    @Mapping(target = "telefone", expression = "java(sanitizer.numericSanitizer(dto.telefone()))")
-    @Mapping(target = "id_hotel", expression = "java(sanitizer.numericSanitizer(dto.id_hotel()))")
+    @Mapping(target = "nome", expression = "java(sanitizer.sanitizeText(dto.nome()))")
+    @Mapping(target = "cpf", expression = "java(sanitizer.sanitizeNumeric(dto.cpf()))")
+    @Mapping(target = "email", expression = "java(sanitizer.sanitizeEmail(dto.email()))")
+    @Mapping(target = "telefone", expression = "java(sanitizer.sanitizeNumeric(dto.telefone()))")
+    @Mapping(target = "senha", expression = "java(sanitizer.sanitizeText(dto.senha()))")
     public abstract Funcionario toEntity(FuncionarioRequest dto);
 
     // Atualização: mescla dados no objeto existente
-    @Mapping(target = "nome", expression = "java(sanitizer.textSanitizer(dto.nome()))")
-    @Mapping(target = "email", expression = "java(sanitizer.emailSanitizer(dto.email()))")
-    @Mapping(target = "telefone", expression = "java(sanitizer.numericSanitizer(dto.telefone()))")
+    @Mapping(target = "nome", expression = "java(sanitizer.sanitizeText(dto.nome()))")
+    @Mapping(target = "email", expression = "java(sanitizer.sanitizeEmail(dto.email()))")
+    @Mapping(target = "telefone", expression = "java(sanitizer.sanitizeNumeric(dto.telefone()))")
     public abstract void updateEntidadeFromDto(FuncionarioUpdateRequest dto, @MappingTarget Funcionario funcionario);
 
     //na composicao de mapeamento o funcionario tem referencia ao Hotel
