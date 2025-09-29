@@ -5,6 +5,7 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class Senha {
+    //verificar possivel uso das funcoes aqui criadas pelo vagner nas DTOs para regex de senha
 
     @Column(nullable = false, length = 255, name = "senha")
     private String valor;

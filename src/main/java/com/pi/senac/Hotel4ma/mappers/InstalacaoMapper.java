@@ -24,11 +24,8 @@ public abstract class InstalacaoMapper {
     //metodo toEntity foi substituido pela Factory
 
 
-    // Criação: usado após a Factory para preencher dados comuns
-    @Mapping(target = "hotel", source = "id_hotel", qualifiedByName = "mapHotel")
-    public abstract void updateEntityFromDto(InstalacaoRequest dto, @MappingTarget InstalacaoAlugavel entity);
-
     // Atualização: mescla dados no objeto existente
+    // Criação: usado após a Factory para preencher dados comuns
     @Mapping(target = "hotel", source = "id_hotel", qualifiedByName = "mapHotel")
     public abstract void MergeEntidadeFromDto(InstalacaoRequest dto, @MappingTarget InstalacaoAlugavel instalacaoAlugavel);
 
