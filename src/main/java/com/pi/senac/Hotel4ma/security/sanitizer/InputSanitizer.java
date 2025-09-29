@@ -5,9 +5,23 @@ import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 import org.owasp.encoder.Encode;
 import java.text.Normalizer;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Component
 public class InputSanitizer {
+
+    // Palavras perigosas para XSS e SQL -Lista agressiva posso ser menos brando , Pode gerar falso positivos
+    private static final List<String> FORBIDDEN_KEYWORDS = Arrays.asList(
+            "script", "onerror", "onload", "alert", "prompt", "eval",
+            "drop", "select", "insert", "delete", "update", "union",
+            "--", ";", "/*", "*/", "@@", "@", "char", "nchar", "varchar",
+            "nvarchar", "alter", "begin", "cast", "create", "cursor",
+            "declare", "exec", "fetch", "kill", "open", "sys", "sysobjects",
+            "syscolumns", "table", "information_schema", "where", "admin", "root",
+            "<", ">", "\"", "'", "%", "(", ")", "+", "-", "*", "="
+    );
 
 
     /**
@@ -18,21 +32,28 @@ public class InputSanitizer {
     public String sanitizeText(String input) {
 
         // Normaliza para evitar caracteres invisíveis e homoglyph attacks
-        String sanitized = Normalizer.normalize(input, Normalizer.Form.NFKC);
+        String sanitized = Normalizer.normalize(input.trim(), Normalizer.Form.NFKC);
 
         // Remove caracteres de controle invisíveis
         sanitized = sanitized.replaceAll("\\p{C}", "").trim();
 
         // Remove tags HTML para evitar XSS
-        sanitized = sanitized.replaceAll("<.*?>", "");
+        sanitized = sanitized.replaceAll("(?i)<.*?>", "");
 
         // Remove eventos JS
-        sanitized = sanitized.replaceAll("on\\w+\\s*=\\s*['\"].*?['\"]", "");
+        sanitized = sanitized.replaceAll("(?i)on\\w+\\s*=\\s*['\"].*?['\"]", "");
 
-        // Remove palavra script
-        sanitized = sanitized.replaceAll("(?i)script", "");
+//        // Remove palavra script
+//        sanitized = sanitized.replaceAll("(?i)script", "");
 
-        // Escapa caracteres especiais para HTML usando OWASP Encoder
+        // Remove palavras proibidas
+        // Escapa cada palavra-chave para uso seguro no regex
+        for (String keyword : FORBIDDEN_KEYWORDS) {
+            String safeKeyword = Pattern.quote(keyword);
+            sanitized = sanitized.replaceAll("(?i)" + safeKeyword, "");
+        }
+
+        // Escapa caracteres HTML restantes para evitar XSS
         sanitized = Encode.forHtml(sanitized);
 
         return sanitized;
@@ -55,9 +76,8 @@ public class InputSanitizer {
      */
     @Named("passwordSanitizer")
     public String sanitizePassword(String input) {
-
         // Normaliza e mantém tudo sem alterar conteúdo
-        return Normalizer.normalize(input, Normalizer.Form.NFKC);
+        return Normalizer.normalize(input.trim(), Normalizer.Form.NFKC);
     }
 
     /**
