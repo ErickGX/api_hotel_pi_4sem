@@ -7,13 +7,13 @@ import java.net.URI;
 public interface GenericController {
 
     //reutilizar nos controllers
-    default URI gerarHeaderLocation(String basePath, Long id){
+    default URI gerarHeaderLocation(String basePath, Long id) {
         return ServletUriComponentsBuilder
-//                .fromCurrentRequest()
-//                .path("/{id}")
-                .fromPath(basePath + "/{id}")
+                .fromCurrentContextPath() // inclui host, porta e contexto
+                .path(basePath + "/{id}")
                 .buildAndExpand(id)
                 .toUri();
     }
+
 
 }

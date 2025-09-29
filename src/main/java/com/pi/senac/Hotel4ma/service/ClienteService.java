@@ -32,17 +32,17 @@ public class ClienteService {
 
     //futuramente possivel refatorção das exceptions de codigo 409 em uma
     //validação de email e cpf existentes
-    public ClienteResponseDTO createFisico(ClienteFisicoRequest dto) {
+    public Long createFisico(ClienteFisicoRequest dto) {
         //verificação completa para cpf e email duplicados
         validationService.validateNewClienteFisico(dto.cpf(), dto.email());
 
         //Fiz uma refatoração deste codigo no createJuridico para 1 linha (Bom) ?
-//        ClienteFisico cliente = repository.save(mapper.toEntity(dto));
-        return mapper.toDTO(repository.save(mapper.toEntity(dto)));
+        //return mapper.toDTO(repository.save(mapper.toEntity(dto)));
+        return repository.save(mapper.toEntity(dto)).getId();
     }
 
     //validação de email e cnpj existentes
-    public ClienteResponseDTO createJuridico(ClienteJuridicoRequest dto) {
+    public Long createJuridico(ClienteJuridicoRequest dto) {
         //Verifica se o email já esta cadastrado - failfast
         if (repository.existsByEmail(dto.email())) {
             throw new DuplicateEmailException("Email já existente, tente novamente");
@@ -51,7 +51,7 @@ public class ClienteService {
         if (juridicoRepository.existsByCnpj(dto.cnpj())) {
             throw new DuplicateCpfException("CNPJ já existente, tente novamente");
         }
-        return mapper.toDTO(repository.save(mapper.toEntity(dto)));
+        return repository.save(mapper.toEntity(dto)).getId();
     }
 
     public ClienteResponseDTO updateClientFisico(ClienteUpdateRequest dto, Long idCliente) {

@@ -22,11 +22,10 @@ public class FuncionarioController implements GenericController {
     private static String base_path = "/api/funcionario";
 
     @PostMapping
-    public ResponseEntity<FuncionarioResponseDTO> create
-            (@RequestBody @Valid FuncionarioRequest dto){
-        FuncionarioResponseDTO response  = service.saveFuncionario(dto);
-        URI location =  gerarHeaderLocation(base_path, response.id());
-        return ResponseEntity.created(location).body(response);
+    public ResponseEntity<Void> create(@RequestBody @Valid FuncionarioRequest dto){
+        Long id_gerado  = service.saveFuncionario(dto);
+        URI location =  gerarHeaderLocation(base_path, id_gerado);
+        return ResponseEntity.created(location).build();
     }
 
 

@@ -22,8 +22,8 @@ public class HotelController implements GenericController {
 
     @PostMapping
     public ResponseEntity<Void> createHotel(@RequestBody @Valid HotelRequestDTO dto){
-       HotelResponseDTO response = service.saveHotel(dto);
-       URI location =  gerarHeaderLocation(base_path, response.id());
+       Long id_gerado = service.saveHotel(dto);
+       URI location =  gerarHeaderLocation(base_path, id_gerado);
        return ResponseEntity.created(location).build();
     }
 

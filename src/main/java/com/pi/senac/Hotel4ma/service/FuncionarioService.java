@@ -22,9 +22,9 @@ public class FuncionarioService {
     private final ValidationService validationService;
 
 
-    public FuncionarioResponseDTO saveFuncionario(FuncionarioRequest dto) {
+    public Long saveFuncionario(FuncionarioRequest dto) {
         Funcionario funcionario = repository.save(mapper.toEntity(dto));
-        return mapper.toDTO(funcionario);
+        return funcionario.getId();
     }
 
     public FuncionarioResponseDTO update(FuncionarioUpdateRequest dto, Long id) {

@@ -27,17 +27,17 @@ public class ClienteController implements GenericController {
     public ResponseEntity<Void> createFisico(
             @RequestBody @Valid ClienteFisicoRequest request) {
 
-        ClienteResponseDTO response = service.createFisico(request);
-        URI location = gerarHeaderLocation(base_path, response.id());
+        Long id_gerado = service.createFisico(request);
+        URI location = gerarHeaderLocation(base_path, id_gerado);
         return ResponseEntity.created(location).build();
     }
 
     @PostMapping("/juridico")
-    public ResponseEntity<ClienteResponseDTO> createJuridico(@RequestBody @Valid ClienteJuridicoRequest request) {
-        ClienteResponseDTO response = service.createJuridico(request);
+    public ResponseEntity<Void> createJuridico(@RequestBody @Valid ClienteJuridicoRequest request) {
 
-        URI location = gerarHeaderLocation(base_path, response.id());
-        return ResponseEntity.created(location).body(response);
+        Long id_gerado  = service.createJuridico(request);
+        URI location = gerarHeaderLocation(base_path, id_gerado);
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping

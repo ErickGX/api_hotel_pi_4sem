@@ -17,13 +17,14 @@ import java.util.List;
 public class EspacosController implements GenericController {
 
     private final EspacosService service;
+    private static final String base_path = "api/espacos";
 
     @PostMapping()
-    public ResponseEntity<EspacosResponseDTO> createFisico(
+    public ResponseEntity<Void> createFisico(
             @RequestBody @Valid EspacosRequestDTO request) {
 
-        EspacosResponseDTO response = service.create(request);
-        URI location = gerarHeaderLocation("/api/clientes", response.id());
+        Long id_gerado = service.create(request);
+        URI location = gerarHeaderLocation(base_path, id_gerado);
         return ResponseEntity.created(location).build();
     }
 

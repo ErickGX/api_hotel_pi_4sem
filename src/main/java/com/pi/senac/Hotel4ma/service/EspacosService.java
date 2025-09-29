@@ -21,8 +21,9 @@ public class EspacosService {
     private final EspacosMapper mapper;
 
 
-    public EspacosResponseDTO create(EspacosRequestDTO dto) {
-        return mapper.toDto(repository.save(mapper.toEntity(dto)));
+    public Long create(EspacosRequestDTO dto) {
+        //retorna apenas o id gerado para inserir no header location
+        return repository.save(mapper.toEntity(dto)).getId();
     }
 
     public void deleteById(Long id) {

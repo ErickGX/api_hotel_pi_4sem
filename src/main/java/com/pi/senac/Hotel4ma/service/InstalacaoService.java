@@ -24,7 +24,7 @@ public class InstalacaoService {
     private final InstalacaoFactory factory;
 
 
-    public InstalacaoResponseDTO create(InstalacaoRequest dto) {
+    public Long create(InstalacaoRequest dto) {
 
         //Factory escolhe a subclasse Correta
         InstalacaoAlugavel entity = factory.criarInstalacao(dto);
@@ -33,10 +33,10 @@ public class InstalacaoService {
         mapper.MergeEntidadeFromDto(dto, entity);
 
         //Um único save - JPA sabe lidar com a herança
-        entity = repository.save(entity);
+        return repository.save(entity).getId();
 
         //Converte para resposta
-        return mapper.toDto(entity);
+        //return mapper.toDto(entity);
     }
 
     public InstalacaoResponseDTO findById(Long id) {

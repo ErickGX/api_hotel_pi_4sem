@@ -23,9 +23,8 @@ public class HotelService {
     private final HotelMapper mapper;
 
     // Salvar novo hotel
-    public HotelResponseDTO saveHotel(HotelRequestDTO dto) {
-        Hotel hotel = repository.save(mapper.toEntity(dto));
-        return mapper.toDTO(hotel);
+    public Long saveHotel(HotelRequestDTO dto) {
+      return repository.save(mapper.toEntity(dto)).getId();
     }
 
     // Buscar hotel por ID

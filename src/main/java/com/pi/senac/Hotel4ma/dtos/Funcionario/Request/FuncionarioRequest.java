@@ -15,7 +15,7 @@ public record FuncionarioRequest(
         String cargo,
 
         @NotBlank(message = "CPF é obrigatório")
-        @CPF(message = "CPF inválido")
+        @CPF(message = "CPF inválido ou mal formatado")
         @Pattern(regexp = "^[0-9]{11}$", message = "CPF deve conter exatamente 11 dígitos numéricos")
         String cpf,
 

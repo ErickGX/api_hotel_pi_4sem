@@ -30,6 +30,6 @@ public record ClienteJuridicoRequest(
 
         @NotBlank(message = "CNPJ é obrigatório")
         @Pattern(regexp = "^[0-9]{14}$", message = "CNPJ deve conter exatamente 14 dígitos numéricos")
-        @CNPJ
+        @CNPJ(message = "CNPJ inválido ou mal formatado")
         String cnpj
 ) {}
