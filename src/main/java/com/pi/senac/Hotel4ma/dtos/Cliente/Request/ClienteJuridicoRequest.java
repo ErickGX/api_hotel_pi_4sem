@@ -24,12 +24,33 @@ public record ClienteJuridicoRequest(
         @Size(min = 6, max = 30, message = "Senha deve ter entre 6 e 30 caracteres")
         String senha,
 
-        @NotBlank(message = "Endereço é obrigatório")
-        @Size(min = 5, max = 255, message = "Endereço deve ter entre 5 e 255 caracteres")
-        String endereco,
-
         @NotBlank(message = "CNPJ é obrigatório")
         @Pattern(regexp = "^[0-9]{14}$", message = "CNPJ deve conter exatamente 14 dígitos numéricos")
         @CNPJ(message = "CNPJ inválido ou mal formatado")
-        String cnpj
+        String cnpj,
+
+        @NotBlank(message = "CEP é obrigatório")
+        @Pattern(regexp = "^[0-9]{8}$", message = "CEP deve conter exatamente 8 dígitos numéricos")
+        String cep,
+
+        @NotBlank(message = "Endereço é obrigatório")
+        @Size(min = 5, max = 255, message = "Endereço deve ter entre 5 e 255 caracteres")
+        String logradouro,
+
+        @NotBlank(message = "Número é obrigatório")
+        @Size(max = 10, message = "Número deve ter no máximo 10 caracteres")
+        String numero,
+
+        String complemento,
+        @NotBlank(message = "Bairro é obrigatório")
+        @Size(min = 3, max = 60, message = "Bairro deve ter entre 3 e 60 caracteres")
+        String bairro,
+
+        @NotBlank(message = "Localidade é obrigatória")
+        @Size(min = 3, max = 60, message = "Localidade deve ter entre 3 e 60 caracteres")
+        String localidade,
+
+        @NotBlank(message = "UF é obrigatório")
+        @Pattern(regexp = "^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$", message = "UF inválido")
+        String uf
 ) {}

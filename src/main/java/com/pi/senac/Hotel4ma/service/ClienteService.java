@@ -15,6 +15,8 @@ import com.pi.senac.Hotel4ma.repository.ClienteFisicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteJuridicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteRepository;
 import com.pi.senac.Hotel4ma.validation.ValidationService;
+import com.pi.senac.Hotel4ma.viacep.EnderecoResponse;
+import com.pi.senac.Hotel4ma.viacep.ViaCepService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ public class ClienteService {
     private final ClienteJuridicoRepository juridicoRepository;
     private final ClienteMapper mapper;
     private final ValidationService validationService;
+    private final ViaCepService viaCepService;
 
 
     //futuramente possivel refatorção das exceptions de codigo 409 em uma
@@ -51,8 +54,11 @@ public class ClienteService {
         if (juridicoRepository.existsByCnpj(dto.cnpj())) {
             throw new DuplicateCpfException("CNPJ já existente, tente novamente");
         }
+
         return repository.save(mapper.toEntity(dto)).getId();
     }
+
+
 
     public ClienteResponseDTO updateClientFisico(ClienteUpdateRequest dto, Long idCliente) {
         //verifico se o func Existe
@@ -109,13 +115,13 @@ public class ClienteService {
 
     // METODO PRIVADO REUTILIZADO PARA A VALIDAÇÃO DE E-MAIL
     // POSSIVEL MUDANÇA PARA UMA CLASSE VALIDATOR
-    private void validateEmailOnUpdate(String newEmail, Cliente existingClient) {
-        // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
-        if (newEmail != null && !newEmail.equalsIgnoreCase(existingClient.getEmail())
-                && repository.existsByEmailAndIdNot(newEmail, existingClient.getId())) {
-            throw new DuplicateEmailException("Email já existente, tente novamente");
-        }
-    }
+//    private void validateEmailOnUpdate(String newEmail, Cliente existingClient) {
+//        // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
+//        if (newEmail != null && !newEmail.equalsIgnoreCase(existingClient.getEmail())
+//                && repository.existsByEmailAndIdNot(newEmail, existingClient.getId())) {
+//            throw new DuplicateEmailException("Email já existente, tente novamente");
+//        }
+//    }
 
 
 }
