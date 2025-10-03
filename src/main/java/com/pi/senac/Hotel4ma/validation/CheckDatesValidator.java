@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 //define que a anotação @CheckDates será usada na classe Reserva
 public class CheckDatesValidator implements ConstraintValidator<CheckDates, Reserva> {

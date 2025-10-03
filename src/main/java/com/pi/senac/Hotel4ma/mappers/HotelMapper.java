@@ -10,12 +10,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(componentModel = "spring", uses = InputSanitizer.class, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface HotelMapper {
+@Mapper(
+        componentModel = "spring",
+        uses = {InputSanitizer.class, EspacosMapper.class, InstalacaoMapper.class},
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)public interface HotelMapper {
 
 
     HotelResponseDTO toDTO(Hotel entity);
-
 
     //anotacoes de sanitizacao de segurança - XSS e injeção de SQL
     //qualifiedByName referencia o nome do metodo no sanitizador

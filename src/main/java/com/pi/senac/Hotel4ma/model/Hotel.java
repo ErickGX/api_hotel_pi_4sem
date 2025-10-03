@@ -21,26 +21,11 @@ public class Hotel {
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Funcionario> funcionarios; //Relação forte
 
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
     private List<Espacos> espacos; //Relação forte
 
-
-    @OneToMany(mappedBy = "hotel",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true)
-    private List<InstalacaoAlugavel> instalacaoAlugavels = new ArrayList<>(); //Relação Forte
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
+    private List<InstalacaoAlugavel> instalacaoAlugaveis = new ArrayList<>(); //Relação Forte
 
 
-//    Hotel hotel = hotelRepo.findById(1L).orElseThrow(); //puxar todas as instalacoes do hotel
-//    List<InstalacaoAlugavel> todosEspacos = hotel.getInstalacoes();
-
-//    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Funcionario> funcionarios;
-//
-//    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Quarto> quartos;
-//
-//    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Sala> salas;
 }

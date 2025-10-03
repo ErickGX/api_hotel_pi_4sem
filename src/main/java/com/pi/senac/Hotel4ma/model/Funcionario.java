@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -26,10 +28,10 @@ public class Funcionario extends Usuario {
     @JoinColumn(name = "id_hotel", nullable = false)
     private Hotel hotel;
 
-//    //repeticao de codigo que podia usar cliente
-//    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ReservaHospedagem> reservasHospedagem;
-//
+    //repeticao de codigo que podia usar cliente
+    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reserva> reservas;
+
 //    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<ReservaSala> reservasSala;
 }

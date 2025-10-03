@@ -24,7 +24,7 @@ public abstract class InstalacaoAlugavel {
     private String nome;
 
     @Column(name = "preco_base", precision = 10, scale = 2, nullable = false)
-    private BigDecimal precoBase;
+    private BigDecimal precoBase = BigDecimal.valueOf(1000.00);
 
     @Column(name = "is_disponivel", nullable = false)
     private Boolean isDisponivel = true;

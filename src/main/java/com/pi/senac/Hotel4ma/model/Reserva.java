@@ -7,14 +7,18 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
-@CheckDates //mover para DTO futuramente
+//mover para DTO futuramente
+@EntityListeners(AuditingEntityListener.class)
 public class Reserva {
 
     @Id
@@ -36,21 +40,26 @@ public class Reserva {
     @Column(nullable = false)
     private LocalDate checkOut;
 
-    @ManyToOne(optional = false)
+    @CreatedDate //Spring preenche a data automaticamente ao criar
+    @Column(name = "data_cadastro", nullable = false)
+    private LocalDateTime dataCadastro;
+
+
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente; // sempre existe
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "funcionario_id")
     private Funcionario funcionario; // opcional
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_instalacao", nullable = false)
     private InstalacaoAlugavel instalacaoAlugavel;
     //futuramente se possivel implementar uma lista de espaços por reserva
     //revisar possibilidade com o vagner
 
-    @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Pagamento pagamento;
 
 
