@@ -31,26 +31,42 @@ public interface ClienteMapper {
     @Mapping(source = "email", target = "email" , qualifiedByName = "emailSanitizer")
     @Mapping(source = "telefone", target = "telefone" , qualifiedByName = "numericSanitizer")
     @Mapping(source = "senha", target = "senha" , qualifiedByName = "passwordSanitizer")
-    @Mapping(source = "endereco", target = "endereco" , qualifiedByName = "textSanitizer")
     @Mapping(source = "cpf", target = "cpf" , qualifiedByName = "numericSanitizer")
+    @Mapping(source = "cep", target = "cep", qualifiedByName = "numericSanitizer")
+    @Mapping(source = "logradouro", target = "logradouro" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "numero", target = "numero" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "complemento", target = "complemento" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "bairro", target = "bairro" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "localidade", target = "localidade" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "uf", target = "uf" , qualifiedByName = "textSanitizer")
     ClienteFisico toEntity(ClienteFisicoRequest dto);
-
-
 
 
     @Mapping(source = "nome", target = "nome" , qualifiedByName = "textSanitizer")
     @Mapping(source = "email", target = "email" , qualifiedByName = "emailSanitizer")
     @Mapping(source = "telefone", target = "telefone" , qualifiedByName = "numericSanitizer")
     @Mapping(source = "senha", target = "senha" , qualifiedByName = "passwordSanitizer")
-    @Mapping(source = "endereco", target = "endereco" , qualifiedByName = "textSanitizer")
     @Mapping(source = "cnpj", target = "cnpj" , qualifiedByName = "numericSanitizer")
+    @Mapping(source = "cep", target = "cep", qualifiedByName = "numericSanitizer")
+    @Mapping(source = "logradouro", target = "logradouro" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "numero", target = "numero" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "complemento", target = "complemento" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "bairro", target = "bairro" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "localidade", target = "localidade" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "uf", target = "uf" , qualifiedByName = "textSanitizer")
     ClienteJuridico toEntity(ClienteJuridicoRequest dto);
 
 
     @Mapping(source = "nome", target = "nome" , qualifiedByName = "textSanitizer")
     @Mapping(source = "email", target = "email" , qualifiedByName = "emailSanitizer")
     @Mapping(source = "telefone", target = "telefone" , qualifiedByName = "numericSanitizer")
-    @Mapping(source = "endereco", target = "endereco" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "cep", target = "cep", qualifiedByName = "numericSanitizer")
+    @Mapping(source = "logradouro", target = "logradouro" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "numero", target = "numero" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "complemento", target = "complemento" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "bairro", target = "bairro" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "localidade", target = "localidade" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "uf", target = "uf" , qualifiedByName = "textSanitizer")
     void updateEntidadeFromDto(ClienteUpdateRequest dto, @MappingTarget ClienteFisico cliente);
 
 
@@ -58,7 +74,13 @@ public interface ClienteMapper {
     @Mapping(source = "nome", target = "nome" , qualifiedByName = "textSanitizer")
     @Mapping(source = "email", target = "email" , qualifiedByName = "emailSanitizer")
     @Mapping(source = "telefone", target = "telefone" , qualifiedByName = "numericSanitizer")
-    @Mapping(source = "endereco", target = "endereco" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "cep", target = "cep", qualifiedByName = "numericSanitizer")
+    @Mapping(source = "logradouro", target = "logradouro" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "numero", target = "numero" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "complemento", target = "complemento" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "bairro", target = "bairro" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "localidade", target = "localidade" , qualifiedByName = "textSanitizer")
+    @Mapping(source = "uf", target = "uf" , qualifiedByName = "textSanitizer")
     void updateEntidadeFromDto(ClienteUpdateRequest dto, @MappingTarget ClienteJuridico cliente);
 
 

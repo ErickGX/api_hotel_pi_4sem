@@ -23,12 +23,29 @@ public abstract class Cliente extends Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 200, nullable = false)
-    private String endereco;
-
     @Enumerated(EnumType.STRING)
     private TipoCliente tipoCliente;
 
+    @Column(length = 8, nullable = false)
+    private String cep;
+
+    @Column(length = 100, nullable = false)
+    private String logradouro;
+
+    @Column(length = 100, nullable = false)
+    private String numero;
+
+    @Column(length = 100)
+    private String complemento;
+
+    @Column(length = 100, nullable = false)
+    private String bairro;
+
+    @Column(length = 100, nullable = false)
+    private String localidade;
+
+    @Column(length = 2, nullable = false)
+    private String uf;
 //    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<ReservaHospedagem> reservasHospedagem = new ArrayList<>();
 //

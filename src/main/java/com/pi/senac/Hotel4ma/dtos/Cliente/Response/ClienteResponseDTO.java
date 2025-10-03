@@ -15,7 +15,19 @@ public record ClienteResponseDTO(
 
         String telefone,
 
-        String endereco,
+        String cep,
+
+        String logradouro,
+
+        String numero,
+
+        String complemento,
+
+        String bairro,
+
+        String localidade,
+
+        String uf,
 
         String cpf,
         String cnpj,
