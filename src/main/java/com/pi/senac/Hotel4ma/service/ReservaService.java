@@ -2,12 +2,14 @@ package com.pi.senac.Hotel4ma.service;
 
 
 import com.pi.senac.Hotel4ma.dtos.Reserva.Request.ReservaRequest;
-import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
+import com.pi.senac.Hotel4ma.dtos.Reserva.Response.ReservaResponseDTO;
+import com.pi.senac.Hotel4ma.mappers.ReservaMapper;
 import com.pi.senac.Hotel4ma.model.*;
 import com.pi.senac.Hotel4ma.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -15,71 +17,81 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservaService {
 
-    private final ReservaRepository reservaRepository;
-    private final ClienteRepository clienteRepository;
-    private final InstalacaoRepository instalacaoRepository;
-    private final PagamentoRepository pagamentoRepository;
-    private final FuncionarioRepository funcionarioRepository;
+    private final ReservaRepository repository;
+    private final ClienteService clienteService;
+    private final InstalacaoService instalacaoService;
+    private final FuncionarioService funcionarioService;
+    private final ReservaMapper mapper;
 
 
+    public ReservaResponseDTO save(ReservaRequest dto) {
 
-
-    public Reserva save(ReservaRequest dto) {
         Funcionario funcionario = null;
-
-        if (dto.checkIn().isAfter(dto.checkOut())){
-            throw new IllegalArgumentException("Data de check-in não pode ser após o check-out.");
+        if (dto.funcionarioId() != null) {
+            funcionario = funcionarioService.getFuncionarioByid(dto.funcionarioId());
         }
 
-        if (dto.funcionarioId() != null){
-            funcionario = funcionarioRepository.findById(dto.funcionarioId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Funcionario não encontrado com o ID: " + dto.funcionarioId()));
-        }
+        Cliente cliente = clienteService.getClienteById(dto.clienteId());
 
-        Cliente cliente = clienteRepository.findById(dto.clienteId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o ID: " + dto.clienteId()));
+        InstalacaoAlugavel instalacao = instalacaoService.getInstalacaoById(dto.instalacaoAlugavelId());
 
-        InstalacaoAlugavel instalacao = instalacaoRepository.findById(dto.instalacaoAlugavelId())
-                .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada com o ID: " + dto.instalacaoAlugavelId()));
+        //Monta a entidade reserva usando o mapper, e as entidades relacionadas
+        Reserva reserva = mapper.toEntity(dto, cliente, funcionario, instalacao);
 
 
+        //Calcula o valor total da reserva
+        var valorTotal = calculoPorHorasOuDias(reserva);
+        reserva.setValorTotal(valorTotal);
 
-        int dias = (int) ChronoUnit.DAYS.between(dto.checkIn(), dto.checkOut());
-
-        BigDecimal custoTotal = instalacao.calcularCustoTotal(dias);
-
-        Reserva reserva = new Reserva();
-        reserva.setTipoPagamento(dto.tipoPagamento());
-        reserva.setValorTotal(custoTotal);
-        reserva.setStatus(dto.statusReserva());
-        reserva.setCheckIn(dto.checkIn());
-        reserva.setCheckOut(dto.checkOut());
-        reserva.setCliente(cliente);
-        reserva.setInstalacaoAlugavel(instalacao);
-
-        if (funcionario != null) {
-            reserva.setFuncionario(funcionario);
-        }
-
-
-        Reserva reservaSalva  =   reservaRepository.save(reserva);
-
+        // Cria o pagamento associado à reserva
         Pagamento pagamento = new Pagamento();
+        pagamento.setReserva(reserva);// o pagamento referencia a reserva
+        pagamento.setCliente(cliente);
+        pagamento.setHoraPagamento(LocalDateTime.now());
         pagamento.setTipoPagamento(reserva.getTipoPagamento());
-        pagamento.setValor(reserva.getValorTotal());
-        pagamento.setHoraPagamento(reserva.getDataCadastro());
-        pagamento.setCliente(reserva.getCliente());
-        pagamento.setReserva(reservaSalva);
+        pagamento.setValorTotal(valorTotal);
 
-        Pagamento pagamentoSalva  =   pagamentoRepository.save(pagamento);
 
-        reservaSalva.setPagamento(pagamentoSalva);
+        // Vincula o pagamento à reserva
+        reserva.setPagamento(pagamento);
 
-        return reservaSalva;
+        //salva tudo de uma vez só(graças ao cascade)
+        Reserva savedReserva = repository.save(reserva);
+
+        return mapper.toDto(savedReserva);
     }
 
-    public List<Reserva> findAll() {
 
-        return reservaRepository.findAll();
+
+    public List<ReservaResponseDTO> findAll() {
+        return mapper.toList(repository.findAll());
     }
+
+    private BigDecimal calculoPorHorasOuDias(Reserva reserva){
+        if (reserva.getInstalacaoAlugavel() instanceof Quarto){
+            int dias = (int) ChronoUnit.DAYS.between(reserva.getCheckIn(), reserva.getCheckOut());
+            return reserva.getInstalacaoAlugavel().calcularCustoTotal(dias);
+        } else {
+            int horas = (int) ChronoUnit.HOURS.between(reserva.getCheckIn(), reserva.getCheckOut());
+            return reserva.getInstalacaoAlugavel().calcularCustoTotal(horas);
+        }
+    }
+
+//  public class CalculadoraDeDiarias {
+//
+//    private static final int HORA_LIMITE_DA_DIARIA = 12; // 12h, por exemplo
+//
+//    public int calcularDiarias(LocalDateTime checkIn, LocalDateTime checkOut) {
+//        int diasCompletos = (int) ChronoUnit.DAYS.between(checkIn, checkOut);
+//
+//        // Se o checkout for depois da hora limite, adiciona um dia
+//        if (checkOut.getHour() > HORA_LIMITE_DA_DIARIA) {
+//            diasCompletos++;
+//        }
+//
+//        // Garante que o mínimo seja 1 dia, mesmo em estadias curtas
+//        return Math.max(diasCompletos, 1);
+//    }
+//}
+
 }

@@ -23,7 +23,7 @@ public class InstalacaoService {
     private final InstalacaoMapper mapper;
     private final InstalacaoFactory factory;
 
-
+    //create apenas retorna o id da instalação criada
     public Long create(InstalacaoRequest dto) {
 
         //Factory escolhe a subclasse Correta
@@ -43,6 +43,11 @@ public class InstalacaoService {
         InstalacaoAlugavel entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada com ID: " + id));
         return mapper.toDto(entity);
+    }
+
+    public InstalacaoAlugavel getInstalacaoById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada com ID: " + id));
     }
 
     public List<InstalacaoResponseDTO> findAll() {

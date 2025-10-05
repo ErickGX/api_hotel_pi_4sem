@@ -1,7 +1,6 @@
 package com.pi.senac.Hotel4ma.dtos.Instalacao.Response;
 
 import jakarta.validation.constraints.NotBlank;
-
 import java.math.BigDecimal;
 
 public record OrcamentoResponseDTO(

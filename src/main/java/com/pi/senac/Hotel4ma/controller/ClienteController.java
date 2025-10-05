@@ -47,10 +47,6 @@ public class ClienteController implements GenericController {
     @GetMapping("{id}")
     public ResponseEntity<ClienteResponseDTO> findById(@PathVariable("id") Long id) {
         var cliente = service.findById(id);
-        // o service já lança a exception se não encontrar
-//        if (cliente == null) {
-//            return ResponseEntity.notFound().build();
-//        }
         return ResponseEntity.ok(cliente);
     }
 
@@ -65,7 +61,7 @@ public class ClienteController implements GenericController {
             @PathVariable("id") Long id,
             @RequestBody @Valid ClienteUpdateRequest request) {
 
-        service.updateClientFisico(request, id);
+        service.updateClienteFisico(request, id);
         return ResponseEntity.ok().build();
     }
 
@@ -74,7 +70,7 @@ public class ClienteController implements GenericController {
             @PathVariable("id") Long id,
             @RequestBody @Valid ClienteUpdateRequest request) {
 
-        service.updateClientJuridico(request, id);
+        service.updateClienteJuridico(request, id);
         return ResponseEntity.ok().build();
     }
 

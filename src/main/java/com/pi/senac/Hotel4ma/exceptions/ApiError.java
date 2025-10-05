@@ -1,4 +1,5 @@
 package com.pi.senac.Hotel4ma.exceptions;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -6,6 +7,7 @@ import java.util.List;
 
 //versão aprimorada com Record , para aplicação do principio DRY - Dont repeat Yourself
 public record ApiError(
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
         LocalDateTime timestamp,
         int status,
         String error,

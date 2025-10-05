@@ -46,11 +46,8 @@ public abstract class Cliente extends Usuario {
 
     @Column(length = 2, nullable = false)
     private String uf;
-//    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ReservaHospedagem> reservasHospedagem = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ReservaSala> reservasSala = new ArrayList<>();
 
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reserva> reservas = new ArrayList<>();
 
 }

@@ -60,6 +60,8 @@ public class InstalacaoAlugavelController implements GenericController {
         return ResponseEntity.noContent().build();
     }
 
+
+    //olha que bagulho satanico no controller
     @GetMapping("/orcamento")
     public ResponseEntity<?> simularOrcamento(
             @RequestParam String tipo,

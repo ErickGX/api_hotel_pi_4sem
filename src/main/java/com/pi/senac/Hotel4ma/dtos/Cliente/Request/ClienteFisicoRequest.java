@@ -40,10 +40,11 @@ public record ClienteFisicoRequest(
         @Size(max = 10, message = "Número deve ter no máximo 10 caracteres")
         String numero,
 
+        @Size(max = 100, message = "complemento deve ter no máximo 100 caracteres")
         String complemento,
 
         @NotBlank(message = "Bairro é obrigatório")
-        @Size(min = 3, max = 60, message = "Bairro deve ter entre 3 e 60 caracteres")
+        @Size(min = 2, max = 60, message = "Bairro deve ter entre 3 e 60 caracteres")
         String bairro,
 
         @NotBlank(message = "Localidade é obrigatória")
@@ -53,6 +54,5 @@ public record ClienteFisicoRequest(
         @NotBlank(message = "UF é obrigatório")
         @Pattern(regexp = "^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$", message = "UF inválido")
         String uf
-
 
         ) {}

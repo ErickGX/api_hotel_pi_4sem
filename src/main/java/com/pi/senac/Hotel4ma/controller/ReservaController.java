@@ -2,6 +2,7 @@ package com.pi.senac.Hotel4ma.controller;
 
 
 import com.pi.senac.Hotel4ma.dtos.Reserva.Request.ReservaRequest;
+import com.pi.senac.Hotel4ma.dtos.Reserva.Response.ReservaResponseDTO;
 import com.pi.senac.Hotel4ma.model.Reserva;
 import com.pi.senac.Hotel4ma.service.ReservaService;
 import lombok.RequiredArgsConstructor;
@@ -21,15 +22,15 @@ public class ReservaController implements GenericController{
     private static String base_path = "/api/instalacoes";
 
     @PostMapping
-    public ResponseEntity<Reserva> create(@RequestBody ReservaRequest dto){
-        Reserva criada  =  service.save(dto);
-        URI location =  gerarHeaderLocation(base_path, criada.getId());
+    public ResponseEntity<ReservaResponseDTO> create(@RequestBody ReservaRequest dto){
+        ReservaResponseDTO criada  =  service.save(dto);
+        URI location =  gerarHeaderLocation(base_path, criada.id());
         return ResponseEntity.created(location).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<Reserva>> findAll(){
-        List<Reserva> lista = service.findAll();
+    public ResponseEntity<List<ReservaResponseDTO>> findAll(){
+        List<ReservaResponseDTO> lista = service.findAll();
         return ResponseEntity.ok(lista);
     }
 

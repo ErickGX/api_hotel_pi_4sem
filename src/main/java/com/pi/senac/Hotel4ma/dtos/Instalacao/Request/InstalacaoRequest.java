@@ -12,9 +12,6 @@ public record InstalacaoRequest(
         @NotBlank(message = "Campo nome é obrigatório")
         String nome,
 
-        @NotBlank(message = "Campo preço base é obrigatório")
-        BigDecimal precoBase,
-
         @NotBlank(message = "Campo disponibilidade é obrigatório")
         Boolean isDisponivel,
 

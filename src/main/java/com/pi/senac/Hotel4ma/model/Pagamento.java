@@ -20,8 +20,8 @@ public class Pagamento {
     @Column(name = "tipo_pagamento", nullable = false)
     private TipoPagamento tipoPagamento;
 
-    @Column(nullable = false)
-    private BigDecimal valor;
+    @Column(precision = 10, scale = 2, nullable = false)
+    private BigDecimal valorTotal;
 
     @CreationTimestamp
     @Column(name = "hora_pagamento", nullable = false)
@@ -34,6 +34,5 @@ public class Pagamento {
     @OneToOne(optional = false)
     @JoinColumn(name = "reserva_id", nullable = false, unique = true) // FK
     private Reserva reserva;
-
 
 }

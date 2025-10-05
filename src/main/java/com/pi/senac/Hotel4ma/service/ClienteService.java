@@ -60,7 +60,7 @@ public class ClienteService {
 
 
 
-    public ClienteResponseDTO updateClientFisico(ClienteUpdateRequest dto, Long idCliente) {
+    public ClienteResponseDTO updateClienteFisico(ClienteUpdateRequest dto, Long idCliente) {
         //verifico se o func Existe
         ClienteFisico cliente = fisicoRepository.findById(idCliente)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente Fisico não encontrado com este ID"));
@@ -75,7 +75,7 @@ public class ClienteService {
     }
 
 
-    public ClienteResponseDTO updateClientJuridico(ClienteUpdateRequest dto, Long idCliente) {
+    public ClienteResponseDTO updateClienteJuridico(ClienteUpdateRequest dto, Long idCliente) {
 
         ClienteJuridico cliente = juridicoRepository.findById(idCliente)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente Juridico não encontrado com este ID"));
@@ -112,16 +112,9 @@ public class ClienteService {
         repository.deleteById(id);
     }
 
-
-    // METODO PRIVADO REUTILIZADO PARA A VALIDAÇÃO DE E-MAIL
-    // POSSIVEL MUDANÇA PARA UMA CLASSE VALIDATOR
-//    private void validateEmailOnUpdate(String newEmail, Cliente existingClient) {
-//        // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
-//        if (newEmail != null && !newEmail.equalsIgnoreCase(existingClient.getEmail())
-//                && repository.existsByEmailAndIdNot(newEmail, existingClient.getId())) {
-//            throw new DuplicateEmailException("Email já existente, tente novamente");
-//        }
-//    }
-
+    public Cliente getClienteById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o ID: " + id));
+    }
 
 }

@@ -6,8 +6,11 @@ import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResponseDTO;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.FuncionarioMapper;
 import com.pi.senac.Hotel4ma.model.Funcionario;
+import com.pi.senac.Hotel4ma.model.Hotel;
 import com.pi.senac.Hotel4ma.repository.FuncionarioRepository;
+import com.pi.senac.Hotel4ma.repository.HotelRepository;
 import com.pi.senac.Hotel4ma.validation.ValidationService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,9 +23,14 @@ public class FuncionarioService {
     private final FuncionarioRepository repository;
     private final FuncionarioMapper mapper;
     private final ValidationService validationService;
+    private final HotelRepository hotelRepository;
 
 
     public Long saveFuncionario(FuncionarioRequest dto) {
+        //Valida se o cpf e email já estão cadastrados
+         Hotel hotel = hotelRepository.findById(dto.id_hotel())
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado com este ID"));
+
         Funcionario funcionario = repository.save(mapper.toEntity(dto));
         return funcionario.getId();
     }
@@ -52,6 +60,12 @@ public class FuncionarioService {
     public FuncionarioResponseDTO findById(Long id) {
         return mapper.toDTO(repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado com o ID: " + id)));
+    }
+
+
+    public Funcionario getFuncionarioByid(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Funcionario não encontrado com o ID: " + id));
     }
 
     public void deleteById(Long id) {

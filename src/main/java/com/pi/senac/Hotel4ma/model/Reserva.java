@@ -26,19 +26,21 @@ public class Reserva {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TipoPagamento tipoPagamento;
 
-    @Column(name = "valor_total",precision = 10, scale = 2, nullable = false)
+    @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal valorTotal;
 
     @Enumerated(EnumType.STRING)
-    private StatusReserva status;
+    @Column(nullable = false)
+    private StatusReserva statusReserva;
 
     @Column(nullable = false)
-    private LocalDate checkIn;
+    private LocalDateTime checkIn;
 
     @Column(nullable = false)
-    private LocalDate checkOut;
+    private LocalDateTime checkOut;
 
     @CreatedDate //Spring preenche a data automaticamente ao criar
     @Column(name = "data_cadastro", nullable = false)
@@ -65,8 +67,6 @@ public class Reserva {
 
     //metodo para calcular valor total baseado nos espacos alugados ira para a service
 
-
-
     //Dica para futura refatoração
     //Quando quiser permitir reservas com múltiplos espaços:
     //1-Criar uma tabela intermediária (ReservaEspaco) que armazene:
@@ -79,6 +79,5 @@ public class Reserva {
         //Calcular valor total somando todos os espaços
         //Permitir pagamento global ou por espaço
     //O DTO também precisará refletir a lista de espaços com datas individuais.
-
 
 }

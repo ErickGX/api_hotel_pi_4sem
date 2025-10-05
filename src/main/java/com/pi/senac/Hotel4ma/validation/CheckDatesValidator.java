@@ -16,8 +16,8 @@ public class CheckDatesValidator implements ConstraintValidator<CheckDates, Rese
                 return true;
         }
 
-        LocalDate checkIn = reserva.getCheckIn();
-        LocalDate checkOut = reserva.getCheckOut();
+        LocalDateTime checkIn = reserva.getCheckIn();
+        LocalDateTime checkOut = reserva.getCheckOut();
 
         //valida se os campos nao sao nulos
         if (checkIn == null || checkOut == null) {

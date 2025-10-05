@@ -29,7 +29,6 @@ public class FuncionarioController implements GenericController {
     }
 
 
-
     @GetMapping
     public ResponseEntity<List<FuncionarioResponseDTO>> findAll(){
         return ResponseEntity.ok(service.listAll());

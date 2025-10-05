@@ -21,10 +21,10 @@ public class Hotel {
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Funcionario> funcionarios; //Relação forte
 
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true )
     private List<Espacos> espacos; //Relação forte
 
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InstalacaoAlugavel> instalacaoAlugaveis = new ArrayList<>(); //Relação Forte
 
 

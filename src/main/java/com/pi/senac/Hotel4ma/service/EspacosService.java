@@ -29,6 +29,7 @@ public class EspacosService {
     public void deleteById(Long id) {
         // Verifica se o recurso existe.
         if (!repository.existsById(id)) {
+
             throw new ResourceNotFoundException("Recurso não encontrado com o ID: " + id);
         }
         // Passo 2: Se existe, manda deletar.

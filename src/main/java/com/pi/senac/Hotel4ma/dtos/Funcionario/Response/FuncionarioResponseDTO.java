@@ -2,7 +2,6 @@ package com.pi.senac.Hotel4ma.dtos.Funcionario.Response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pi.senac.Hotel4ma.dtos.Hotel.Response.HotelResumoDTO;
-
 import java.time.LocalDateTime;
 
 public record FuncionarioResponseDTO(

@@ -4,6 +4,7 @@ import com.pi.senac.Hotel4ma.dtos.Instalacao.Request.InstalacaoRequest;
 import com.pi.senac.Hotel4ma.enums.*;
 import com.pi.senac.Hotel4ma.model.*;
 import com.pi.senac.Hotel4ma.security.sanitizer.InputSanitizer;
+import com.pi.senac.Hotel4ma.exceptions.IllegalArgumentException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +33,11 @@ public class InstalacaoFactory {
             }
             case "QUARTO" -> {
                 Quarto quarto = new Quarto();
+                if (dto.numeroQuarto() == null) {
+                    //if para garantir que o número do quarto seja fornecido
+                    //Exception personalizada para melhor controle de erros
+                    throw new IllegalArgumentException("Número do quarto é obrigatório para instalações do tipo QUARTO.");
+                }
                 String numeroQuartoSanitizado = sanitizer.sanitizeText(String.valueOf(dto.numeroQuarto()));
                 quarto.setTipoQuarto(TipoQuarto.valueOf(dto.categoria()));
                 quarto.setNumeroQuarto(numeroQuartoSanitizado);

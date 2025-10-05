@@ -1,6 +1,7 @@
 package com.pi.senac.Hotel4ma.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.lang.Exception;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,7 +66,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateCnpjException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<ApiError> handleDuplicateEmail(DuplicateCnpjException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleDuplicateCnpj(DuplicateCnpjException ex, HttpServletRequest request) {
         ApiError errorApi = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.CONFLICT.value(),
@@ -79,6 +81,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiError> handleBadRequest(BadRequestException ex, HttpServletRequest request) {
+        ApiError errorApi = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Dados Inválidos",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+        return new ResponseEntity<>(errorApi, HttpStatus.BAD_REQUEST);
+    }
+
+
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest request) {
         ApiError errorApi = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -114,6 +131,20 @@ public class GlobalExceptionHandler {
 
         // 3. Retorna a resposta com o status correto
         return ResponseEntity.unprocessableEntity().body(apiError);
+    }
+
+
+    @ExceptionHandler(java.lang.Exception.class)
+    public ResponseEntity<ApiError> handleGenericException(Exception ex, HttpServletRequest request) {
+        ApiError errorApi = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Erro Interno do Servidor, Contate a Administração",
+                "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+                request.getRequestURI(),
+                null
+        );
+        return new ResponseEntity<>(errorApi, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

@@ -43,7 +43,7 @@ public record ClienteJuridicoRequest(
 
         String complemento,
         @NotBlank(message = "Bairro é obrigatório")
-        @Size(min = 3, max = 60, message = "Bairro deve ter entre 3 e 60 caracteres")
+        @Size(min = 2, max = 60, message = "Bairro deve ter entre 3 e 60 caracteres")
         String bairro,
 
         @NotBlank(message = "Localidade é obrigatória")

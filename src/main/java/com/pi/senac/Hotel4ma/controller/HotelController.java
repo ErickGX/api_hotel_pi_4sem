@@ -50,11 +50,6 @@ public class HotelController implements GenericController {
         return ResponseEntity.noContent().build();
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<HotelResponseDTO> updateHotel(@PathVariable Long id, @RequestBody @Valid HotelRequestDTO dto) {
-//        HotelResponseDTO updatedHotel = service.updateHotel(id, dto);
-//        return ResponseEntity.ok(updatedHotel);
-//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateHotel(
@@ -64,5 +59,11 @@ public class HotelController implements GenericController {
         service.update(id, dto);
         return ResponseEntity.ok().build();
     }
+
+    //    @PutMapping("/{id}")
+//    public ResponseEntity<HotelResponseDTO> updateHotel(@PathVariable Long id, @RequestBody @Valid HotelRequestDTO dto) {
+//        HotelResponseDTO updatedHotel = service.updateHotel(id, dto);
+//        return ResponseEntity.ok(updatedHotel);
+//    }
 
 }
