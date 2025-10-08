@@ -1,7 +1,6 @@
 package com.pi.senac.Hotel4ma.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -105,6 +104,20 @@ public class GlobalExceptionHandler {
                 null
         );
         return new ResponseEntity<>(errorApi, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(ReservaDataConflitanteException.class)
+    public ResponseEntity<ApiError> handleReservaDataConflitante(ReservaDataConflitanteException ex, HttpServletRequest request) {
+        ApiError errorApi = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Conflito de Agendamento",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+        return new ResponseEntity<>(errorApi, HttpStatus.CONFLICT);
     }
 
 

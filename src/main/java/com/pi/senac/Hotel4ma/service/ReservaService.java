@@ -3,6 +3,7 @@ package com.pi.senac.Hotel4ma.service;
 
 import com.pi.senac.Hotel4ma.dtos.Reserva.Request.ReservaRequest;
 import com.pi.senac.Hotel4ma.dtos.Reserva.Response.ReservaResponseDTO;
+import com.pi.senac.Hotel4ma.exceptions.ReservaDataConflitanteException;
 import com.pi.senac.Hotel4ma.mappers.ReservaMapper;
 import com.pi.senac.Hotel4ma.model.*;
 import com.pi.senac.Hotel4ma.repository.*;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -32,8 +34,12 @@ public class ReservaService {
         }
 
         Cliente cliente = clienteService.getClienteById(dto.clienteId());
-
         InstalacaoAlugavel instalacao = instalacaoService.getInstalacaoById(dto.instalacaoAlugavelId());
+
+        //Verifica se existe conflito de reserva -- null é porque é um save, no update passaria o id da reserva
+        verificarConflitoReserva(instalacao.getId(), dto.checkIn(), dto.checkOut(), null);
+
+
 
         //Monta a entidade reserva usando o mapper, e as entidades relacionadas
         Reserva reserva = mapper.toEntity(dto, cliente, funcionario, instalacao);
@@ -74,6 +80,25 @@ public class ReservaService {
         } else {
             int horas = (int) ChronoUnit.HOURS.between(reserva.getCheckIn(), reserva.getCheckOut());
             return reserva.getInstalacaoAlugavel().calcularCustoTotal(horas);
+        }
+    }
+
+    //util para checar conflitos de reserva no save e no Update
+    private void verificarConflitoReserva(
+            Long instalacaoId,
+            LocalDateTime checkIn,
+            LocalDateTime checkOut,
+            Long reservaId                                   ){
+        boolean conflito = repository.existsReservaConflitante(instalacaoId, checkIn, checkOut, reservaId);
+
+        if (conflito){
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            String checkInFormatado = checkIn.format(formatter);
+            String checkOutFormatado = checkOut.format(formatter);
+
+            throw new ReservaDataConflitanteException("Conflito de reserva para a instalação selecionada no período entre : " + checkInFormatado + " e " + checkOutFormatado);
         }
     }
 
