@@ -11,6 +11,8 @@ import com.pi.senac.Hotel4ma.model.InstalacaoAlugavel;
 import com.pi.senac.Hotel4ma.repository.InstalacaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,6 +26,7 @@ public class InstalacaoService {
     private final InstalacaoFactory factory;
 
     //create apenas retorna o id da instalação criada
+    @Transactional(propagation = Propagation.REQUIRED)
     public Long create(InstalacaoRequest dto) {
 
         //Factory escolhe a subclasse Correta
@@ -39,22 +42,26 @@ public class InstalacaoService {
         //return mapper.toDto(entity);
     }
 
+    @Transactional(readOnly = true)
     public InstalacaoResponseDTO findById(Long id) {
         InstalacaoAlugavel entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada com ID: " + id));
         return mapper.toDto(entity);
     }
 
+    @Transactional(readOnly = true)
     public InstalacaoAlugavel getInstalacaoById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada com ID: " + id));
     }
 
+    @Transactional(readOnly = true)
     public List<InstalacaoResponseDTO> findAll() {
         List<InstalacaoAlugavel> entities = repository.findAll();
         return mapper.toList(entities);
     }
 
+    @Transactional
     public InstalacaoResponseDTO update(Long id, InstalacaoUpdateRequest dto) {
         InstalacaoAlugavel entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada com ID: " + id));
@@ -66,6 +73,7 @@ public class InstalacaoService {
         return mapper.toDto(entity);
     }
 
+    @Transactional
     public void delete(Long id) {
         InstalacaoAlugavel entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Instalação não encontrada com ID: " + id));

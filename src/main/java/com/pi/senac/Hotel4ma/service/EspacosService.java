@@ -2,14 +2,13 @@ package com.pi.senac.Hotel4ma.service;
 
 import com.pi.senac.Hotel4ma.dtos.Espacos.Request.EspacosRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.Espacos.Response.EspacosResponseDTO;
-import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResponseDTO;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.EspacosMapper;
 import com.pi.senac.Hotel4ma.model.Espacos;
 import com.pi.senac.Hotel4ma.repository.EspacosRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,12 +19,13 @@ public class EspacosService {
     private final EspacosRepository repository;
     private final EspacosMapper mapper;
 
-
+    @Transactional
     public Long create(EspacosRequestDTO dto) {
         //retorna apenas o id gerado para inserir no header location
         return repository.save(mapper.toEntity(dto)).getId();
     }
 
+    @Transactional
     public void deleteById(Long id) {
         // Verifica se o recurso existe.
         if (!repository.existsById(id)) {
@@ -35,19 +35,21 @@ public class EspacosService {
         // Passo 2: Se existe, manda deletar.
         repository.deleteById(id);
     }
-
+    @Transactional(readOnly = true)
     public List<EspacosResponseDTO> findAll() {
         List<Espacos> funcionarios = repository.findAll();
         return mapper.toList(funcionarios);
     }
 
-
+    @Transactional(readOnly = true)
     public EspacosResponseDTO findById(Long id) {
         return mapper.toDto(repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado com o ID: " + id)));
     }
 
-    public void deleteAll(){
-        repository.deleteAll();
-    }
+
+//    @Transactional(readOnly = true)
+//    public void deleteAll(){
+//        repository.deleteAll();
+//    }
 }

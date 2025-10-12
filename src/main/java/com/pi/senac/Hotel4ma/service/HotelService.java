@@ -1,16 +1,15 @@
 package com.pi.senac.Hotel4ma.service;
 
-import com.pi.senac.Hotel4ma.dtos.Funcionario.Request.FuncionarioUpdateRequest;
-import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.Hotel.Request.HotelRequestDTO;
 import com.pi.senac.Hotel4ma.dtos.Hotel.Response.HotelResponseDTO;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.HotelMapper;
-import com.pi.senac.Hotel4ma.model.Funcionario;
 import com.pi.senac.Hotel4ma.model.Hotel;
 import com.pi.senac.Hotel4ma.repository.HotelRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,11 +22,13 @@ public class HotelService {
     private final HotelMapper mapper;
 
     // Salvar novo hotel
+    @Transactional
     public Long saveHotel(HotelRequestDTO dto) {
       return repository.save(mapper.toEntity(dto)).getId();
     }
 
     // Buscar hotel por ID
+    @Transactional(readOnly = true)
     public HotelResponseDTO findById(Long id) {
         Hotel hotel = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hotel não encontrado com ID: " + id));
@@ -35,6 +36,7 @@ public class HotelService {
     }
 
     // Listar todos os hotéis
+    @Transactional(readOnly = true)
     public List<HotelResponseDTO> findAll() {
         return repository.findAll()
                 .stream()
@@ -43,6 +45,7 @@ public class HotelService {
     }
 
 
+    @Transactional
     public HotelResponseDTO update(Long id, HotelRequestDTO dto) {
         Hotel existingHotel = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado com o ID: " + id));
@@ -54,6 +57,7 @@ public class HotelService {
         return mapper.toDTO(updatedHotel);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         // Verifica se o recurso existe.
         if (!repository.existsById(id)) {

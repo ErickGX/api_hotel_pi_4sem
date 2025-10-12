@@ -7,8 +7,12 @@ import com.pi.senac.Hotel4ma.exceptions.ReservaDataConflitanteException;
 import com.pi.senac.Hotel4ma.mappers.ReservaMapper;
 import com.pi.senac.Hotel4ma.model.*;
 import com.pi.senac.Hotel4ma.repository.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,7 +29,7 @@ public class ReservaService {
     private final FuncionarioService funcionarioService;
     private final ReservaMapper mapper;
 
-
+    @Transactional(propagation = Propagation.REQUIRED)
     public ReservaResponseDTO save(ReservaRequest dto) {
 
         Funcionario funcionario = null;
@@ -38,8 +42,6 @@ public class ReservaService {
 
         //Verifica se existe conflito de reserva -- null é porque é um save, no update passaria o id da reserva
         verificarConflitoReserva(instalacao.getId(), dto.checkIn(), dto.checkOut(), null);
-
-
 
         //Monta a entidade reserva usando o mapper, e as entidades relacionadas
         Reserva reserva = mapper.toEntity(dto, cliente, funcionario, instalacao);
@@ -68,7 +70,7 @@ public class ReservaService {
     }
 
 
-
+    @Transactional(readOnly = true)
     public List<ReservaResponseDTO> findAll() {
         return mapper.toList(repository.findAll());
     }
@@ -82,6 +84,7 @@ public class ReservaService {
             return reserva.getInstalacaoAlugavel().calcularCustoTotal(horas);
         }
     }
+
 
     //util para checar conflitos de reserva no save e no Update
     private void verificarConflitoReserva(

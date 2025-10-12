@@ -15,10 +15,10 @@ import com.pi.senac.Hotel4ma.repository.ClienteFisicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteJuridicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteRepository;
 import com.pi.senac.Hotel4ma.validation.ValidationService;
-import com.pi.senac.Hotel4ma.viacep.EnderecoResponse;
 import com.pi.senac.Hotel4ma.viacep.ViaCepService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,11 +30,12 @@ public class ClienteService {
     private final ClienteJuridicoRepository juridicoRepository;
     private final ClienteMapper mapper;
     private final ValidationService validationService;
-    private final ViaCepService viaCepService;
+
 
 
     //futuramente possivel refatorção das exceptions de codigo 409 em uma
     //validação de email e cpf existentes
+    @Transactional
     public Long createFisico(ClienteFisicoRequest dto) {
         //verificação completa para cpf e email duplicados
         validationService.validateNewClienteFisico(dto.cpf(), dto.email());
@@ -45,6 +46,7 @@ public class ClienteService {
     }
 
     //validação de email e cnpj existentes
+    @Transactional
     public Long createJuridico(ClienteJuridicoRequest dto) {
         //Verifica se o email já esta cadastrado - failfast
         if (repository.existsByEmail(dto.email())) {
@@ -59,7 +61,7 @@ public class ClienteService {
     }
 
 
-
+    @Transactional
     public ClienteResponseDTO updateClienteFisico(ClienteUpdateRequest dto, Long idCliente) {
         //verifico se o func Existe
         ClienteFisico cliente = fisicoRepository.findById(idCliente)
@@ -74,7 +76,7 @@ public class ClienteService {
         return mapper.toDTO(repository.save(cliente));
     }
 
-
+    @Transactional
     public ClienteResponseDTO updateClienteJuridico(ClienteUpdateRequest dto, Long idCliente) {
 
         ClienteJuridico cliente = juridicoRepository.findById(idCliente)
@@ -90,19 +92,19 @@ public class ClienteService {
         return mapper.toDTO(repository.save(cliente));
     }
 
-
+    @Transactional(readOnly = true)
     public List<ClienteResponseDTO> listAll() {
         List<Cliente> clientes = repository.findAll();
         return mapper.toList(clientes);
     }
 
-
+    @Transactional(readOnly = true)
     public ClienteResponseDTO findById(Long id) {
         return mapper.toDTO(repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado com o ID: " + id)));
 
     }
-
+    @Transactional
     public void deleteById(Long id) {
         // Verifica se o recurso existe.
         if (!repository.existsById(id)) {
@@ -112,6 +114,7 @@ public class ClienteService {
         repository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Cliente getClienteById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o ID: " + id));

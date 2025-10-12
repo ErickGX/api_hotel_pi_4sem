@@ -10,10 +10,10 @@ import com.pi.senac.Hotel4ma.model.Hotel;
 import com.pi.senac.Hotel4ma.repository.FuncionarioRepository;
 import com.pi.senac.Hotel4ma.repository.HotelRepository;
 import com.pi.senac.Hotel4ma.validation.ValidationService;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -26,6 +26,7 @@ public class FuncionarioService {
     private final HotelRepository hotelRepository;
 
 
+    @Transactional
     public Long saveFuncionario(FuncionarioRequest dto) {
         //Valida se o cpf e email já estão cadastrados
          Hotel hotel = hotelRepository.findById(dto.id_hotel())
@@ -35,6 +36,7 @@ public class FuncionarioService {
         return funcionario.getId();
     }
 
+    @Transactional
     public FuncionarioResponseDTO update(FuncionarioUpdateRequest dto, Long id) {
 
         //verifico se o cliente Existe
@@ -50,24 +52,24 @@ public class FuncionarioService {
         return mapper.toDTO(repository.save(funcionario));
     }
 
-
+    @Transactional(readOnly = true)
     public List<FuncionarioResponseDTO> listAll() {
         List<Funcionario> funcionarios = repository.findAll();
         return mapper.toList(funcionarios);
     }
 
-
+    @Transactional(readOnly = true)
     public FuncionarioResponseDTO findById(Long id) {
         return mapper.toDTO(repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado com o ID: " + id)));
     }
 
-
+    @Transactional(readOnly = true)
     public Funcionario getFuncionarioByid(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Funcionario não encontrado com o ID: " + id));
     }
-
+    @Transactional
     public void deleteById(Long id) {
         // Verifica se o recurso existe.
         if (!repository.existsById(id)) {
