@@ -20,9 +20,6 @@ import java.util.List;
 //abstrata quando preciso compor um objeto que possui outro
 public abstract class InstalacaoMapper {
 
-    @Autowired
-    private HotelRepository hotelRepository;
-    //metodo toEntity foi substituido pela Factory
 
     @Autowired
     protected InputSanitizer sanitizer;
@@ -30,10 +27,10 @@ public abstract class InstalacaoMapper {
 
     // Atualização: mescla dados no objeto existente
     // Criação: usado após a Factory para preencher dados comuns
-    @Mapping(target = "hotel", source = "id_hotel", qualifiedByName = "mapHotel")
+    //@Mapping(target = "hotel", source = "id_hotel", qualifiedByName = "mapHotel")
     @Mapping(target = "nome", expression = "java(sanitizer.sanitizeText(dto.nome()))")
     @Mapping(target = "descricao", expression = "java(sanitizer.sanitizeText(dto.descricao()))")
-    public abstract void MergeEntidadeFromDto(InstalacaoRequest dto, @MappingTarget InstalacaoAlugavel instalacaoAlugavel);
+    public abstract void MergeEntidadeFromDto(InstalacaoRequest dto, @MappingTarget InstalacaoAlugavel instalacaoAlugavel, Hotel hotel);
 
     // DTO -> Response
     @Mapping(source = "hotel", target = "hotel")
@@ -49,15 +46,6 @@ public abstract class InstalacaoMapper {
     // Esse metodo é chamado automaticamente para mapear o campo hotel
     public abstract HotelResumoDTO toHotelResumoDTO(Hotel hotel);
 
-    //na composicao de mapeamento o Instalacao tem referencia ao Hotel
-    //Responsabilidade do mapper montar a entidade completa, Mapeia hotel via ID
-    @Named("mapHotel")
-    protected Hotel mapHotel(Long idHotel) {
-
-        return hotelRepository.findById(idHotel)
-                .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado"));
-    }
-
 
     // Metodo auxiliar para retornar o enum correto
     protected String getTipo(InstalacaoAlugavel instalacao) {
@@ -70,6 +58,7 @@ public abstract class InstalacaoMapper {
         return null;
     }
 
+    // Metodo auxiliar para retornar o numero do quarto, se for quarto
     protected String getNumeroQuarto(InstalacaoAlugavel instalacao) {
         if (instalacao instanceof Quarto q) return String.valueOf(q.getNumeroQuarto());
         return null;

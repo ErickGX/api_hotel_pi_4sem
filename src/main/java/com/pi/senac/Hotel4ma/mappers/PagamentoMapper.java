@@ -1,16 +1,12 @@
 package com.pi.senac.Hotel4ma.mappers;
 
 import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResumoDTO;
-import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResumoDTO;
-import com.pi.senac.Hotel4ma.dtos.Instalacao.Response.InstalacaoResumoDTO;
 import com.pi.senac.Hotel4ma.dtos.Pagamento.Response.PagamentoResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.Reserva.Response.ReservaResumoDTO;
 import com.pi.senac.Hotel4ma.model.Cliente;
-import com.pi.senac.Hotel4ma.model.Funcionario;
 import com.pi.senac.Hotel4ma.model.Pagamento;
 import com.pi.senac.Hotel4ma.model.Reserva;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 

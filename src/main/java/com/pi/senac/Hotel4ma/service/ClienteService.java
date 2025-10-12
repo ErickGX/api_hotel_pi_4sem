@@ -15,7 +15,6 @@ import com.pi.senac.Hotel4ma.repository.ClienteFisicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteJuridicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteRepository;
 import com.pi.senac.Hotel4ma.validation.ValidationService;
-import com.pi.senac.Hotel4ma.viacep.ViaCepService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +62,7 @@ public class ClienteService {
 
     @Transactional
     public ClienteResponseDTO updateClienteFisico(ClienteUpdateRequest dto, Long idCliente) {
-        //verifico se o func Existe
+        //Uso de repositorio especifico para garantir o tipo correto
         ClienteFisico cliente = fisicoRepository.findById(idCliente)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente Fisico não encontrado com este ID"));
 
@@ -78,7 +77,7 @@ public class ClienteService {
 
     @Transactional
     public ClienteResponseDTO updateClienteJuridico(ClienteUpdateRequest dto, Long idCliente) {
-
+        //Uso de repositorio especifico para garantir o tipo correto
         ClienteJuridico cliente = juridicoRepository.findById(idCliente)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente Juridico não encontrado com este ID"));
 
@@ -92,18 +91,7 @@ public class ClienteService {
         return mapper.toDTO(repository.save(cliente));
     }
 
-    @Transactional(readOnly = true)
-    public List<ClienteResponseDTO> listAll() {
-        List<Cliente> clientes = repository.findAll();
-        return mapper.toList(clientes);
-    }
 
-    @Transactional(readOnly = true)
-    public ClienteResponseDTO findById(Long id) {
-        return mapper.toDTO(repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado com o ID: " + id)));
-
-    }
     @Transactional
     public void deleteById(Long id) {
         // Verifica se o recurso existe.
@@ -114,6 +102,29 @@ public class ClienteService {
         repository.deleteById(id);
     }
 
+
+    @Transactional(readOnly = true)
+    public List<ClienteResponseDTO> listAll() {
+        List<Cliente> clientes = repository.findAll();
+        return mapper.toList(clientes);
+    }
+
+    /**
+     * Busca um Cliente pelo ID e o converte para um DTO de resposta.
+     * Ideal para ser usado pela camada de Controller.
+     */
+    @Transactional(readOnly = true)
+    public ClienteResponseDTO findDtoById(Long id) {
+        return mapper.toDTO(repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado com o ID: " + id)));
+
+    }
+
+    /**
+     * Busca a entidade Cliente pelo ID.
+     * Ideal para ser usado por outros serviços que precisam do objeto de domínio.
+     * O nome "get" sugere que ele lança uma exceção se o recurso não for encontrado.
+     */
     @Transactional(readOnly = true)
     public Cliente getClienteById(Long id) {
         return repository.findById(id)

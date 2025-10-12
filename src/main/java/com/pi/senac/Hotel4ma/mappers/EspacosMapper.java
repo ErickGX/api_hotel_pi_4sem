@@ -26,9 +26,10 @@ public abstract class EspacosMapper {
     protected InputSanitizer sanitizer;
 
 
-    @Mapping(target = "hotel", source = "id_hotel", qualifiedByName = "mapHotel")
     @Mapping(target = "descricao", expression = "java(sanitizer.sanitizeText(dto.descricao()))")
-    public abstract Espacos toEntity(EspacosRequestDTO dto);
+    @Mapping(target = "id", ignore = true) // Impede o mapeamento automático do id do hotel
+    @Mapping(target = "hotel", source = "hotel")
+    public abstract Espacos toEntity(EspacosRequestDTO dto, Hotel hotel);
 
     @Mapping(source = "hotel", target = "hotel")
     public abstract EspacosResponseDTO toDto(Espacos dto);
@@ -38,11 +39,4 @@ public abstract class EspacosMapper {
 
     public abstract List<EspacosResponseDTO> toList(List<Espacos> espacos);
 
-    //na composicao de mapeamento o espaco tem referencia ao Hotel
-    //Responsabilidade do mapper montar a entidade completa e nao a service
-    @Named("mapHotel")
-    protected Hotel mapHotel(Long idHotel) {
-        return hotelRepository.findById(idHotel)
-                .orElseThrow(() -> new RuntimeException("Hotel não encontrado"));
-    }
 }

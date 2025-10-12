@@ -27,15 +27,30 @@ public class HotelService {
       return repository.save(mapper.toEntity(dto)).getId();
     }
 
-    // Buscar hotel por ID
+    /**
+     * Busca um hotel pelo ID e o converte para um DTO de resposta.
+     * Ideal para ser usado pela camada de Controller.
+     */
     @Transactional(readOnly = true)
-    public HotelResponseDTO findById(Long id) {
+    public HotelResponseDTO findDtoById(Long id) {
         Hotel hotel = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hotel não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado com o ID: " + id));
         return mapper.toDTO(hotel);
     }
 
-    // Listar todos os hotéis
+    /**
+     * Busca a entidade Hotel pelo ID.
+     * Ideal para ser usado por outros serviços que precisam do objeto de domínio.
+     * O nome "get" indica que ele lança uma exceção se o recurso não for encontrado.
+     */
+    //Metodo auxiliar para outros servicos
+    @Transactional(readOnly = true)
+    public Hotel getHotelById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado com o ID: " + id));
+    }
+
+
     @Transactional(readOnly = true)
     public List<HotelResponseDTO> findAll() {
         return repository.findAll()
@@ -45,16 +60,14 @@ public class HotelService {
     }
 
 
+    // Atualiza um hotel existente com base no ID e nos dados do DTO
     @Transactional
-    public HotelResponseDTO update(Long id, HotelRequestDTO dto) {
-        Hotel existingHotel = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Hotel não encontrado com o ID: " + id));
+    public void update(Long id, HotelRequestDTO dto) {
+        Hotel existingHotel = getHotelById(id);
 
         // Atualiza os campos do hotel existente com os dados do DTO
         mapper.updateEntityFromDTO(dto, existingHotel);
 
-        Hotel updatedHotel = repository.save(existingHotel);
-        return mapper.toDTO(updatedHotel);
     }
 
     @Transactional

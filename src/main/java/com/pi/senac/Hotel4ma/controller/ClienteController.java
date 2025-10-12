@@ -46,7 +46,7 @@ public class ClienteController implements GenericController {
 
     @GetMapping("{id}")
     public ResponseEntity<ClienteResponseDTO> findById(@PathVariable("id") Long id) {
-        var cliente = service.findById(id);
+        var cliente = service.findDtoById(id);
         return ResponseEntity.ok(cliente);
     }
 

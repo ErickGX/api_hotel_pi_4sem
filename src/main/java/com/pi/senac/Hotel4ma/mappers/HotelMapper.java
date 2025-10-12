@@ -16,7 +16,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )public interface HotelMapper {
 
-
     HotelResponseDTO toDTO(Hotel entity);
 
     //anotacoes de sanitizacao de segurança - XSS e injeção de SQL

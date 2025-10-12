@@ -30,7 +30,7 @@ public class HotelController implements GenericController {
 
     @GetMapping("{id}")
     public ResponseEntity<HotelResponseDTO> findById(@PathVariable("id") Long id) {
-        var hotel = service.findById(id);
+        var hotel = service.findDtoById(id);
         if (hotel == null) {
             return ResponseEntity.notFound().build();
         }
@@ -57,10 +57,9 @@ public class HotelController implements GenericController {
             @RequestBody @Valid HotelRequestDTO dto) {
 
         service.update(id, dto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
-
-    //    @PutMapping("/{id}")
+//    @PutMapping("/{id}") //metodo alternativo que retorna o dto atualizado
 //    public ResponseEntity<HotelResponseDTO> updateHotel(@PathVariable Long id, @RequestBody @Valid HotelRequestDTO dto) {
 //        HotelResponseDTO updatedHotel = service.updateHotel(id, dto);
 //        return ResponseEntity.ok(updatedHotel);

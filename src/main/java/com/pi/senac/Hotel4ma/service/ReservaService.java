@@ -37,7 +37,7 @@ public class ReservaService {
             funcionario = funcionarioService.getFuncionarioByid(dto.funcionarioId());
         }
 
-        Cliente cliente = clienteService.getClienteById(dto.clienteId());
+        Cliente cliente = clienteService.getClienteById(dto.clienteId());//metodo get expoe a entidade Cliente
         InstalacaoAlugavel instalacao = instalacaoService.getInstalacaoById(dto.instalacaoAlugavelId());
 
         //Verifica se existe conflito de reserva -- null é porque é um save, no update passaria o id da reserva

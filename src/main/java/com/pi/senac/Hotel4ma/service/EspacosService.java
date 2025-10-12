@@ -5,6 +5,7 @@ import com.pi.senac.Hotel4ma.dtos.Espacos.Response.EspacosResponseDTO;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.EspacosMapper;
 import com.pi.senac.Hotel4ma.model.Espacos;
+import com.pi.senac.Hotel4ma.model.Hotel;
 import com.pi.senac.Hotel4ma.repository.EspacosRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,13 @@ public class EspacosService {
 
     private final EspacosRepository repository;
     private final EspacosMapper mapper;
+    private final HotelService hotelService;
 
     @Transactional
     public Long create(EspacosRequestDTO dto) {
+        Hotel hotel = hotelService.getHotelById(dto.id_hotel());
         //retorna apenas o id gerado para inserir no header location
-        return repository.save(mapper.toEntity(dto)).getId();
+        return repository.save(mapper.toEntity(dto,hotel)).getId();
     }
 
     @Transactional

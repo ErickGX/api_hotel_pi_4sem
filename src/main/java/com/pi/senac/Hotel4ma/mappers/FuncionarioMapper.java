@@ -21,9 +21,6 @@ import java.util.List;
 public abstract class FuncionarioMapper {
 
     @Autowired
-    private HotelRepository hotelRepository;
-
-    @Autowired
     protected InputSanitizer sanitizer;
 
     // Esse metodo é chamado automaticamente para mapear o campo hotel
@@ -34,13 +31,15 @@ public abstract class FuncionarioMapper {
     @Mapping(source = "hotel", target = "hotel")
     public abstract FuncionarioResponseDTO toDTO(Funcionario funcionario);
 
-    @Mapping(target = "hotel", source = "id_hotel", qualifiedByName = "mapHotel")
+
+    @Mapping(target = "id", ignore = true) // Impede o mapeamento automático do id do hotel
+    @Mapping(target = "hotel", source = "hotel") // Mapeia corretamente o relacionamento
     @Mapping(target = "nome", expression = "java(sanitizer.sanitizeText(dto.nome()))")
     @Mapping(target = "cpf", expression = "java(sanitizer.sanitizeNumeric(dto.cpf()))")
     @Mapping(target = "email", expression = "java(sanitizer.sanitizeEmail(dto.email()))")
     @Mapping(target = "telefone", expression = "java(sanitizer.sanitizeNumeric(dto.telefone()))")
     @Mapping(target = "senha", expression = "java(sanitizer.sanitizeText(dto.senha()))")
-    public abstract Funcionario toEntity(FuncionarioRequest dto);
+    public abstract Funcionario toEntity(FuncionarioRequest dto, Hotel hotel);
 
     // Atualização: mescla dados no objeto existente
     @Mapping(target = "nome", expression = "java(sanitizer.sanitizeText(dto.nome()))")
@@ -48,11 +47,5 @@ public abstract class FuncionarioMapper {
     @Mapping(target = "telefone", expression = "java(sanitizer.sanitizeNumeric(dto.telefone()))")
     public abstract void updateEntidadeFromDto(FuncionarioUpdateRequest dto, @MappingTarget Funcionario funcionario);
 
-    //na composicao de mapeamento o funcionario tem referencia ao Hotel
-    //Responsabilidade do mapper montar a entidade completa e nao a service
-    @Named("mapHotel")
-    protected Hotel mapHotel(Long idHotel) {
-        return hotelRepository.findById(idHotel)
-                .orElseThrow(() -> new RuntimeException("Hotel não encontrado"));
-    }
+
 }

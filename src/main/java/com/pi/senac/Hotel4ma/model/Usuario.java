@@ -36,8 +36,8 @@ public abstract class Usuario {
     private String email;
 
 
-//    @Embedded
-//    private Senha senha;
+//  @Embedded
+//  private Senha senha;
     @Column(nullable = false, length = 100)
     private String senha;
 
