@@ -2,16 +2,12 @@ package com.pi.senac.Hotel4ma.mappers;
 
 import com.pi.senac.Hotel4ma.dtos.Hotel.Response.HotelResumoDTO;
 import com.pi.senac.Hotel4ma.dtos.Instalacao.Request.InstalacaoRequest;
-import com.pi.senac.Hotel4ma.dtos.Instalacao.Request.InstalacaoUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Instalacao.Response.InstalacaoResponseDTO;
-import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.model.*;
-import com.pi.senac.Hotel4ma.repository.HotelRepository;
 import com.pi.senac.Hotel4ma.security.sanitizer.InputSanitizer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -27,7 +23,10 @@ public abstract class InstalacaoMapper {
 
     // Atualização: mescla dados no objeto existente
     // Criação: usado após a Factory para preencher dados comuns
-    //@Mapping(target = "hotel", source = "id_hotel", qualifiedByName = "mapHotel")
+    @Mapping(target = "id", ignore = true) // <-- 1. NÃO MAPEIE O ID DE NENHUMA FONTE
+    @Mapping(target = "hotel", source = "hotel") // <-- 2. MAPEIE O OBJETO HOTEL PARA O CAMPO HOTEL
+    //sem as marcações acima o mapstruct tentaria setar o id do dto no id da entidade
+    //fazendo com que a entidade fosse tratada como existente e tentasse atualizar ao invés de criar
     @Mapping(target = "nome", expression = "java(sanitizer.sanitizeText(dto.nome()))")
     @Mapping(target = "descricao", expression = "java(sanitizer.sanitizeText(dto.descricao()))")
     public abstract void MergeEntidadeFromDto(InstalacaoRequest dto, @MappingTarget InstalacaoAlugavel instalacaoAlugavel, Hotel hotel);

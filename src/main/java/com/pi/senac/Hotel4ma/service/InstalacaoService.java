@@ -12,7 +12,6 @@ import com.pi.senac.Hotel4ma.model.InstalacaoAlugavel;
 import com.pi.senac.Hotel4ma.repository.InstalacaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -28,7 +27,7 @@ public class InstalacaoService {
     private final HotelService hotelService;
 
     //create apenas retorna o id da instalação criada
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public Long create(InstalacaoRequest dto) {
 
         Hotel hotel = hotelService.getHotelById(dto.id_hotel());
