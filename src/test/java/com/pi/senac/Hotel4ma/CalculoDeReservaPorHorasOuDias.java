@@ -3,7 +3,6 @@ package com.pi.senac.Hotel4ma;
 import com.pi.senac.Hotel4ma.enums.*;
 import com.pi.senac.Hotel4ma.model.*;
 import org.junit.jupiter.api.Test;
-
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 
