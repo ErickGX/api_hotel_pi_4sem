@@ -8,6 +8,7 @@ import com.pi.senac.Hotel4ma.service.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -40,23 +41,27 @@ public class ClienteController implements GenericController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
     public ResponseEntity<List<ClienteResponseDTO>> findAll() {
         return ResponseEntity.ok(service.listAll());
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
     public ResponseEntity<ClienteResponseDTO> findById(@PathVariable("id") Long id) {
         var cliente = service.findDtoById(id);
         return ResponseEntity.ok(cliente);
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/fisico/{id}")
+    @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<Void> atualizarFisico(
             @PathVariable("id") Long id,
             @RequestBody @Valid ClienteUpdateRequest request) {
@@ -66,6 +71,7 @@ public class ClienteController implements GenericController {
     }
 
     @PutMapping("/juridico/{id}")
+    @PreAuthorize("hasRole('CLIENTE')") //apenas clientes podem atualizar seus dados, pagina de perfil
     public ResponseEntity<Void> atualizarJuridico(
             @PathVariable("id") Long id,
             @RequestBody @Valid ClienteUpdateRequest request) {

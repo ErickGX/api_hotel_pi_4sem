@@ -1,3 +1,4 @@
+// src/main/java/com/pi/senac/Hotel4ma/validation/Cnpj.java
 package com.pi.senac.Hotel4ma.validation;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -15,14 +16,13 @@ public class Cnpj extends ValidadorDocumento {
 
     @JsonCreator
     public Cnpj(String numero) {
-        this.numero = numero.replaceAll("[^\\d]", "");  // remove caracteres não numéricos
+        this.numero = numero == null ? null : numero.replaceAll("[^\\d]", "");  // remove caracteres não numéricos
     }
 
     @JsonValue
     public String getNumero() {
         return this.numero;
     }
-
 
     @Override
     public boolean validarDoc() {

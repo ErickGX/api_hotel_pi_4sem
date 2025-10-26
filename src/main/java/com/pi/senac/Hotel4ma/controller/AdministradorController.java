@@ -6,6 +6,7 @@ import com.pi.senac.Hotel4ma.service.AdministradorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ public class AdministradorController implements GenericController {
     //Nao permitido nenhuma outra operação
     //apenas logar admin no futuro
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> create(
             @RequestBody @Valid AdminRequestDTO request) {
 

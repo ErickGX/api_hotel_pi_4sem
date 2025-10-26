@@ -6,6 +6,7 @@ import com.pi.senac.Hotel4ma.service.EspacosService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -20,7 +21,8 @@ public class EspacosController implements GenericController {
     private static final String base_path = "api/espacos";
 
     @PostMapping()
-    public ResponseEntity<Void> createFisico(
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> create(
             @RequestBody @Valid EspacosRequestDTO request) {
 
         Long id_gerado = service.create(request);
@@ -28,12 +30,15 @@ public class EspacosController implements GenericController {
         return ResponseEntity.created(location).build();
     }
 
+
+
     @GetMapping
     public ResponseEntity<List<EspacosResponseDTO>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EspacosResponseDTO> findById(@PathVariable("id") Long id) {
         var espaco = service.findById(id);
         if (espaco == null) {
@@ -43,6 +48,7 @@ public class EspacosController implements GenericController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable Long id){
         service.deleteById(id);
         return ResponseEntity.noContent().build();

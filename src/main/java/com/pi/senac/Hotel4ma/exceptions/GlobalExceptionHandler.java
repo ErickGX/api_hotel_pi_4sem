@@ -1,8 +1,12 @@
 package com.pi.senac.Hotel4ma.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,6 +20,48 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+
+
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiError> handleAuthorizationDenied(AuthorizationDeniedException ex, HttpServletRequest request){
+
+        log.warn("Tentativa de acesso não autorizado: {}", ex.getMessage());
+
+        ApiError errorApi = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN.value(),
+                "Acesso Negado",
+                "Você não possui permissão para acessar este recurso." + ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+        return new ResponseEntity<>(errorApi, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(AuthenticationException.class) // 2. Especifique a exceção base
+    public ResponseEntity<ApiError> handleAuthenticationException(
+            AuthenticationException ex, HttpServletRequest request) { // Use HttpServletRequest
+
+        // Log mais detalhado, pois AuthenticationException tem subclasses úteis
+        log.warn("Falha na autenticação: {} - Causa: {}", ex.getClass().getSimpleName(), ex.getMessage());
+
+        // Cria o seu DTO de erro padrão
+        ApiError errorApi = new ApiError(
+                LocalDateTime.now(), // Timestamp
+                HttpStatus.UNAUTHORIZED.value(), // Status 401
+                "Não Autorizado", // Título do erro
+                "Falha na autenticação: " + ex.getMessage(), // Mensagem (pode vazar detalhes, ajuste se necessário)
+                request.getRequestURI(), // Caminho da requisição
+                null // Lista de erros
+        );
+
+        // Retorna o ResponseEntity
+        return new ResponseEntity<>(errorApi, HttpStatus.UNAUTHORIZED);
+    }
 
 
     @ExceptionHandler(ResourceNotFoundException.class)

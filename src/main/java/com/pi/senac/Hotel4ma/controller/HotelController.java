@@ -6,6 +6,7 @@ import com.pi.senac.Hotel4ma.service.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -21,6 +22,7 @@ public class HotelController implements GenericController {
 
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createHotel(@RequestBody @Valid HotelRequestDTO dto){
        Long id_gerado = service.saveHotel(dto);
        URI location =  gerarHeaderLocation(base_path, id_gerado);
@@ -29,6 +31,7 @@ public class HotelController implements GenericController {
 
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HotelResponseDTO> findById(@PathVariable("id") Long id) {
         var hotel = service.findDtoById(id);
         if (hotel == null) {
@@ -39,12 +42,14 @@ public class HotelController implements GenericController {
 
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<HotelResponseDTO>> findAll() {
         List<HotelResponseDTO> hotels = service.findAll();
         return ResponseEntity.ok(hotels);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
@@ -52,6 +57,7 @@ public class HotelController implements GenericController {
 
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateHotel(
             @PathVariable Long id,
             @RequestBody @Valid HotelRequestDTO dto) {
@@ -59,10 +65,5 @@ public class HotelController implements GenericController {
         service.update(id, dto);
         return ResponseEntity.noContent().build();
     }
-//    @PutMapping("/{id}") //metodo alternativo que retorna o dto atualizado
-//    public ResponseEntity<HotelResponseDTO> updateHotel(@PathVariable Long id, @RequestBody @Valid HotelRequestDTO dto) {
-//        HotelResponseDTO updatedHotel = service.updateHotel(id, dto);
-//        return ResponseEntity.ok(updatedHotel);
-//    }
 
 }

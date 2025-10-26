@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Optional;
+
 public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> {
 
     //Permite verificar colisão sem bloquear quando o valor é do próprio cliente.
@@ -14,4 +16,6 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
     boolean existsByCpf(String cpf);
 
     boolean existsByEmail(String email);
+
+    Optional<Funcionario> findByEmail(String email);
 }

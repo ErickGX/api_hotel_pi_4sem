@@ -1,9 +1,8 @@
 package com.pi.senac.Hotel4ma.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
+import com.pi.senac.Hotel4ma.enums.Role;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -35,17 +34,18 @@ public abstract class Usuario {
     @Column(unique = true)
     private String email;
 
-
-//  @Embedded
-//  private Senha senha;
+    //@Embedded
+    //private Senha senha;
     @Column(nullable = false, length = 100)
     private String senha;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Pattern(regexp = "^[0-9]{11}$", message = "Telefone deve conter exatamente 11 dígitos numéricos")
     @Size(min = 11, max = 11, message = "Telefone deve ter exatamente 11 dígitos")
     @Column(length = 11)
     private String telefone;
-
 
     @CreatedDate //Spring preenche a data automaticamente ao criar
     @Column(name = "data_cadastro", nullable = false)

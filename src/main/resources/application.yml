@@ -2,10 +2,13 @@
 spring:
   application:
     name: Hotel4ma
+
   datasource:
     url: jdbc:mysql://localhost:3306/pihotel
-    username: root
-    password: root
+    username: ${db_username}
+    password: ${db_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver  #importante em alguns ambientes
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,12 +16,33 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  output:
-    ansi:
-      enabled: ALWAYS
+
   jackson:
     default-property-inclusion: non_null
+
   main:
     banner-mode: off
+
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${client_id}
+            client-secret: ${client_secret}
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"  #  necessário p/ callback
+            scope:
+              - openid
+              - email
+              - profile
+
 server:
   port: 8081
+
+
+
+  logging:
+    level:
+      org.springframework.security: trace
+      org.hibernate.SQL: debug

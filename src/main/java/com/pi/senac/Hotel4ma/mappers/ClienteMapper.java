@@ -70,7 +70,6 @@ public interface ClienteMapper {
     void updateEntidadeFromDto(ClienteUpdateRequest dto, @MappingTarget ClienteFisico cliente);
 
 
-
     @Mapping(source = "nome", target = "nome" , qualifiedByName = "textSanitizer")
     @Mapping(source = "email", target = "email" , qualifiedByName = "emailSanitizer")
     @Mapping(source = "telefone", target = "telefone" , qualifiedByName = "numericSanitizer")

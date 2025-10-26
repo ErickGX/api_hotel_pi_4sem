@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClienteFisicoRepository extends JpaRepository<ClienteFisico, Long> {
     boolean existsByCpf(String cpf);
+
 }

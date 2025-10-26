@@ -1,14 +1,15 @@
 package com.pi.senac.Hotel4ma.service;
 
+import com.pi.senac.Hotel4ma.config.PasswordEncoderConfig;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Request.FuncionarioRequest;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Request.FuncionarioUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResponseDTO;
+import com.pi.senac.Hotel4ma.enums.Role;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.mappers.FuncionarioMapper;
 import com.pi.senac.Hotel4ma.model.Funcionario;
 import com.pi.senac.Hotel4ma.model.Hotel;
 import com.pi.senac.Hotel4ma.repository.FuncionarioRepository;
-import com.pi.senac.Hotel4ma.repository.HotelRepository;
 import com.pi.senac.Hotel4ma.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,18 +25,25 @@ public class FuncionarioService {
     private final FuncionarioMapper mapper;
     private final ValidationService validationService;
     private final HotelService hotelService;
+    private final PasswordEncoderConfig passwordEncoderConfig;
 
 
     @Transactional
     public Long saveFuncionario(FuncionarioRequest dto) {
-        //Valida se o cpf e email já estão cadastrados
 
        Hotel hotel =  hotelService.getHotelById(dto.id_hotel());
-
+        //Valida se o cpf e email já estão cadastrados
         validationService.validateNewFuncionario(dto.cpf(), dto.email());
-        Funcionario funcionario = repository.save(mapper.toEntity(dto, hotel));
-        return funcionario.getId();
+
+        Funcionario funcionario = mapper.toEntity(dto, hotel);
+        String senhaCriptografada = passwordEncoderConfig.bCryptPasswordEncoder().encode(dto.senha());
+        funcionario.setSenha(senhaCriptografada);
+        funcionario.setRole(Role.FUNCIONARIO);
+
+        Funcionario salvo = repository.save(funcionario);
+        return salvo.getId();
     }
+
 
     @Transactional
     public FuncionarioResponseDTO update(FuncionarioUpdateRequest dto, Long id) {

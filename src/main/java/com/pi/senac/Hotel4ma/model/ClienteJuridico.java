@@ -1,6 +1,6 @@
 package com.pi.senac.Hotel4ma.model;
 
-import com.pi.senac.Hotel4ma.validation.Cnpj;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

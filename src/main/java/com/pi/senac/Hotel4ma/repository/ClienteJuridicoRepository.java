@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClienteJuridicoRepository extends JpaRepository<ClienteJuridico, Long> {
         boolean existsByCnpj(String cnpj);
+
 }

@@ -7,6 +7,7 @@ import com.pi.senac.Hotel4ma.model.Reserva;
 import com.pi.senac.Hotel4ma.service.ReservaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -22,6 +23,7 @@ public class ReservaController implements GenericController{
     private static String base_path = "/api/instalacoes";
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENTE')")
     public ResponseEntity<ReservaResponseDTO> create(@RequestBody ReservaRequest dto){
         ReservaResponseDTO criada  =  service.save(dto);
         URI location =  gerarHeaderLocation(base_path, criada.id());
@@ -29,6 +31,7 @@ public class ReservaController implements GenericController{
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
     public ResponseEntity<List<ReservaResponseDTO>> findAll(){
         List<ReservaResponseDTO> lista = service.findAll();
         return ResponseEntity.ok(lista);

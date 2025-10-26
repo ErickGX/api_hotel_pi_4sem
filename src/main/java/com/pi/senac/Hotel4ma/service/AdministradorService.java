@@ -1,7 +1,10 @@
 package com.pi.senac.Hotel4ma.service;
 
+import com.pi.senac.Hotel4ma.config.PasswordEncoderConfig;
 import com.pi.senac.Hotel4ma.dtos.Administrador.Request.AdminRequestDTO;
+import com.pi.senac.Hotel4ma.enums.Role;
 import com.pi.senac.Hotel4ma.mappers.AdministradorMapper;
+import com.pi.senac.Hotel4ma.model.Administrador;
 import com.pi.senac.Hotel4ma.repository.AdministradorRepository;
 import com.pi.senac.Hotel4ma.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +17,15 @@ public class AdministradorService {
     private final AdministradorRepository repository;
     private final AdministradorMapper mapper;
     private final ValidationService validationService;
+    private final PasswordEncoderConfig passwordEncoderConfig;
 
     @Transactional
     public void create(AdminRequestDTO dto) {
         validationService.validateNewAdministrador(dto.cpf(), dto.email());
-        repository.save(mapper.toEntity(dto));
+        String senhaCriptografada = passwordEncoderConfig.bCryptPasswordEncoder().encode(dto.senha());
+        Administrador admin = mapper.toEntity(dto);
+        admin.setSenha(senhaCriptografada);
+        admin.setRole(Role.ADMIN);
+        repository.save(admin);
     }
 }

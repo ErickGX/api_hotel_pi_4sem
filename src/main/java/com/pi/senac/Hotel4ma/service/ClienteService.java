@@ -1,9 +1,11 @@
 package com.pi.senac.Hotel4ma.service;
 
+import com.pi.senac.Hotel4ma.config.PasswordEncoderConfig;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteFisicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteJuridicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
+import com.pi.senac.Hotel4ma.enums.Role;
 import com.pi.senac.Hotel4ma.exceptions.DuplicateCpfException;
 import com.pi.senac.Hotel4ma.exceptions.DuplicateEmailException;
 import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
@@ -16,6 +18,7 @@ import com.pi.senac.Hotel4ma.repository.ClienteJuridicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteRepository;
 import com.pi.senac.Hotel4ma.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,7 @@ public class ClienteService {
     private final ClienteJuridicoRepository juridicoRepository;
     private final ClienteMapper mapper;
     private final ValidationService validationService;
+    private final PasswordEncoderConfig passwordEncoderConfig;
 
 
 
@@ -39,9 +43,12 @@ public class ClienteService {
         //verificação completa para cpf e email duplicados
         validationService.validateNewClienteFisico(dto.cpf(), dto.email());
 
-        //Fiz uma refatoração deste codigo no createJuridico para 1 linha (Bom) ?
         //return mapper.toDTO(repository.save(mapper.toEntity(dto)));
-        return repository.save(mapper.toEntity(dto)).getId();
+        ClienteFisico entity = mapper.toEntity(dto);
+        String senhaCriptografada = passwordEncoderConfig.bCryptPasswordEncoder().encode(dto.senha());
+        entity.setSenha(senhaCriptografada);
+        entity.setRole(Role.CLIENTE);
+        return repository.save(entity).getId();
     }
 
     //validação de email e cnpj existentes
@@ -55,8 +62,11 @@ public class ClienteService {
         if (juridicoRepository.existsByCnpj(dto.cnpj())) {
             throw new DuplicateCpfException("CNPJ já existente, tente novamente");
         }
-
-        return repository.save(mapper.toEntity(dto)).getId();
+        ClienteJuridico entity = mapper.toEntity(dto);
+        String senhaCriptografada = passwordEncoderConfig.bCryptPasswordEncoder().encode(dto.senha());
+        entity.setSenha(senhaCriptografada);
+        entity.setRole(Role.CLIENTE);
+        return repository.save(entity).getId();
     }
 
 
@@ -65,12 +75,10 @@ public class ClienteService {
         //Uso de repositorio especifico para garantir o tipo correto
         ClienteFisico cliente = fisicoRepository.findById(idCliente)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente Fisico não encontrado com este ID"));
-
         //encapsulamento em metodo generelatista
         validationService.validateEmailOnUpdateCliente(dto.email(), cliente);
         //Mescla os novos valores automaticamente
         mapper.updateEntidadeFromDto(dto, cliente);
-
         //Persiste e retorna a resposta
         return mapper.toDTO(repository.save(cliente));
     }
@@ -80,13 +88,10 @@ public class ClienteService {
         //Uso de repositorio especifico para garantir o tipo correto
         ClienteJuridico cliente = juridicoRepository.findById(idCliente)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente Juridico não encontrado com este ID"));
-
         //encapsulamento em metodo generelatista
         validationService.validateEmailOnUpdateCliente(dto.email(), cliente);
-
         //Mescla os novos valores automaticamente
         mapper.updateEntidadeFromDto(dto, cliente);
-
         //Persiste e retorna a resposta
         return mapper.toDTO(repository.save(cliente));
     }
@@ -117,7 +122,6 @@ public class ClienteService {
     public ClienteResponseDTO findDtoById(Long id) {
         return mapper.toDTO(repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado com o ID: " + id)));
-
     }
 
     /**

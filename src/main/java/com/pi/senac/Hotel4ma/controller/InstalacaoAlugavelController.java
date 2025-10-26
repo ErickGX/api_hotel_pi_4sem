@@ -8,6 +8,7 @@ import com.pi.senac.Hotel4ma.enums.*;
 import com.pi.senac.Hotel4ma.service.InstalacaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -22,30 +23,31 @@ public class InstalacaoAlugavelController implements GenericController {
 
     private final InstalacaoService service;
 
-    private static String base_path = "/api/instalacoes";
+    private static final String base_path = "/api/instalacoes";
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> save(@RequestBody InstalacaoRequest request) {
-
         Long id_gerado = service.create(request);
-
         URI location = gerarHeaderLocation(base_path, id_gerado);
         return ResponseEntity.created(location).build();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
     public ResponseEntity<InstalacaoResponseDTO> findById(@PathVariable Long id) {
         InstalacaoResponseDTO response = service.findById(id);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
+    @GetMapping  //rota publica para uso no front-end
     public ResponseEntity<List<InstalacaoResponseDTO>> findAll() {
         List<InstalacaoResponseDTO> response = service.findAll();
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<InstalacaoResponseDTO> update(
             @PathVariable Long id,
             @RequestBody InstalacaoUpdateRequest dto) {
@@ -55,6 +57,7 @@ public class InstalacaoAlugavelController implements GenericController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
@@ -62,6 +65,7 @@ public class InstalacaoAlugavelController implements GenericController {
 
 
     //olha que bagulho satanico no controller
+    //Acesso publico para simular orcamento
     @GetMapping("/orcamento")
     public ResponseEntity<?> simularOrcamento(
             @RequestParam String tipo,
