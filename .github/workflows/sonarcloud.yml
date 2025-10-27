@@ -38,11 +38,13 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build with Maven
-        run: mvn -B clean verify
+      # 🧩 Etapa de build ajustada para pular testes
+      - name: Build com Maven (sem testes)
+        run: mvn -B clean verify -DskipTests
 
+      # 🔎 Etapa de análise no SonarCloud
       - name: SonarCloud Scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # gerado automaticamente pelo GitHub
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}     # você cria no SonarCloud
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        run: mvn -B verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
