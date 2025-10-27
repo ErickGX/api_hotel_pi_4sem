@@ -2,7 +2,6 @@ package com.pi.senac.Hotel4ma.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -40,7 +39,6 @@ public class JwtKeyConfig {
      */
     @Bean
     public RSAPublicKey rsaPublicKey(KeyPair keyPair) {
-        System.out.println("Chave Pública RSA gerada: " + keyPair.getPublic().toString());
         return (RSAPublicKey) keyPair.getPublic();
     }
 
