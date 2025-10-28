@@ -4,12 +4,17 @@ import com.pi.senac.Hotel4ma.enums.TipoPagamento;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
+@SQLDelete(sql = "UPDATE {h-schema}pagamento SET ativo = false WHERE id = ?") // 1. Intercepta o DELETE
+@SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
 public class Pagamento {
 
     @Id
@@ -22,6 +27,9 @@ public class Pagamento {
 
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal valorTotal;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     @CreationTimestamp
     @Column(name = "hora_pagamento", nullable = false)

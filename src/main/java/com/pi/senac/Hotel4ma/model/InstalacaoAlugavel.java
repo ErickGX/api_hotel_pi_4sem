@@ -3,6 +3,8 @@ package com.pi.senac.Hotel4ma.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @EntityListeners(AuditingEntityListener.class)
+@SQLDelete(sql = "UPDATE {h-schema}instalacao_alugavel SET ativo = false WHERE id = ?") // 1. Intercepta o DELETE
+@SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
 public abstract class InstalacaoAlugavel {
 
     @Id
@@ -22,6 +26,9 @@ public abstract class InstalacaoAlugavel {
 
     @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     @Column(name = "preco_base", precision = 10, scale = 2, nullable = false)
     private BigDecimal precoBase = BigDecimal.valueOf(1000.00);

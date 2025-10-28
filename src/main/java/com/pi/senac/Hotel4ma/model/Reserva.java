@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -19,6 +21,8 @@ import java.time.LocalDateTime;
 @Entity
 //mover para DTO futuramente
 @EntityListeners(AuditingEntityListener.class)
+@SQLDelete(sql = "UPDATE {h-schema}reserva SET ativo = false WHERE id = ?") // 1. Intercepta o DELETE
+@SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
 public class Reserva {
 
     @Id
@@ -31,6 +35,9 @@ public class Reserva {
 
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal valorTotal;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

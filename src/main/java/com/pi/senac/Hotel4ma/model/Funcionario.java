@@ -2,6 +2,8 @@ package com.pi.senac.Hotel4ma.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "funcionarios")
+@SQLDelete(sql = "UPDATE {h-schema}funcionario SET ativo = false WHERE id = ?") // 1. Intercepta o DELETE
+@SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
 public class Funcionario extends Usuario {
 
     @Id
@@ -22,6 +26,9 @@ public class Funcionario extends Usuario {
     @Column(unique = true, nullable = false)
     @CPF
     private String cpf;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     // Funcionário precisa obrigatoriamente estar vinculado a um hotel
     @ManyToOne(optional = false)

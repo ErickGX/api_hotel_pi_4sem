@@ -4,6 +4,8 @@ import com.pi.senac.Hotel4ma.enums.TipoEspacos;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
+@SQLDelete(sql = "UPDATE {h-schema}espacos SET ativo = false WHERE id = ?") // 1. Intercepta o DELETE
+@SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
 public class Espacos {
 
     @Id
@@ -26,6 +30,9 @@ public class Espacos {
 
     @Column(nullable = false)
     private String descricao;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     //implementacao da foto do espaco - futuramente
 

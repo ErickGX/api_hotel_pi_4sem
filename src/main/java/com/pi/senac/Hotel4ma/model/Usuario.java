@@ -31,8 +31,11 @@ public abstract class Usuario {
     //protected Email email;
 
     @Email
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     //@Embedded
     //private Senha senha;
@@ -40,11 +43,12 @@ public abstract class Usuario {
     private String senha;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     @Pattern(regexp = "^[0-9]{11}$", message = "Telefone deve conter exatamente 11 dígitos numéricos")
     @Size(min = 11, max = 11, message = "Telefone deve ter exatamente 11 dígitos")
-    @Column(length = 11)
+    @Column(length = 11, nullable = false)
     private String telefone;
 
     @CreatedDate //Spring preenche a data automaticamente ao criar
@@ -52,6 +56,6 @@ public abstract class Usuario {
     private LocalDateTime dataCadastro;
 
     @LastModifiedDate //Spring preenche a data automaticamente ao atualizar
-    @Column(name = "data_atualizacao")
+    @Column(name = "data_atualizacao", nullable = false)
     private LocalDateTime dataAtualizacao;
 }

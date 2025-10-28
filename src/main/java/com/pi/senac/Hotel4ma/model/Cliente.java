@@ -5,6 +5,8 @@ import com.pi.senac.Hotel4ma.enums.TipoCliente;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,8 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 //@DiscriminatorColumn(name = "tipo_cliente", length = 10)
 @Table(name = "clientes")
+@SQLDelete(sql = "UPDATE {h-schema}clientes SET ativo = false WHERE id = ?") // 1. Intercepta o DELETE
+@SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
 public abstract class Cliente extends Usuario {
 
     @Id

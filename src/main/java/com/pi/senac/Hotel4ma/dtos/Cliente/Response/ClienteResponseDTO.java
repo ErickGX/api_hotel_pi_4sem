@@ -16,6 +16,7 @@ public record ClienteResponseDTO(
         String cep,
         String logradouro,
         String numero,
+        Boolean ativo,
         String complemento,
         String bairro,
         String localidade,
