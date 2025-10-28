@@ -20,8 +20,10 @@ public abstract class ReservaMapper {
 
     @Mapping(target = "pagamento", ignore = true)
     @Mapping(target = "id", ignore = true)// diversas entidades possuem esse campo igual
+    @Mapping(target = "ativo", ignore = true)// diversas entidades possuem esse campo igual
     @Mapping(target = "dataCadastro", ignore = true)//ignorando eu evito o erro de possibilidade de varias fontes
     // para um campo que tem o mesmo nome em outras entidades
+
     public abstract Reserva toEntity(ReservaRequest dto, Cliente cliente, Funcionario funcionario, InstalacaoAlugavel instalacaoAlugavel);
 
     // Converte Reserva -> ReservaResponseDTO
