@@ -104,16 +104,12 @@ public class SecurityConfigurarion {
                 .authorizeHttpRequests(auth ->
                         auth
                                 //Permite acesso público à documentação da API
-                                .requestMatchers("/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html").permitAll()
-//                                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll() //rota de login via form é pública
-//                                .requestMatchers("/api/auth/oauth2/**").permitAll() //o fluxo OAuth2 é público
-
-                                .requestMatchers("/api/auth/login", "/oauth2/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html").permitAll()//Documentação pública da API
+                                .requestMatchers("/api/auth/login", "/oauth2/**").permitAll()//Permite acesso público ao endpoint de login e OAuth2
                                 .requestMatchers(HttpMethod.GET,"/api/instalacoes").permitAll() //Lista GET de instalacoes publica para frontend
                                 .requestMatchers(HttpMethod.GET, "/api/espacos").permitAll() //Lista GET de espaços publica para frontend
                                 .requestMatchers(HttpMethod.POST, "/api/clientes/juridico").permitAll() //rota de criação de cliente juridico é pública
                                 .requestMatchers(HttpMethod.POST, "/api/clientes/fisico").permitAll() //rota de criação de cliente fisico é pública
-
                                 .anyRequest().authenticated()//Qualquer coisa abaixo dessa linha é ignorada
 
                 )
