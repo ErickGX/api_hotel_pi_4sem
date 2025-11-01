@@ -41,7 +41,7 @@ public class Reserva {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusReserva statusReserva;
+    private StatusReserva statusReserva = StatusReserva.ATIVA;
 
     @Column(nullable = false)
     private LocalDateTime checkIn;

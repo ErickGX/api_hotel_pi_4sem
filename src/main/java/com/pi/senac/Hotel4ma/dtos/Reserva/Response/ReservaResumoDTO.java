@@ -12,6 +12,6 @@ public record ReservaResumoDTO(
         LocalDateTime checkIn,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
         LocalDateTime checkOut,
-        StatusReserva status,
+        StatusReserva statusReserva,
         BigDecimal valorTotal
 ) {}

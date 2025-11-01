@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 public record ReservaRequest(
         @NotBlank(message = "Campo tipoPagamento é obrigatório")
         TipoPagamento tipoPagamento,
-        @NotBlank(message = "Campo statusReserva é obrigatório")
-        StatusReserva statusReserva,
         @NotBlank(message = "Campo checkIn é obrigatório")
         LocalDateTime checkIn,
         @NotBlank(message = "Campo checkOut é obrigatório")

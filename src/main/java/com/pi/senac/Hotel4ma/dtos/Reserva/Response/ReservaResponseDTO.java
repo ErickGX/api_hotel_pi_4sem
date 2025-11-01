@@ -13,7 +13,7 @@ public record ReservaResponseDTO(
         Long id,
         TipoPagamento tipoPagamento,
         BigDecimal valorTotal,
-        StatusReserva status,
+        String statusReserva,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
         LocalDateTime checkIn,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -23,6 +23,5 @@ public record ReservaResponseDTO(
         ClienteResumoDTO cliente,
         FuncionarioResumoDTO funcionario,
         InstalacaoResumoDTO instalacaoAlugavel
-
 ) {
 }

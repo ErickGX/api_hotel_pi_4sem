@@ -29,7 +29,7 @@ public class ReservaService {
     private final FuncionarioService funcionarioService;
     private final ReservaMapper mapper;
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public ReservaResponseDTO save(ReservaRequest dto) {
 
         Funcionario funcionario = null;
@@ -46,7 +46,6 @@ public class ReservaService {
         //Monta a entidade reserva usando o mapper, e as entidades relacionadas
         Reserva reserva = mapper.toEntity(dto, cliente, funcionario, instalacao);
 
-
         //Calcula o valor total da reserva
         var valorTotal = calculoPorHorasOuDias(reserva);
         reserva.setValorTotal(valorTotal);
@@ -58,11 +57,8 @@ public class ReservaService {
         pagamento.setHoraPagamento(LocalDateTime.now());
         pagamento.setTipoPagamento(reserva.getTipoPagamento());
         pagamento.setValorTotal(valorTotal);
-
-
         // Vincula o pagamento à reserva
         reserva.setPagamento(pagamento);
-
         //salva tudo de uma vez só(graças ao cascade)
         Reserva savedReserva = repository.save(reserva);
 
@@ -75,23 +71,13 @@ public class ReservaService {
         return mapper.toList(repository.findAll());
     }
 
-    private BigDecimal calculoPorHorasOuDias(Reserva reserva){
-        if (reserva.getInstalacaoAlugavel() instanceof Quarto){
-            int dias = (int) ChronoUnit.DAYS.between(reserva.getCheckIn(), reserva.getCheckOut());
-            return reserva.getInstalacaoAlugavel().calcularCustoTotal(dias);
-        } else {
-            int horas = (int) ChronoUnit.HOURS.between(reserva.getCheckIn(), reserva.getCheckOut());
-            return reserva.getInstalacaoAlugavel().calcularCustoTotal(horas);
-        }
-    }
-
-
     //util para checar conflitos de reserva no save e no Update
-    private void verificarConflitoReserva(
+    @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
+    protected void verificarConflitoReserva(
             Long instalacaoId,
             LocalDateTime checkIn,
             LocalDateTime checkOut,
-            Long reservaId                                   ){
+            Long reservaId){
         boolean conflito = repository.existsReservaConflitante(instalacaoId, checkIn, checkOut, reservaId);
 
         if (conflito){
@@ -104,6 +90,24 @@ public class ReservaService {
             throw new ReservaDataConflitanteException("Conflito de reserva para a instalação selecionada no período entre : " + checkInFormatado + " e " + checkOutFormatado);
         }
     }
+
+    @Transactional
+    public void saveFinalizadas(List<Reserva> reservas) {
+        repository.saveAll(reservas);
+    }
+
+
+        //Função para calcular o valor total da reserva baseado no tipo de instalação
+    private BigDecimal calculoPorHorasOuDias(Reserva reserva){
+        if (reserva.getInstalacaoAlugavel() instanceof Quarto){
+            int dias = (int) ChronoUnit.DAYS.between(reserva.getCheckIn(), reserva.getCheckOut());
+            return reserva.getInstalacaoAlugavel().calcularCustoTotal(dias);
+        } else {
+            int horas = (int) ChronoUnit.HOURS.between(reserva.getCheckIn(), reserva.getCheckOut());
+            return reserva.getInstalacaoAlugavel().calcularCustoTotal(horas);
+        }
+    }
+
 
 //  public class CalculadoraDeDiarias {
 //
