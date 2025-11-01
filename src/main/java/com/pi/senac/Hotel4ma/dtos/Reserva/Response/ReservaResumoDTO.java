@@ -1,6 +1,9 @@
 package com.pi.senac.Hotel4ma.dtos.Reserva.Response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.pi.senac.Hotel4ma.enums.StatusReserva;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record ReservaResumoDTO(
@@ -8,5 +11,7 @@ public record ReservaResumoDTO(
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
         LocalDateTime checkIn,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-        LocalDateTime checkOut
+        LocalDateTime checkOut,
+        StatusReserva status,
+        BigDecimal valorTotal
 ) {}

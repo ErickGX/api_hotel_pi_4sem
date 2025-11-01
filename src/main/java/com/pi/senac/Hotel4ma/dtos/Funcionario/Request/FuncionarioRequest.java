@@ -1,5 +1,6 @@
 package com.pi.senac.Hotel4ma.dtos.Funcionario.Request;
 
+import com.pi.senac.Hotel4ma.enums.CargoFuncionario;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -32,7 +33,7 @@ public record FuncionarioRequest(
         @Size(min = 6, max = 30, message = "Senha deve ter entre 6 e 30 caracteres")
         String senha,
 
-        @NotNull
+        @NotNull(message = "O ID do hotel é obrigatório")
         Long id_hotel
 
 ) {

@@ -74,7 +74,8 @@ public class JwtService {
         // Cria o token usando a sintaxe da Auth0
         return JWT.create()
                 .withSubject(userDetails.getUsername()) // O "Subject" é o email (username)
-                .withClaim("roles", roles) // Adiciona as roles como uma custom claim
+                .withClaim("roles", roles)
+                .withClaim("id_user", userDetails.getIdUsuario())// Adiciona as roles como uma custom claim
                 .withIssuedAt(now) // Data de emissão
                 .withExpiresAt(expiration) // Data de expiração
                 .sign(this.algorithm); // Assina com a chave privada

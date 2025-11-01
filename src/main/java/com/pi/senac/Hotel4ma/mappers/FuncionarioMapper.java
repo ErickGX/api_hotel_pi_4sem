@@ -6,12 +6,10 @@ import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.Hotel.Response.HotelResumoDTO;
 import com.pi.senac.Hotel4ma.model.Funcionario;
 import com.pi.senac.Hotel4ma.model.Hotel;
-import com.pi.senac.Hotel4ma.repository.HotelRepository;
 import com.pi.senac.Hotel4ma.security.sanitizer.InputSanitizer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

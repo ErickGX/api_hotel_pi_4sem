@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,6 +27,12 @@ public class GlobalExceptionHandler {
 
 
 
+    /**
+     * Captura erros de niveis de acesso a recursos protegidos  (ex: Cliente acessando recursos restristos a admins)
+     * Exceção lançada pelo Spring Security quando o usuário autenticado
+     * tenta acessar um recurso para o qual não tem permissão.
+     * Retorna 403 FORBIDDEN.
+     */
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ApiError> handleAuthorizationDenied(AuthorizationDeniedException ex, HttpServletRequest request){
 
@@ -42,24 +49,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorApi, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(AuthenticationException.class) // 2. Especifique a exceção base
+
+    @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiError> handleAuthenticationException(
-            AuthenticationException ex, HttpServletRequest request) { // Use HttpServletRequest
+            AuthenticationException ex, HttpServletRequest request) {
 
         // Log mais detalhado, pois AuthenticationException tem subclasses úteis
         log.warn("Falha na autenticação: {} - Causa: {}", ex.getClass().getSimpleName(), ex.getMessage());
 
-        // Cria o seu DTO de erro padrão
+
         ApiError errorApi = new ApiError(
-                LocalDateTime.now(), // Timestamp
+                LocalDateTime.now(),
                 HttpStatus.UNAUTHORIZED.value(), // Status 401
                 "Não Autorizado", // Título do erro
-                "Falha na autenticação: " + ex.getMessage(), // Mensagem (pode vazar detalhes, ajuste se necessário)
+                "Falha na autenticação: " + ex.getMessage(),
                 request.getRequestURI(), // Caminho da requisição
                 null // Lista de erros
         );
 
-        // Retorna o ResponseEntity
         return new ResponseEntity<>(errorApi, HttpStatus.UNAUTHORIZED);
     }
 
@@ -145,7 +152,40 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 "Dados Inválidos",
-                ex.getMessage(),
+                "Formatos de dados inválidos ou argumentos incorretos: ",
+                request.getRequestURI(),
+                null
+        );
+        return new ResponseEntity<>(errorApi, HttpStatus.BAD_REQUEST);
+    }
+
+
+    /**
+     * Captura erros de desserialização do JSON  que são lançados antes de
+     * a validação (@Valid) ser executada.
+     * Retorna 400 Bad Request.
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiError> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex, HttpServletRequest request) {
+
+        String mensagem = "Requisição JSON mal formatada ou com valor inválido.";
+
+        // Tenta extrair a causa raiz (que é a IllegalArgumentException)
+        Throwable cause = ex.getCause();
+        if (cause != null && cause.getMessage() != null) {
+            // Ex: "No enum constant com.pi.senac.Hotel4ma.enums.TipoEspacos.QUINTAL"
+            if (cause.getMessage().contains("No enum constant")) {
+                mensagem = "Valor inválido fornecido para um campo de seleção (enum).";
+            }
+        }
+
+        ApiError errorApi = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Requisição Inválida",
+                mensagem, // 3. Mensagem mais amigável
                 request.getRequestURI(),
                 null
         );
@@ -167,6 +207,10 @@ public class GlobalExceptionHandler {
     }
 
 
+    /**
+     * Metodo para captura de erros das DTOS e bindagem dos campos com erros
+     * retona 422 UNPROCESSABLE_ENTITY
+     * **/
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidationErrors(MethodArgumentNotValidException ex, WebRequest request) {
 

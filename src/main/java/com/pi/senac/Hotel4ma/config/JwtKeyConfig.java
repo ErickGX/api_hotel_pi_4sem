@@ -15,7 +15,7 @@ public class JwtKeyConfig {
      * Gera um par de chaves RSA (Pública e Privada) uma única vez
      * quando a aplicação inicia. Este par de chaves fica em memória.
      *
-     * (!!!) AVISO: APENAS PARA FINS ACADÊMICOS/DEMONSTRAÇÃO.
+     *
      * Em produção, as chaves NUNCA devem ser geradas em tempo de execução.
      * Elas devem ser carregadas de um local seguro (Vault, Variáveis de Ambiente, etc.).
      *
@@ -35,7 +35,7 @@ public class JwtKeyConfig {
 
     /**
      * Disponibiliza a Chave Pública RSA como um Bean para ser injetada
-     * em outros serviços (ex: no JwtService para verificar tokens).
+     * em outros serviços (no JwtService para verificar tokens).
      */
     @Bean
     public RSAPublicKey rsaPublicKey(KeyPair keyPair) {
@@ -44,7 +44,7 @@ public class JwtKeyConfig {
 
     /**
      * Disponibiliza a Chave Privada RSA como um Bean para ser injetada
-     * em outros serviços (ex: no JwtService para assinar tokens).
+     * em outros serviços (no JwtService para assinar tokens).
      */
     @Bean
     public RSAPrivateKey rsaPrivateKey(KeyPair keyPair) {

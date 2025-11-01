@@ -1,0 +1,32 @@
+package com.pi.senac.Hotel4ma.enums;
+
+public enum CargoFuncionario {
+    // Alta Gestão
+    GERENTE_GERAL,
+    DIRETOR_FINANCEIRO,
+    DIRETOR_OPERACOES,
+
+    // Gerência Média
+    GERENTE_HOSPEDAGEM,
+    GERENTE_RECEPCAO,
+    GERENTE_RESERVAS,
+    GERENTE_EVENTOS,
+    GERENTE_AB,
+    GOVERNANTA_EXECUTIVA,
+    CHEFE_MANUTENCAO,
+    CHEF_EXECUTIVO,
+    CHEF_SEGURANÇA,
+
+    // Supervisão
+    SUPERVISOR_RECEPCAO,
+    AUDITOR_NOTURNO,
+    COORDENADOR_EVENTOS,
+    MAITRE,
+
+    // Operacional
+    RECEPCIONISTA,
+    ANALISTA_RESERVAS,
+    CONCIERGE,
+    ANALISTA_FINANCEIRO,
+    COMPRADOR
+}

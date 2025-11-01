@@ -10,12 +10,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @Setter
 public class Administrador extends Usuario{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(unique = true, nullable = false)
     @CPF
     private String cpf;
-
 }

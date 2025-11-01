@@ -23,11 +23,9 @@ import java.util.List;
 @SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
 public abstract class Cliente extends Usuario {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Transient
     private TipoCliente tipoCliente;
 
     @Column(length = 8, nullable = false)

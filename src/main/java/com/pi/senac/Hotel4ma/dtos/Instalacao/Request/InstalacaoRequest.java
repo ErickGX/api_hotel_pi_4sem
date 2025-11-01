@@ -12,7 +12,7 @@ public record InstalacaoRequest(
         @NotBlank(message = "Campo nome é obrigatório")
         String nome,
 
-        @NotBlank(message = "Campo disponibilidade é obrigatório")
+        @NotNull(message = "Campo disponibilidade é obrigatório")
         Boolean isDisponivel,
 
         @Size(min = 3, max = 150, message = "Nome deve conter no mínimo 3 e no máximo 150 caracteres")
@@ -27,7 +27,7 @@ public record InstalacaoRequest(
 
         String numeroQuarto, //pode ser null, caso nao seja um quarto
 
-        @NotNull
-        Long id_hotel// só se for Quarto
+        @NotNull(message = "Campo precoDiaria é obrigatório")
+        Long id_hotel
 ) {
 }

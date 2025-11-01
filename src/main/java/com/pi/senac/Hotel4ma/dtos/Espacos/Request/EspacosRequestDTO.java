@@ -8,8 +8,8 @@ import jakarta.validation.constraints.Size;
 public record EspacosRequestDTO(
 
 
-        @NotNull(message = "O tipo de espaço é obrigatório")
-        TipoEspacos tipoEspacos,
+        @NotBlank(message = "O tipo de espaço é obrigatório")
+        String tipoEspacos,
 
         @NotBlank(message = "A descrição é obrigatória")
         @Size(min = 3, max = 255, message = "A descrição deve conter entre 3 e 255 caracteres")

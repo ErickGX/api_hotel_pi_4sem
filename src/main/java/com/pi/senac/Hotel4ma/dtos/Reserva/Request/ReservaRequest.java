@@ -3,25 +3,26 @@ package com.pi.senac.Hotel4ma.dtos.Reserva.Request;
 import com.pi.senac.Hotel4ma.enums.StatusReserva;
 import com.pi.senac.Hotel4ma.enums.TipoPagamento;
 import com.pi.senac.Hotel4ma.exceptions.BadRequestException;
-import com.pi.senac.Hotel4ma.exceptions.IllegalArgumentException;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
 public record ReservaRequest(
-        @NotNull
+        @NotBlank(message = "Campo tipoPagamento é obrigatório")
         TipoPagamento tipoPagamento,
-        @NotNull
+        @NotBlank(message = "Campo statusReserva é obrigatório")
         StatusReserva statusReserva,
-        @NotNull
+        @NotBlank(message = "Campo checkIn é obrigatório")
         LocalDateTime checkIn,
-        @NotNull
+        @NotBlank(message = "Campo checkOut é obrigatório")
         LocalDateTime checkOut,
-        @NotNull
+        @NotBlank(message = "Campo clienteId é obrigatório")
         Long clienteId,
-        @NotNull
+        @NotEmpty(message = "Não pode estar vazio")
         Long funcionarioId,
-        @NotNull
+        @NotBlank(message = "Campo instalacaoAlugavelId é obrigatório")
         Long instalacaoAlugavelId
 ) {
 

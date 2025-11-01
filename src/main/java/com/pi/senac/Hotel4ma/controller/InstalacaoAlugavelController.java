@@ -6,6 +6,7 @@ import com.pi.senac.Hotel4ma.dtos.Instalacao.Response.InstalacaoResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.Instalacao.Response.OrcamentoResponseDTO;
 import com.pi.senac.Hotel4ma.enums.*;
 import com.pi.senac.Hotel4ma.service.InstalacaoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +28,7 @@ public class InstalacaoAlugavelController implements GenericController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> save(@RequestBody InstalacaoRequest request) {
+    public ResponseEntity<Void> save(@RequestBody @Valid InstalacaoRequest request) {
         Long id_gerado = service.create(request);
         URI location = gerarHeaderLocation(base_path, id_gerado);
         return ResponseEntity.created(location).build();
@@ -50,7 +51,7 @@ public class InstalacaoAlugavelController implements GenericController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<InstalacaoResponseDTO> update(
             @PathVariable Long id,
-            @RequestBody InstalacaoUpdateRequest dto) {
+            @RequestBody @Valid InstalacaoUpdateRequest dto) {
 
         InstalacaoResponseDTO response = service.update(id, dto);
         return ResponseEntity.ok(response);

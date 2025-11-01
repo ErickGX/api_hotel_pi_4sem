@@ -30,6 +30,11 @@ public abstract class Usuario {
     //@Embedded
     //protected Email email;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+
     @Email
     @Column(unique = true, nullable = false)
     private String email;

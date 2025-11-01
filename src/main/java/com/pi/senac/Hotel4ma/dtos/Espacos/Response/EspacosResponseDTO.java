@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public record EspacosResponseDTO(
         Long id,
-        TipoEspacos tipoEspacos,
+        String tipoEspacos,
         String descricao,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
         LocalDateTime dataCadastro,

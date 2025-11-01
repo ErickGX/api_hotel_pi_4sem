@@ -1,5 +1,6 @@
 package com.pi.senac.Hotel4ma.model;
 
+import com.pi.senac.Hotel4ma.enums.CargoFuncionario;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -16,12 +17,8 @@ import java.util.List;
 @SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
 public class Funcionario extends Usuario {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(nullable = false, length = 50)
-    private String cargo;
+    private CargoFuncionario cargo;
 
     @Column(unique = true, nullable = false)
     @CPF
@@ -38,8 +35,5 @@ public class Funcionario extends Usuario {
     //repeticao de codigo que podia usar cliente
     @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reserva> reservas;
-
-//    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ReservaSala> reservasSala;
 }
 

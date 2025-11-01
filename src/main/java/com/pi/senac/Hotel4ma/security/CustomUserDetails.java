@@ -119,4 +119,8 @@ public class CustomUserDetails implements UserDetails, OidcUser {
     public Object getTipoUsuario() {
         return usuario.getClass().getSimpleName();
     }
+
+    public Long getIdUsuario() {
+      return usuario.getId();
+    }
 }
