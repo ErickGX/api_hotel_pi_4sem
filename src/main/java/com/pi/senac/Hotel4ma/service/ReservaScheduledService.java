@@ -2,7 +2,6 @@ package com.pi.senac.Hotel4ma.service;
 
 import com.pi.senac.Hotel4ma.enums.StatusReserva;
 import com.pi.senac.Hotel4ma.model.Reserva;
-import com.pi.senac.Hotel4ma.repository.ReservaRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,7 @@ import java.util.List;
 public class ReservaScheduledService {
 
     private static final Logger log = LoggerFactory.getLogger(ReservaScheduledService.class);
-    private final ReservaRepository reservaRepository;
+    private final ReservaService reservaService;
 
     /**
      * Tarefa agendada (Scheduled Task) para finalizar reservas que já passaram
@@ -34,10 +33,9 @@ public class ReservaScheduledService {
     public void finalizarReservasPassadas() {
         log.info("[SCHEDULED TASK] Iniciando verificação de reservas para finalizar...");
 
-        LocalDateTime agora = LocalDateTime.now();
 
         // 1. Busca no banco as reservas elegíveis
-        List<Reserva> reservasParaFinalizar = reservaRepository.findReservasAtivasParaFinalizar(StatusReserva.ATIVA, agora);
+        List<Reserva> reservasParaFinalizar = reservaService.finalizarReservasAutomaticamente();
 
         if (reservasParaFinalizar.isEmpty()) {
             log.info("[SCHEDULED TASK] Nenhuma reserva encontrada para finalizar.");
@@ -53,7 +51,7 @@ public class ReservaScheduledService {
         }
 
         // 3. Salva todas as alterações no banco em uma única transação
-        reservaRepository.saveAll(reservasParaFinalizar);
+        reservaService.saveFinalizadas(reservasParaFinalizar);
 
         log.info("[SCHEDULED TASK] Tarefa concluída. {} reservas foram atualizadas.", reservasParaFinalizar.size());
     }

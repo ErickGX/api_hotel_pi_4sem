@@ -3,6 +3,7 @@ package com.pi.senac.Hotel4ma.service;
 
 import com.pi.senac.Hotel4ma.dtos.Reserva.Request.ReservaRequest;
 import com.pi.senac.Hotel4ma.dtos.Reserva.Response.ReservaResponseDTO;
+import com.pi.senac.Hotel4ma.enums.StatusReserva;
 import com.pi.senac.Hotel4ma.exceptions.ReservaDataConflitanteException;
 import com.pi.senac.Hotel4ma.mappers.ReservaMapper;
 import com.pi.senac.Hotel4ma.model.*;
@@ -96,6 +97,9 @@ public class ReservaService {
         repository.saveAll(reservas);
     }
 
+    public List<Reserva> finalizarReservasAutomaticamente() {
+        return repository.findReservasAtivasParaFinalizar(StatusReserva.ATIVA, LocalDateTime.now());
+    }
 
         //Função para calcular o valor total da reserva baseado no tipo de instalação
     private BigDecimal calculoPorHorasOuDias(Reserva reserva){
