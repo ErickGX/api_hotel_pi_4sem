@@ -22,9 +22,8 @@ public class ReservaScheduledService {
     /**
      * Tarefa agendada (Scheduled Task) para finalizar reservas que já passaram
      * da data de check-out.
-     *
      * A expressão "cron" "0 0 * * * *" significa:
-     * "Execute no segundo 0, do minuto 0, de toda hora, todo dia."
+     * "Execute no segundo 0, do minuto 0, de toda hora, todos dia."
      * (Ou seja, roda uma vez por hora, na hora cheia).
      */
     //fixedRate = 40000 para testes roda em 40seg

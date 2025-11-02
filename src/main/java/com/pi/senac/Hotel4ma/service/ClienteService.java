@@ -5,6 +5,7 @@ import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteFisicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteJuridicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
+import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResumoProjection;
 import com.pi.senac.Hotel4ma.enums.Role;
 import com.pi.senac.Hotel4ma.exceptions.DuplicateCpfException;
 import com.pi.senac.Hotel4ma.exceptions.DuplicateEmailException;
@@ -18,7 +19,6 @@ import com.pi.senac.Hotel4ma.repository.ClienteJuridicoRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteRepository;
 import com.pi.senac.Hotel4ma.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -133,6 +133,26 @@ public class ClienteService {
     public Cliente getClienteById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o ID: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public ClienteResumoProjection getInativosById(Long id) {
+        return repository.findInactiveById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente inativo não encontrado com o ID: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClienteResumoProjection> getInativos() {
+        return repository.findAllDeletados();
+    }
+
+    @Transactional
+    public void reativarRegistro(Long id){
+        Cliente clienteInativo = repository.findInactiveEntityById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente inativo não encontrado com o ID: " + id));
+
+        clienteInativo.setAtivo(true);
+        repository.save(clienteInativo);
     }
 
 }

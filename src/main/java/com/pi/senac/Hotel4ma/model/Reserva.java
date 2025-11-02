@@ -2,18 +2,14 @@ package com.pi.senac.Hotel4ma.model;
 
 import com.pi.senac.Hotel4ma.enums.StatusReserva;
 import com.pi.senac.Hotel4ma.enums.TipoPagamento;
-import com.pi.senac.Hotel4ma.validation.CheckDates;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -58,7 +54,7 @@ public class Reserva {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente; // sempre existe
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "funcionario_id")
     private Funcionario funcionario; // opcional
 

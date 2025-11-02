@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResumoDTO;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResumoDTO;
 import com.pi.senac.Hotel4ma.dtos.Instalacao.Response.InstalacaoResumoDTO;
-import com.pi.senac.Hotel4ma.enums.StatusReserva;
 import com.pi.senac.Hotel4ma.enums.TipoPagamento;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

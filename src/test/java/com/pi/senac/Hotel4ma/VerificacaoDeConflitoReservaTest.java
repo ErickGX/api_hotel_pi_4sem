@@ -34,7 +34,7 @@ public class VerificacaoDeConflitoReservaTest {
         LocalDateTime checkOut = LocalDateTime.of(2025, 10, 22, 10, 0);
         Long reservaId = 99L;
 
-        // Acesso ao método privado
+        // Acesso ao metodo privado
         Method metodo = ReservaService.class.getDeclaredMethod("verificarConflitoReserva", Long.class, LocalDateTime.class, LocalDateTime.class, Long.class);
         metodo.setAccessible(true);
 

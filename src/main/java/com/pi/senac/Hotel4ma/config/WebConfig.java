@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
         //    da sua aplicação Angular rodando localmente.
         registry.addMapping("/api/**") // 1. Aplica APENAS aos endpoints da sua API
                 .allowedOrigins("http://localhost:4200") // 2. URL EXATA do seu Angular (sem wildcard)
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 3. Métodos HTTP permitidos
+                .allowedMethods("GET", "POST", "PUT", "PATCH" , "DELETE", "OPTIONS") // 3. Métodos HTTP permitidos
                 .allowedHeaders("*"); // 4. Permite todos os headers (incluindo Authorization)
 
     }

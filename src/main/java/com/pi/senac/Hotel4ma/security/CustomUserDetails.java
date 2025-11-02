@@ -110,7 +110,7 @@ public class CustomUserDetails implements UserDetails, OidcUser {
 
     @Override
     public String getName() {
-        return this.usuario.getEmail();
+        return this.usuario.getNome();
     }
 
 

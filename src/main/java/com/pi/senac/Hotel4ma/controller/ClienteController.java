@@ -4,6 +4,8 @@ import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteFisicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteJuridicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
+import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResumoDTO;
+import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResumoProjection;
 import com.pi.senac.Hotel4ma.service.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +49,7 @@ public class ClienteController implements GenericController {
     }
 
     @GetMapping("{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENTE')")
     public ResponseEntity<ClienteResponseDTO> findById(@PathVariable("id") Long id) {
         var cliente = service.findDtoById(id);
         return ResponseEntity.ok(cliente);
@@ -80,4 +82,24 @@ public class ClienteController implements GenericController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/inativos")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ClienteResumoProjection>> findAllInactive() {
+        List<ClienteResumoProjection> clientesInativos = service.getInativos();
+        return ResponseEntity.ok(clientesInativos);
+    }
+
+    @GetMapping("/inativos/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ClienteResumoProjection> findInactiveById(@PathVariable Long id){
+        ClienteResumoProjection clienteInativo = service.getInativosById(id);
+        return ResponseEntity.ok(clienteInativo);
+    }
+
+    @PatchMapping("/reativar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> reativarCliente(@PathVariable Long id) {
+        service.reativarRegistro(id);
+        return ResponseEntity.noContent().build();
+    }
 }
