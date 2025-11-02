@@ -3,7 +3,6 @@ package com.pi.senac.Hotel4ma.controller;
 
 import com.pi.senac.Hotel4ma.dtos.Reserva.Request.ReservaRequest;
 import com.pi.senac.Hotel4ma.dtos.Reserva.Response.ReservaResponseDTO;
-import com.pi.senac.Hotel4ma.model.Reserva;
 import com.pi.senac.Hotel4ma.service.ReservaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +18,14 @@ import java.util.List;
 public class ReservaController implements GenericController{
 
     private final ReservaService service;
-
     private static String base_path = "/api/instalacoes";
 
+    /**
+     * Cria uma nova reserva utilizando apenas cliente ativos
+     * Clientes inativos não podem criar reservas
+     * @param dto
+     * @return
+     */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENTE')")
     public ResponseEntity<ReservaResponseDTO> create(@RequestBody ReservaRequest dto){
@@ -30,6 +34,11 @@ public class ReservaController implements GenericController{
         return ResponseEntity.created(location).build();
     }
 
+    /**
+     * Lista todas as reservas do sistema
+     * Acesso permitido apenas para ADMIN e FUNCIONARIO
+     * @return Lista de reservas
+     */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
     public ResponseEntity<List<ReservaResponseDTO>> findAll(){

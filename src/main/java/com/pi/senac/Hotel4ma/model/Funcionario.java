@@ -13,10 +13,11 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "funcionarios")
-@SQLDelete(sql = "UPDATE {h-schema}funcionario SET ativo = false WHERE id = ?") // 1. Intercepta o DELETE
-@SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
+//@SQLDelete(sql = "UPDATE {h-schema}funcionario SET ativo = false WHERE id = ?") // 1. Intercepta o DELETE
+//@SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
 public class Funcionario extends Usuario {
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
     private CargoFuncionario cargo;
 

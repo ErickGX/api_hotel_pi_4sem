@@ -19,13 +19,12 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 //@DiscriminatorColumn(name = "tipo_cliente", length = 10)
 @Table(name = "clientes")
-@SQLDelete(sql = "UPDATE {h-schema}clientes SET ativo = false WHERE id = ?") // 1. Intercepta o DELETE
-@SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
+//@SQLDelete(sql = "UPDATE {h-schema}clientes SET ativo = false WHERE id = ?") // 1. Intercepta o DELETE
+//@SQLRestriction(value = "ativo = true") // 2. Garante que UPDATEs também respeitem o filtro
 public abstract class Cliente extends Usuario {
 
 
     @Enumerated(EnumType.STRING)
-    @Transient
     private TipoCliente tipoCliente;
 
     @Column(length = 8, nullable = false)

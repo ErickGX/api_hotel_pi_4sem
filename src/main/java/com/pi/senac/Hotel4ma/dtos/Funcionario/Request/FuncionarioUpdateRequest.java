@@ -19,6 +19,6 @@ public record FuncionarioUpdateRequest(
         //possivel mudança para ENUM FUTURAMENTE
         @NotNull(message = "Endereço é obrigatório")
         @Size(min = 5, max = 50, message = "Endereço deve ter entre 5 e 50 caracteres")
-        CargoFuncionario cargo
+        String cargo
 ) {
 }

@@ -39,7 +39,7 @@ public class CustomOidcUserService extends OidcUserService {
 
         // 2. LÓGICA "FIND OR FAIL"
         // Procuramos APENAS na tabela de Clientes por esse email.
-        Usuario usuario = clienteRepository.findByEmail(email)
+        Usuario usuario = clienteRepository.findByEmailAndAtivoTrue(email)
                 .map(u -> (Usuario) u) // Converte o Cliente encontrado para Usuario
                 .orElseThrow(() -> {
 

@@ -80,12 +80,9 @@ public class ReservaService {
         boolean conflito = repository.existsReservaConflitante(instalacaoId, checkIn, checkOut, reservaId);
 
         if (conflito){
-
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
             String checkInFormatado = checkIn.format(formatter);
             String checkOutFormatado = checkOut.format(formatter);
-
             throw new ReservaDataConflitanteException("Conflito de reserva para a instalação selecionada no período entre : " + checkInFormatado + " e " + checkOutFormatado);
         }
     }

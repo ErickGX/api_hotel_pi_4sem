@@ -1,6 +1,5 @@
 package com.pi.senac.Hotel4ma.security;
 
-import com.pi.senac.Hotel4ma.exceptions.ResourceNotFoundException;
 import com.pi.senac.Hotel4ma.model.Usuario;
 import com.pi.senac.Hotel4ma.repository.AdministradorRepository;
 import com.pi.senac.Hotel4ma.repository.ClienteRepository;
@@ -24,10 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         //estragetia para buscar o usuário em múltiplas tabelas
         //e retirar o tipo do usuario junto com sua role
-        Usuario usuario = administradorRepository.findByEmail(email)
+        //login multi-usuario (Administrador, Funcionario, Cliente)
+        Usuario usuario = administradorRepository.findByEmail(email)//admin nao precisa verificar ativo
                 .map(u -> (Usuario) u)
-                .or(() -> funcionarioRepository.findByEmail(email).map(u -> (Usuario) u))
-                .or(() -> clienteRepository.findByEmail(email).map(u -> (Usuario) u))
+                .or(() -> funcionarioRepository.findByEmailAndAtivoTrue(email).map(u -> (Usuario) u))
+                .or(() -> clienteRepository.findByEmailAndAtivoTrue(email).map(u -> (Usuario) u)) //só buscam contas ativas
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com email: " + email));
 
         return new CustomUserDetails(usuario);

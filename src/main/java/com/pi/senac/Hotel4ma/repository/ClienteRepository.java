@@ -18,66 +18,25 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     boolean existsByEmailAndIdNot(String email, Long id);
 
     boolean existsByEmail(String email);
-    //boolean existsByCpfAndIdNot(String cpf, Long id);
 
-    Optional<Cliente> findByEmailAndSenha(String email, String senha);
     Optional<Cliente> findByEmail(String email);
 
+    @Query("SELECT c FROM Cliente c WHERE c.ativo = true")
+    List<Cliente> findAllAtivos();
 
-    /**
-     * Busca TODOS os clientes inativos.
-     * Usa nativeQuery = true para ignorar o @SQLRestriction.
-     * Nós MANUALMENTE recriamos os JOINs e a coluna 'clazz_' (discriminadora)
-     * que o Hibernate precisa para mapear sua herança @Inheritance(strategy = JOINED).
-     */
-    @Query(value = """
-        SELECT 
-            c.*,  -- Todos os campos da tabela pai 'clientes' (inclui os campos do Usuario)
-            cf.cpf, -- Campo da tabela filha
-            cj.cnpj, -- Campo da tabela filha
-            
-            -- A coluna 'clazz_' que o Hibernate precisa para saber qual objeto criar
-            CASE 
-                WHEN cf.id IS NOT NULL THEN 'FISICO' 
-                WHEN cj.id IS NOT NULL THEN 'JURIDICO'
-            END AS clazz_
-        FROM 
-            clientes c
-        LEFT JOIN 
-            cliente_fisico cf ON c.id = cf.id
-        LEFT JOIN 
-            cliente_juridico cj ON c.id = cj.id
-        WHERE 
-            c.ativo = false
-        """, nativeQuery = true)
-    List<Cliente> findAllInactive();
+    @Query("SELECT c FROM Cliente c WHERE c.id = :id AND c.ativo = true")
+    Optional<Cliente> findAtivoById(Long id);
 
-    /**
-     * Busca um ÚNICO cliente inativo pelo ID.
-     */
-    @Query(value = """
-        SELECT 
-            c.*, cf.cpf, cj.cnpj,
-            CASE 
-                WHEN cf.id IS NOT NULL THEN 'FISICO' 
-                WHEN cj.id IS NOT NULL THEN 'JURIDICO'
-            END AS clazz_
-        FROM 
-            clientes c
-        LEFT JOIN 
-            cliente_fisico cf ON c.id = cf.id
-        LEFT JOIN 
-            cliente_juridico cj ON c.id = cj.id
-        WHERE 
-            c.id = :id AND c.ativo = false
-        """, nativeQuery = true)
-    Optional<ClienteResumoProjection> findInactiveById(@Param("id") Long id);
-
-    @Query(value = "SELECT id, nome, email, ativo FROM clientes WHERE ativo = false", nativeQuery = true)
-    List<ClienteResumoProjection> findAllDeletados();
-
+    @Query("SELECT c FROM Cliente c WHERE c.ativo = false")
+    List<Cliente> findAllInativos();
 
     @Query("SELECT c FROM Cliente c WHERE c.id = :id AND c.ativo = false")
-    Optional<Cliente> findInactiveEntityById(@Param("id") Long id);
+    Optional<Cliente> findInativoById(@Param("id") Long id);
+
+
+    //Logins só buscam contas ativa, pois não faz sentido logar com conta inativa
+    @Query("SELECT c FROM Cliente c WHERE c.email = :email AND c.ativo = true")
+    Optional<Cliente> findByEmailAndAtivoTrue(@Param("email") String email);
+
 
 }

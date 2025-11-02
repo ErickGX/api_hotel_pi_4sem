@@ -29,13 +29,10 @@ public class ValidationService {
         }
     }
 
-
-    //Metodo específico para validar um novo Funcionario
-    public void validateNewFuncionario(String cpf, String email){
+    public void validateNewFuncionario(String cpf, String email) {
         if (funcionarioRepository.existsByCpf(cpf)) {
             throw new DuplicateCpfException("CPF já existente, tente novamente");
         }
-
         if (funcionarioRepository.existsByEmail(email)) {
             throw new DuplicateEmailException("Email já existente, tente novamente");
         }
@@ -60,6 +57,8 @@ public class ValidationService {
         }
     }
 
+
+
     //refatorar para Aceitar ClientFisico e juridico, metodo existsByEmailAndIdNot
     //Só existe no repositorio cliente
     public void validateEmailOnUpdateCliente(String newEmail, Cliente existingClient) {
@@ -71,13 +70,25 @@ public class ValidationService {
     }
 
 
-    public void validateEmailOnUpdateAdmin(String newEmail, Administrador existingAdmin) {
-        // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
-        if (newEmail != null && !newEmail.equalsIgnoreCase(existingAdmin.getEmail())
-                && administradorRepository.existsByEmailAndIdNot(newEmail, existingAdmin.getId())) {
-            throw new DuplicateEmailException("Email já existente, tente novamente");
-        }
-    }
+//    public void validateEmailOnUpdateAdmin(String newEmail, Administrador existingAdmin) {
+//        // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
+//        if (newEmail != null && !newEmail.equalsIgnoreCase(existingAdmin.getEmail())
+//                && administradorRepository.existsByEmailAndIdNot(newEmail, existingAdmin.getId())) {
+//            throw new DuplicateEmailException("Email já existente, tente novamente");
+//        }
+//    }
+
+    //    public void validateEmailOnUpdateFuncionario(String newEmail, Funcionario existingFuncionario) {
+//
+//        // Verifica se o e-mail foi fornecido e se é diferente do atual
+//        if (newEmail != null && !newEmail.equalsIgnoreCase(existingFuncionario.getEmail())) {
+//
+//            // CHAMA A NOVA FUNÇÃO e faz a verificação > 0 AQUI
+//            if (funcionarioRepository.countByEmailAndIdNot(newEmail, existingFuncionario.getId()) > 0) {
+//                throw new DuplicateEmailException("Email já existente, tente novamente");
+//            }
+//        }
+//    }
 
 
 

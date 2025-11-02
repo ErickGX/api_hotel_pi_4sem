@@ -5,7 +5,6 @@ import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteFisicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteJuridicoRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Request.ClienteUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
-import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResumoProjection;
 import com.pi.senac.Hotel4ma.enums.Role;
 import com.pi.senac.Hotel4ma.exceptions.DuplicateCpfException;
 import com.pi.senac.Hotel4ma.exceptions.DuplicateEmailException;
@@ -35,9 +34,12 @@ public class ClienteService {
     private final PasswordEncoderConfig passwordEncoderConfig;
 
 
-
-    //futuramente possivel refatorção das exceptions de codigo 409 em uma
-    //validação de email e cpf existentes
+    /**
+     *Criação verifica emails e cpfs duplicados em registros ativos e inativos
+     * Evitar duplicidade completa por causa do Soft delete
+     * @param dto
+     * @return ID do Cliente Fisico criado
+     */
     @Transactional
     public Long createFisico(ClienteFisicoRequest dto) {
         //verificação completa para cpf e email duplicados
@@ -51,7 +53,13 @@ public class ClienteService {
         return repository.save(entity).getId();
     }
 
-    //validação de email e cnpj existentes
+
+    /**
+     *Criação verifica emails e cpfs duplicados em registros ativos e inativos
+     * Evitar duplicidade completa por causa do Soft delete
+     * @param dto
+     * @return ID do Cliente Juridico criado
+     */
     @Transactional
     public Long createJuridico(ClienteJuridicoRequest dto) {
         //Verifica se o email já esta cadastrado - failfast
@@ -70,6 +78,13 @@ public class ClienteService {
     }
 
 
+    /**
+     * Atualiza os dados de um Cliente Fisico existente.
+     * Busca o email nos registros ativos e inativos para evitar duplicidade
+     * @param dto
+     * @param idCliente
+     * @return ClienteResponseDTO
+     */
     @Transactional
     public ClienteResponseDTO updateClienteFisico(ClienteUpdateRequest dto, Long idCliente) {
         //Uso de repositorio especifico para garantir o tipo correto
@@ -83,6 +98,14 @@ public class ClienteService {
         return mapper.toDTO(repository.save(cliente));
     }
 
+
+    /**
+     * Atualiza os dados de um Cliente Jurídico existente.
+     * Busca o email nos registros ativos e inativos para evitar duplicidade
+     * @param dto
+     * @param idCliente
+     * @return ClienteResponseDTO
+     */
     @Transactional
     public ClienteResponseDTO updateClienteJuridico(ClienteUpdateRequest dto, Long idCliente) {
         //Uso de repositorio especifico para garantir o tipo correto
@@ -97,62 +120,93 @@ public class ClienteService {
     }
 
 
-    @Transactional
-    public void deleteById(Long id) {
-        // Verifica se o recurso existe.
-        if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException("Recurso não encontrado com o ID: " + id);
-        }
-        // Passo 2: Se existe, manda deletar.
-        repository.deleteById(id);
+//    @Transactional //Hard Delete desativado por requisito de projeto de soft delete
+//    public void deleteById(Long id) {
+//        // Verifica se o recurso existe.
+//        if (!repository.existsById(id)) {
+//            throw new ResourceNotFoundException("Recurso não encontrado com o ID: " + id);
+//        }
+//        // Passo 2: Se existe, manda deletar.
+//        repository.deleteById(id);
+//    }
+
+
+    /**
+     * Desativa um Cliente pelo ID, marcando-o como inativo.
+     * @param id
+     */
+    public void desativarById(Long id) {
+      Cliente cliente = repository.findAtivoById(id)
+              .orElseThrow(() -> new ResourceNotFoundException("Recurso ativo não encontrado com o ID: " + id));
+      cliente.setAtivo(false);
+      repository.save(cliente);
     }
 
 
+    /**
+     * Lista todos os Clientes ativos e os converte para DTOs de resposta.
+     * @return Lista de ClienteResponseDTO
+     */
     @Transactional(readOnly = true)
     public List<ClienteResponseDTO> listAll() {
-        List<Cliente> clientes = repository.findAll();
+        List<Cliente> clientes = repository.findAllAtivos();
         return mapper.toList(clientes);
     }
 
     /**
-     * Busca um Cliente pelo ID e o converte para um DTO de resposta.
+     * Busca um Cliente ativo pelo ID e o converte para um DTO de resposta.
      * Ideal para ser usado pela camada de Controller.
      */
     @Transactional(readOnly = true)
     public ClienteResponseDTO findDtoById(Long id) {
-        return mapper.toDTO(repository.findById(id)
+        return mapper.toDTO(repository.findAtivoById(id) //modificado para buscar apenas ativos
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado com o ID: " + id)));
     }
 
     /**
-     * Busca a entidade Cliente pelo ID.
+     * Busca a entidade Cliente ativos pelo ID.
      * Ideal para ser usado por outros serviços que precisam do objeto de domínio.
      * O nome "get" sugere que ele lança uma exceção se o recurso não for encontrado.
      */
     @Transactional(readOnly = true)
     public Cliente getClienteById(Long id) {
-        return repository.findById(id)
+        return repository.findAtivoById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com o ID: " + id));
     }
 
+
+    /**
+     * Busca um Cliente inativo pelo ID e o converte para um DTO de resposta.
+     * @param id
+     * @return ClienteResponseDTO
+     */
     @Transactional(readOnly = true)
-    public ClienteResumoProjection getInativosById(Long id) {
-        return repository.findInactiveById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente inativo não encontrado com o ID: " + id));
+    public ClienteResponseDTO getInativosById(Long id) {
+        return mapper.toDTO(repository.findInativoById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente inativo não encontrado com o ID: " + id)));
     }
 
+    /**
+     * Lista todos os Clientes inativos e os converte para DTOs de resposta.
+     * @return Lista de ClienteResponseDTO
+     */
     @Transactional(readOnly = true)
-    public List<ClienteResumoProjection> getInativos() {
-        return repository.findAllDeletados();
+    public List<ClienteResponseDTO> getInativos() {
+        return mapper.toList(repository.findAllInativos());
     }
 
+
+    /**
+     * Reativa um Cliente inativo pelo ID, marcando-o como ativo.
+     * @param id
+     * @return void
+     */
     @Transactional
     public void reativarRegistro(Long id){
-        Cliente clienteInativo = repository.findInactiveEntityById(id)
+      Cliente cliente = repository.findInativoById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente inativo não encontrado com o ID: " + id));
 
-        clienteInativo.setAtivo(true);
-        repository.save(clienteInativo);
+      cliente.setAtivo(true);
+      repository.save(cliente);
     }
-
 }

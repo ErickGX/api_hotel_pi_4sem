@@ -22,13 +22,11 @@ import java.util.List;
 public class ClienteController implements GenericController {
 
     private final ClienteService service;
-
     private static final String base_path = "api/clientes";
 
     @PostMapping("/fisico")
     public ResponseEntity<Void> createFisico(
             @RequestBody @Valid ClienteFisicoRequest request) {
-
         Long id_gerado = service.createFisico(request);
         URI location = gerarHeaderLocation(base_path, id_gerado);
         return ResponseEntity.created(location).build();
@@ -36,7 +34,6 @@ public class ClienteController implements GenericController {
 
     @PostMapping("/juridico")
     public ResponseEntity<Void> createJuridico(@RequestBody @Valid ClienteJuridicoRequest request) {
-
         Long id_gerado  = service.createJuridico(request);
         URI location = gerarHeaderLocation(base_path, id_gerado);
         return ResponseEntity.created(location).build();
@@ -55,10 +52,16 @@ public class ClienteController implements GenericController {
         return ResponseEntity.ok(cliente);
     }
 
+
+    /**
+     * Metodo para Soft Delete de Cliente por ID
+     * @param id
+     * @return 204 No Content
+     */
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        service.deleteById(id);
+        service.desativarById(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -84,15 +87,15 @@ public class ClienteController implements GenericController {
 
     @GetMapping("/inativos")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<ClienteResumoProjection>> findAllInactive() {
-        List<ClienteResumoProjection> clientesInativos = service.getInativos();
+    public ResponseEntity<List<ClienteResponseDTO>> findAllInactive() {
+        List<ClienteResponseDTO> clientesInativos = service.getInativos();
         return ResponseEntity.ok(clientesInativos);
     }
 
     @GetMapping("/inativos/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ClienteResumoProjection> findInactiveById(@PathVariable Long id){
-        ClienteResumoProjection clienteInativo = service.getInativosById(id);
+    public ResponseEntity<ClienteResponseDTO> findInactiveById(@PathVariable Long id){
+        ClienteResponseDTO clienteInativo = service.getInativosById(id);
         return ResponseEntity.ok(clienteInativo);
     }
 

@@ -56,31 +56,91 @@ public class FuncionarioService {
         return mapper.toDTO(repository.save(funcionario));
     }
 
+//    @Transactional //Desativado por requisito do projeto por Soft Delete
+//    public void deleteById(Long id) {
+//        if (!repository.existsById(id)) {
+//            throw new ResourceNotFoundException("Recurso não encontrado com o ID: " + id);
+//        }
+//        repository.deleteById(id);
+//    }
+
+
+    /**
+     * Desativa um Funcionario pelo ID, marcando-o como inativo.
+     * @param id
+     * @return void
+     */
     @Transactional
-    public void deleteById(Long id) {
-
-        if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException("Recurso não encontrado com o ID: " + id);
-        }
-
-        repository.deleteById(id);
+    public void desativarById(Long id){
+        Funcionario funcionario = getFuncionarioByid(id);
+        funcionario.setAtivo(false);
+        repository.save(funcionario);
     }
 
     @Transactional(readOnly = true)
     public List<FuncionarioResponseDTO> listAll() {
-        List<Funcionario> funcionarios = repository.findAll();
+        List<Funcionario> funcionarios = repository.findAllAtivos();
         return mapper.toList(funcionarios);
     }
 
+
+
+    /**
+     * Busca um Funcionario ativo pelo ID e o converte para um DTO de resposta.
+     * Ideal para ser usado pela camada de Controller.
+     */
     @Transactional(readOnly = true)
-    public FuncionarioResponseDTO findById(Long id) {
-        return mapper.toDTO(getFuncionarioByid(id));
+    public FuncionarioResponseDTO findDtoById(Long id) {
+        return mapper.toDTO(repository.findAtivosById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Funcionario ativo não encontrado com o ID: " + id)));
     }
 
+
+    /**
+     * Busca a entidade Funcionario ativos pelo ID.
+     * Ideal para ser usado por outros serviços que precisam do objeto de domínio.
+     * O nome "get" sugere que ele lança uma exceção se o recurso não for encontrado.
+     */
     @Transactional(readOnly = true)
     public Funcionario getFuncionarioByid(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Funcionario não encontrado com o ID: " + id));
+        return repository.findAtivosById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Funcionario ativo não encontrado com o ID: " + id));
+    }
+
+
+    /**
+     * Busca um Funcionario inativo pelo ID e o converte para um DTO de resposta.
+     * @param id
+     * @return FuncionarioResponseDTO
+     */
+    @Transactional(readOnly = true)
+    public FuncionarioResponseDTO getInativosById(Long id) {
+        return mapper.toDTO(repository.findInativoById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente inativo não encontrado com o ID: " + id)));
+    }
+
+    /**
+     * Lista todos os Funcionario inativos e os converte para DTOs de resposta.
+     * @return Lista de FuncionarioResponseDTO
+     */
+    @Transactional(readOnly = true)
+    public List<FuncionarioResponseDTO> getInativos() {
+        return mapper.toList(repository.findAllInativos());
+    }
+
+
+    /**
+     * Reativa um Funcionario inativo pelo ID, marcando-o como ativo.
+     * @param id
+     * @return void
+     */
+    @Transactional
+    public void reativarRegistro(Long id){
+        Funcionario funcionario = repository.findInativoById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente inativo não encontrado com o ID: " + id));
+
+        funcionario.setAtivo(true);
+        repository.save(funcionario);
     }
 
 

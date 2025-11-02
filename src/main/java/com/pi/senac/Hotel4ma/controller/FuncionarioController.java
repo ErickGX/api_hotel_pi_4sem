@@ -1,6 +1,7 @@
 package com.pi.senac.Hotel4ma.controller;
 
 
+import com.pi.senac.Hotel4ma.dtos.Cliente.Response.ClienteResponseDTO;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Request.FuncionarioRequest;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Request.FuncionarioUpdateRequest;
 import com.pi.senac.Hotel4ma.dtos.Funcionario.Response.FuncionarioResponseDTO;
@@ -37,10 +38,15 @@ public class FuncionarioController implements GenericController {
     }
 
 
+    /**
+     * Busca por ID do Funcionario
+     * @param id
+     * @return
+     */
     @GetMapping("{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
     public ResponseEntity<FuncionarioResponseDTO> findById(@PathVariable("id") Long id) {
-        var cliente = service.findById(id);
+        var cliente = service.findDtoById(id);
         if (cliente == null) {
             return ResponseEntity.notFound().build();
         }
@@ -50,7 +56,7 @@ public class FuncionarioController implements GenericController {
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable Long id){
-        service.deleteById(id);
+        service.desativarById(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -63,6 +69,31 @@ public class FuncionarioController implements GenericController {
         service.update(request, id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/inativos")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<FuncionarioResponseDTO>> findAllInactive() {
+        List<FuncionarioResponseDTO> funcionariosInativos = service.getInativos();
+        return ResponseEntity.ok(funcionariosInativos);
+    }
+
+    @GetMapping("/inativos/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<FuncionarioResponseDTO> findInactiveById(@PathVariable Long id){
+        FuncionarioResponseDTO funcionarioInativo = service.getInativosById(id);
+        return ResponseEntity.ok(funcionarioInativo);
+    }
+
+    @PatchMapping("/reativar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> reativarFuncionario(@PathVariable Long id) {
+        service.reativarRegistro(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
+
 
 
 
