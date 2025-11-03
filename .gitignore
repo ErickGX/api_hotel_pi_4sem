@@ -43,3 +43,6 @@ tmp/
 # Sistema
 .DS_Store
 Thumbs.db
+
+# Ignora a pasta de uploads local
+/uploads/
