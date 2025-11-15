@@ -66,7 +66,7 @@ public class ClienteController implements GenericController {
     }
 
     @PutMapping("/fisico/{id}")
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasAnyRole('CLIENTE', 'ADMIN')")
     public ResponseEntity<Void> atualizarFisico(
             @PathVariable("id") Long id,
             @RequestBody @Valid ClienteUpdateRequest request) {
@@ -76,7 +76,7 @@ public class ClienteController implements GenericController {
     }
 
     @PutMapping("/juridico/{id}")
-    @PreAuthorize("hasRole('CLIENTE')") //apenas clientes podem atualizar seus dados, pagina de perfil
+    @PreAuthorize("hasAnyRole('CLIENTE', 'ADMIN')") //apenas clientes podem atualizar seus dados, pagina de perfil
     public ResponseEntity<Void> atualizarJuridico(
             @PathVariable("id") Long id,
             @RequestBody @Valid ClienteUpdateRequest request) {

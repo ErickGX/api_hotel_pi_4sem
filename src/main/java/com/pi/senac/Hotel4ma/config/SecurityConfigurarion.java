@@ -9,15 +9,12 @@ import com.pi.senac.Hotel4ma.security.handler.FormLoginSuccessHandler;
 import com.pi.senac.Hotel4ma.security.handler.OAuth2LoginFailureHandler;
 import com.pi.senac.Hotel4ma.security.handler.OAuth2LoginSuccessHandler;
 import com.pi.senac.Hotel4ma.security.jwt.JwtAuthorizationFilter;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,7 +23,6 @@ import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
@@ -110,7 +106,8 @@ public class SecurityConfigurarion {
                                 .requestMatchers(HttpMethod.GET, "/api/instalacoes/orcamento").permitAll()//Lista GET de instalacoes publica para frontend
                                 .requestMatchers(HttpMethod.GET, "/api/espacos").permitAll() //Lista GET de espaços publica para frontend
                                 .requestMatchers(HttpMethod.POST, "/api/clientes/juridico").permitAll() //rota de criação de cliente juridico é pública
-                                .requestMatchers(HttpMethod.POST, "/api/clientes/fisico").permitAll() //rota de criação de cliente fisico é pública
+                                .requestMatchers(HttpMethod.POST, "/api/clientes/fisico").permitAll()
+                                .requestMatchers("/actuator/**").permitAll()//rota de criação de cliente fisico é pública
                                 .anyRequest().authenticated()//Qualquer coisa abaixo dessa linha é ignorada
 
                 )
@@ -159,8 +156,7 @@ public class SecurityConfigurarion {
         );
 
         filter.setAuthenticationSuccessHandler(formLoginSuccessHandler); // Conecta o handler de sucesso
-//        filter.setAuthenticationFailureHandler((req, res, ex) -> // Define o handler de falha
-//                res.setStatus(HttpStatus.UNAUTHORIZED.value()));
+
         return filter;
     }
 
