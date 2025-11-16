@@ -161,6 +161,12 @@
             <artifactId>javafaker</artifactId>
             <version>1.0.2</version>
         </dependency>
+<!--    banco usado para o contexto de testes apenas-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
 
 
     </dependencies>
@@ -216,14 +222,18 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
                 <executions>
+                    <!-- Ativa o JaCoCo durante os testes -->
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+
+                    <!-- Gera o relatório após os testes -->
                     <execution>
                         <id>report</id>
-                        <phase>test</phase>
+                        <phase>verify</phase> <!-- <<< ALTERADO AQUI -->
                         <goals>
                             <goal>report</goal>
                         </goals>
