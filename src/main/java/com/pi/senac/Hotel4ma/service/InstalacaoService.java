@@ -43,6 +43,20 @@ public class InstalacaoService {
 
     }
 
+
+    /**
+     * Função utilizada pelo Seeder , usa o Hotel com ID 1
+     * @param instalacaoAlugavel
+     * @return idQuarto
+     */
+    @Transactional
+    public Long createSeeder(InstalacaoAlugavel instalacaoAlugavel) {
+
+        //Um único save - JPA sabe lidar com a herança
+        return repository.save(instalacaoAlugavel).getId();
+
+    }
+
     //findById retorna o DTO ideal para Controller e nao expoe entidade
     @Transactional(readOnly = true)
     public InstalacaoResponseDTO findById(Long id) {
@@ -87,6 +101,10 @@ public class InstalacaoService {
 
     public BigDecimal calcularValor(FatorMultiplicador tipo) {
         return PRECO_BASE_PADRAO.multiply(BigDecimal.valueOf(tipo.getFator()));
+    }
+
+    public boolean existsData() {
+        return repository.count() > 0;
     }
 
 

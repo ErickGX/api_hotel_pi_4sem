@@ -46,6 +46,23 @@ public class FuncionarioService {
 
 
     @Transactional
+    public Long saveFuncionarioSeeder(Funcionario funcionario) {
+
+        Hotel hotel =  hotelService.getHotelById(funcionario.getHotel().getId());
+        //Valida se o cpf e email já estão cadastrados
+        validationService.validateNewFuncionario(funcionario.getCpf(), funcionario.getEmail());
+
+
+        String senhaCriptografada = passwordEncoderConfig.bCryptPasswordEncoder().encode(funcionario.getSenha());
+        funcionario.setSenha(senhaCriptografada);
+        funcionario.setRole(Role.FUNCIONARIO);
+
+        Funcionario salvo = repository.save(funcionario);
+        return salvo.getId();
+    }
+
+
+    @Transactional
     public FuncionarioResponseDTO update(FuncionarioUpdateRequest dto, Long id) {
 
         Funcionario funcionario = getFuncionarioByid(id);
@@ -141,6 +158,10 @@ public class FuncionarioService {
 
         funcionario.setAtivo(true);
         repository.save(funcionario);
+    }
+
+    public boolean existsData() {
+        return repository.count() > 0;
     }
 
 

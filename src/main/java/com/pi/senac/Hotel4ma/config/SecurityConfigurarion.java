@@ -101,7 +101,8 @@ public class SecurityConfigurarion {
                         auth
                                 //Permite acesso público à documentação da API
                                 .requestMatchers("/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html").permitAll()//Documentação pública da API
-                                .requestMatchers("/api/auth/login", "/oauth2/**").permitAll()//Permite acesso público ao endpoint de login e OAuth2
+                                .requestMatchers("/oauth2/**").permitAll()//Permite acesso público ao endpoint de login e OAuth2
+                                .requestMatchers("/api/auth/login").permitAll() //acesso publico a login adminstrador
                                 .requestMatchers(HttpMethod.GET,"/api/instalacoes").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/instalacoes/orcamento").permitAll()//Lista GET de instalacoes publica para frontend
                                 .requestMatchers(HttpMethod.GET, "/api/espacos").permitAll() //Lista GET de espaços publica para frontend

@@ -28,6 +28,16 @@ public class HotelService {
     }
 
     /**
+     * Função utilizada no seeder da aplicação
+     * @param hotel
+     * @return idHotel
+     */
+    @Transactional
+    public Long saveHotelSeeder(Hotel hotel) {
+        return repository.save(hotel).getId();
+    }
+
+    /**
      * Busca um hotel pelo ID e o converte para um DTO de resposta.
      * Ideal para ser usado pela camada de Controller.
      */
@@ -78,6 +88,10 @@ public class HotelService {
         }
         // Passo 2: Se existe, manda deletar.
         repository.deleteById(id);
+    }
+
+    public boolean existsData() {
+        return repository.count() > 0;
     }
 
 

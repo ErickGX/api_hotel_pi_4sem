@@ -107,6 +107,10 @@ public class ReservaService {
         }
     }
 
+    public boolean existsData() {
+        return repository.count() > 0;
+    }
+
 
 //  public class CalculadoraDeDiarias {
 //

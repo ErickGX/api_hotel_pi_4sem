@@ -45,12 +45,28 @@ public class ClienteService {
         //verificação completa para cpf e email duplicados
         validationService.validateNewClienteFisico(dto.cpf(), dto.email());
 
-        //return mapper.toDTO(repository.save(mapper.toEntity(dto)));
         ClienteFisico entity = mapper.toEntity(dto);
         String senhaCriptografada = passwordEncoderConfig.bCryptPasswordEncoder().encode(dto.senha());
         entity.setSenha(senhaCriptografada);
         entity.setRole(Role.CLIENTE);
         return repository.save(entity).getId();
+    }
+
+    /**
+     * Função exclusiva para uso do DataSeeder
+     * Evitar duplicidade completa por causa do Soft delete
+     * @param clienteFisico
+     * @return ID do Cliente Fisico criado
+     */
+    @Transactional
+    public Long createFisicoSeeder(ClienteFisico clienteFisico) {
+        //verificação completa para cpf e email duplicados
+        validationService.validateNewClienteFisico(clienteFisico.getCpf(), clienteFisico.getEmail());
+
+        String senhaCriptografada = passwordEncoderConfig.bCryptPasswordEncoder().encode(clienteFisico.getSenha());
+        clienteFisico.setSenha(senhaCriptografada);
+        clienteFisico.setRole(Role.CLIENTE);
+        return repository.save(clienteFisico).getId();
     }
 
 
@@ -75,6 +91,30 @@ public class ClienteService {
         entity.setSenha(senhaCriptografada);
         entity.setRole(Role.CLIENTE);
         return repository.save(entity).getId();
+    }
+
+
+    /**
+     * Função exclusiva para uso do DataSeeder
+     * Evitar duplicidade completa por causa do Soft delete
+     * @param clienteJuridico
+     * @return ID do Cliente Fisico criado
+     */
+    @Transactional
+    public Long createJuridicoSeeder(ClienteJuridico clienteJuridico) {
+        //Verifica se o email já esta cadastrado - failfast
+        if (repository.existsByEmail(clienteJuridico.getEmail())) {
+            throw new DuplicateEmailException("Email já existente, tente novamente");
+        }
+        //Verifica se o cnpj já esta cadastrado
+        if (juridicoRepository.existsByCnpj(clienteJuridico.getCnpj())) {
+            throw new DuplicateCpfException("CNPJ já existente, tente novamente");
+        }
+
+        String senhaCriptografada = passwordEncoderConfig.bCryptPasswordEncoder().encode(clienteJuridico.getSenha());
+        clienteJuridico.setSenha(senhaCriptografada);
+        clienteJuridico.setRole(Role.CLIENTE);
+        return repository.save(clienteJuridico).getId();
     }
 
 
@@ -151,6 +191,8 @@ public class ClienteService {
     public List<ClienteResponseDTO> listAll() {
         List<Cliente> clientes = repository.findAllAtivos();
         return mapper.toList(clientes);
+
+
     }
 
     /**
@@ -208,5 +250,9 @@ public class ClienteService {
 
       cliente.setAtivo(true);
       repository.save(cliente);
+    }
+
+    public boolean existsData() {
+        return repository.count() > 0;
     }
 }

@@ -9,10 +9,19 @@ spring:
     username: ${db_username}
     password: ${db_password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: HikariCP
+      maximum-pool-size: 60        # Pool de conexões maior para teste de Stress - 10 pool padrão
+      minimum-idle: 10
+      idle-timeout: 30000          # 30s
+      connection-timeout: 30000    # 30s para pegar uma conexão
+      max-lifetime: 1800000        # 30 min (evita conexões zumbis do MySQL)
+      auto-commit: true
+
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true

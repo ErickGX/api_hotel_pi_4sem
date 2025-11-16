@@ -28,4 +28,18 @@ public class AdministradorService {
         admin.setRole(Role.ADMIN);
         repository.save(admin);
     }
+
+
+    @Transactional
+    public void createSeeder(Administrador admin) {
+        validationService.validateNewAdministrador(admin.getCpf(), admin.getEmail());
+        String senhaCriptografada = passwordEncoderConfig.bCryptPasswordEncoder().encode(admin.getSenha());
+        admin.setSenha(senhaCriptografada);
+        admin.setRole(Role.ADMIN);
+        repository.save(admin);
+    }
+
+    public boolean existsData() {
+        return repository.count() > 0;
+    }
 }
