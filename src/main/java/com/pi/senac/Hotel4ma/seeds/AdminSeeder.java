@@ -31,7 +31,7 @@ public class AdminSeeder {
                 "Administrador do Sistema",
                 "qa@gmail.com",
                 "11940028922",
-                "qa12345",
+                "Qa@12345",
                 "08073305070"
         );
 
@@ -39,7 +39,7 @@ public class AdminSeeder {
 
         log.info("Administrador padrão criado com sucesso!");
         log.warn(" Login: qa@gmail.com");
-        log.warn(" Senha: qa12345");
+        log.warn(" Senha: Qa@12345");
 
         log.info("AdminSeeder finalizado.");
     }
