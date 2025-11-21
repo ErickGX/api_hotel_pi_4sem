@@ -67,6 +67,7 @@ public class FuncionarioService {
 
         Funcionario funcionario = getFuncionarioByid(id);
         validationService.validateEmailOnUpdateFuncionario(dto.email(), funcionario);
+        validationService.validateCpfOnUpdateFuncionario(dto.cpf(), funcionario);
         //Mescla os novos valores
         mapper.updateEntidadeFromDto(dto, funcionario);
         //Persiste e retorna a resposta

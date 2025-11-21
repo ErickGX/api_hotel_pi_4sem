@@ -1,0 +1,1751 @@
+{
+	"info": {
+		"_postman_id": "067fb086-5151-44b3-af7a-c236ee717070",
+		"name": "AuroraHotel-P.I",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40990597",
+		"_collection_link": "https://restless-water-237433.postman.co/workspace/My-Workspace~f511eaa4-f5cf-4b0e-831a-4d3814593a55/collection/40990597-067fb086-5151-44b3-af7a-c236ee717070?action=share&source=collection_link&creator=40990597"
+	},
+	"item": [
+		{
+			"name": "Cliente",
+			"item": [
+				{
+					"name": "CadastrarFisico",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Gera Telefone Celular Brasileiro (11 dígitos)\r",
+									"var ddd = Math.floor(Math.random() * (99 - 11 + 1) + 11).toString();\r",
+									"var numero = \"9\";\r",
+									"for (var i = 0; i < 8; i++) { numero += Math.floor(Math.random() * 10); }\r",
+									"var telefoneCompleto = ddd + numero;\r",
+									"pm.collectionVariables.set(\"telefone_gerado\", telefoneCompleto);\r",
+									"\r",
+									"\r",
+									"// 1. Gera um CEP aleatório (8 dígitos numéricos)\r",
+									"var cep = \"\";\r",
+									"for (var i = 0; i < 8; i++) {\r",
+									"    cep += Math.floor(Math.random() * 10);\r",
+									"}\r",
+									"pm.collectionVariables.set(\"cep_gerado\", cep);\r",
+									"\r",
+									"\r",
+									"// 2. Seleciona uma UF aleatória da lista de estados brasileiros\r",
+									"const ufs = [\r",
+									"    \"AC\", \"AL\", \"AP\", \"AM\", \"BA\", \"CE\", \"DF\", \"ES\", \"GO\",\r",
+									"    \"MA\", \"MT\", \"MS\", \"MG\", \"PA\", \"PB\", \"PR\", \"PE\", \"PI\",\r",
+									"    \"RJ\", \"RN\", \"RS\", \"RO\", \"RR\", \"SC\", \"SP\", \"SE\", \"TO\"\r",
+									"];\r",
+									"var uf_gerada = ufs[Math.floor(Math.random() * ufs.length)];\r",
+									"pm.collectionVariables.set(\"uf_gerada\", uf_gerada);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Vagner Vieira Beraldo\",\r\n    \"email\": \"erick@gmail.com\",\r\n    \"telefone\": \"{{telefone_gerado}}\",\r\n    \"senha\": \"teste123\",\r\n    \"cpf\": \"49818626877\",\r\n    \"cep\": \"{{cep_gerado}}\",\r\n    \"logradouro\": \"Rua {{$randomStreetName}}\",\r\n    \"numero\": \"{{$randomInt}}\",\r\n    \"complemento\": \"{{$randomStreetName}}\",\r\n    \"bairro\": \"{{$randomCity}}\",\r\n    \"localidade\": \"{{$randomCity}}\",\r\n    \"uf\" :\"{{uf_gerada}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/fisico",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"clientes",
+								"fisico"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AtualizarFisico",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"nome\": \"Erick Guimarães dos Santos\",\r\n   \"email\": \"ericddaask@gmail.com\",\r\n   \"cpf\": \"49818626877\",\r\n   \"telefone\": \"{{telefone_gerado}}\",\r\n   \"cep\": \"{{cep_gerado}}\",\r\n   \"logradouro\": \"{{$randomStreetName}}\",\r\n   \"numero\": \"{{$randomInt}}\",\r\n   \"complemento\": \"{{$randomStreetName}}\",\r\n   \"bairro\": \"{{$randomCity}}\",\r\n   \"localidade\": \"{{$randomCity}}\",\r\n   \"uf\": \"{{uf_gerada}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/fisico/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"clientes",
+								"fisico",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AtualizarJuridico",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"nome\": \"{{$randomFullName}}\",\r\n   \"email\": \"GasdasayDSredovic33@gmail.com\",\r\n   \"cnpj\": \"22808700000140\",\r\n   \"telefone\": \"{{telefone_gerado}}\",\r\n   \"cep\": \"{{cep_gerado}}\",\r\n   \"logradouro\": \"{{$randomStreetName}}\",\r\n   \"numero\": \"{{$randomInt}}\",\r\n   \"complemento\": \"{{$randomStreetName}}\",\r\n   \"bairro\": \"{{$randomCity}}\",\r\n   \"localidade\": \"{{$randomCity}}\",\r\n   \"uf\": \"{{uf_gerada}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/juridico/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"clientes",
+								"juridico",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "205"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CadastrarJuridico",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Gera Telefone Celular Brasileiro (11 dígitos)\r",
+									"var ddd = Math.floor(Math.random() * (99 - 11 + 1) + 11).toString();\r",
+									"var numero = \"9\";\r",
+									"for (var i = 0; i < 8; i++) { numero += Math.floor(Math.random() * 10); }\r",
+									"var telefoneCompleto = ddd + numero;\r",
+									"pm.collectionVariables.set(\"telefone_gerado\", telefoneCompleto);\r",
+									"\r",
+									"\r",
+									"// --- NOVOS SCRIPTS (Endereço) ---\r",
+									"\r",
+									"// 1. Gera um CEP aleatório (8 dígitos numéricos)\r",
+									"var cep = \"\";\r",
+									"for (var i = 0; i < 8; i++) {\r",
+									"    cep += Math.floor(Math.random() * 10);\r",
+									"}\r",
+									"pm.collectionVariables.set(\"cep_gerado\", cep);\r",
+									"\r",
+									"\r",
+									"// 2. Seleciona uma UF aleatória da lista de estados brasileiros\r",
+									"const ufs = [\r",
+									"    \"AC\", \"AL\", \"AP\", \"AM\", \"BA\", \"CE\", \"DF\", \"ES\", \"GO\",\r",
+									"    \"MA\", \"MT\", \"MS\", \"MG\", \"PA\", \"PB\", \"PR\", \"PE\", \"PI\",\r",
+									"    \"RJ\", \"RN\", \"RS\", \"RO\", \"RR\", \"SC\", \"SP\", \"SE\", \"TO\"\r",
+									"];\r",
+									"var uf_gerada = ufs[Math.floor(Math.random() * ufs.length)];\r",
+									"pm.collectionVariables.set(\"uf_gerada\", uf_gerada);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Juridico 2\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"telefone\": \"{{telefone_gerado}}\",\r\n    \"senha\": \"{{$randomPassword}}\",\r\n    \"cnpj\": \"22808700000140\",\r\n    \"cep\": \"{{cep_gerado}}\",\r\n    \"logradouro\": \"Rua {{$randomStreetName}}\",\r\n    \"numero\": \"{{$randomInt}}\",\r\n    \"complemento\": \"{{$randomStreetName}}\",\r\n    \"bairro\": \"{{$randomCity}}\",\r\n    \"localidade\": \"{{$randomCity}}\",\r\n    \"uf\" :\"{{uf_gerada}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/juridico",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"clientes",
+								"juridico"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarTodos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/clientes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"clientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarInativos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/inativos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"clientes",
+								"inativos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BuscarPorId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"clientes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarInativoByID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/inativos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"clientes",
+								"inativos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletarPorId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"clientes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReativarCliente",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/clientes/reativar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"clientes",
+								"reativar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Funcionarios",
+			"item": [
+				{
+					"name": "CadastrarFuncionario",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"// Gera Telefone Celular Brasileiro (11 dígitos)\r",
+									"var ddd = Math.floor(Math.random() * (99 - 11 + 1) + 11).toString();\r",
+									"var numero = \"9\";\r",
+									"for (var i = 0; i < 8; i++) { numero += Math.floor(Math.random() * 10); }\r",
+									"var telefoneCompleto = ddd + numero;\r",
+									"pm.collectionVariables.set(\"telefone_gerado\", telefoneCompleto);\r",
+									"\r",
+									"\r",
+									"// --- NOVOS SCRIPTS (Endereço) ---\r",
+									"\r",
+									"// 1. Gera um CEP aleatório (8 dígitos numéricos)\r",
+									"var cep = \"\";\r",
+									"for (var i = 0; i < 8; i++) {\r",
+									"    cep += Math.floor(Math.random() * 10);\r",
+									"}\r",
+									"pm.collectionVariables.set(\"cep_gerado\", cep);\r",
+									"\r",
+									"\r",
+									"// 2. Seleciona uma UF aleatória da lista de estados brasileiros\r",
+									"const ufs = [\r",
+									"    \"AC\", \"AL\", \"AP\", \"AM\", \"BA\", \"CE\", \"DF\", \"ES\", \"GO\",\r",
+									"    \"MA\", \"MT\", \"MS\", \"MG\", \"PA\", \"PB\", \"PR\", \"PE\", \"PI\",\r",
+									"    \"RJ\", \"RN\", \"RS\", \"RO\", \"RR\", \"SC\", \"SP\", \"SE\", \"TO\"\r",
+									"];\r",
+									"var uf_gerada = ufs[Math.floor(Math.random() * ufs.length)];\r",
+									"pm.collectionVariables.set(\"uf_gerada\", uf_gerada);\r",
+									"\r",
+									"\r",
+									"// --- NOVO SCRIPT (Cargo) ---\r",
+									"\r",
+									"// 1. Define a lista de cargos EXATAMENTE como no seu Enum\r",
+									"const cargosValidos = [\r",
+									"    \"GERENTE_GERAL\",\r",
+									"    \"DIRETOR_FINANCEIRO\",\r",
+									"    \"DIRETOR_OPERACOES\",\r",
+									"    \"GERENTE_HOSPEDAGEM\",\r",
+									"    \"GERENTE_RECEPCAO\",\r",
+									"    \"GERENTE_RESERVAS\",\r",
+									"    \"GERENTE_EVENTOS\",\r",
+									"    \"GERENTE_AB\",\r",
+									"    \"GOVERNANTA_EXECUTIVA\",\r",
+									"    \"CHEFE_MANUTENCAO\",\r",
+									"    \"CHEF_EXECUTIVO\",\r",
+									"    \"CHEF_SEGURANÇA\",\r",
+									"    \"SUPERVISOR_RECEPCAO\",\r",
+									"    \"AUDITOR_NOTURNO\",\r",
+									"    \"COORDENADOR_EVENTOS\",\r",
+									"    \"MAITRE\",\r",
+									"    \"RECEPCIONISTA\",\r",
+									"    \"ANALISTA_RESERVAS\",\r",
+									"    \"CONCIERGE\",\r",
+									"    \"ANALISTA_FINANCEIRO\",\r",
+									"    \"COMPRADOR\"\r",
+									"];\r",
+									"\r",
+									"// 2. Sorteia um índice aleatório da lista\r",
+									"const randomIndex = Math.floor(Math.random() * cargosValidos.length);\r",
+									"\r",
+									"// 3. Pega o valor do cargo sorteado\r",
+									"var cargo_gerado = cargosValidos[randomIndex];\r",
+									"\r",
+									"// 4. Salva na variável (de coleção ou ambiente)\r",
+									"pm.collectionVariables.set(\"cargo_gerado\", cargo_gerado);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Daiane Vitória Raso\",\r\n    \"cargo\": \"{{cargo_gerado}}\",\r\n    \"cpf\": \"00571233066\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"telefone\": \"{{telefone_gerado}}\",\r\n    \"senha\": \"{{$randomPassword}}\",\r\n    \"id_hotel\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/funcionario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"funcionario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AtualizarFuncionario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"{{$randomFullName}}\",\r\n    \"email\": \"Elyssa66@yahoo.com\",\r\n    \"telefone\": \"{{telefone_gerado}}\",\r\n    \"cargo\": \"{{cargo_gerado}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/funcionario/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"funcionario",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarTodos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/funcionario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"funcionario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarInativos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/funcionario/inativos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"funcionario",
+								"inativos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletarPorId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/funcionario/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"funcionario",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BuscarPorId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/funcionario/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"funcionario",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BuscarInativosPorId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/funcionario/inativos/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"funcionario",
+								"inativos",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReativarFunc",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/funcionario/reativar/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"funcionario",
+								"reativar",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reservas",
+			"item": [
+				{
+					"name": "Criar reserva",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"tipoPagamento\": \"PIX\",\r\n  \"checkIn\": \"2025-11-17T16:00:00\",\r\n  \"checkOut\": \"2025-11-17T18:00:00\",\r\n  \"clienteId\": 1,\r\n  \"funcionarioId\": 1 ,\r\n  \"instalacaoAlugavelId\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/reservas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"reservas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarTodas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/reservas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"reservas"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pagamentos",
+			"item": [
+				{
+					"name": "ListarPagamento",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/pagamentos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"pagamentos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarPagamentoByID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/pagamentos/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"pagamentos",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Adminstrador",
+			"item": [
+				{
+					"name": "CadastrarAdmin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Erick Guimarães dos Santos\",\r\n    \"email\": \"erick.kekson@gmail.com\",\r\n    \"telefone\": \"{{telefone_gerado}}\",\r\n    \"senha\": \"{{$randomPassword}}\",\r\n    \"cpf\": \"32619165083\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EspacosComuns",
+			"item": [
+				{
+					"name": "CadastrarEspaco",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipoEspacos\": \"JARDIM\",\r\n    \"descricao\": \"Local inexoravél fora do espaço tempo\",\r\n    \"id_hotel\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/espacos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"espacos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarTodos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/espacos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"espacos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/espacos/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"espacos",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hotel",
+			"item": [
+				{
+					"name": "CadastrarHotel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Aurora Resort\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/hotel",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"hotel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscarPorId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Spa\",\r\n    \"precoBase\": 1000.00,\r\n    \"isDisponivel\": true,\r\n    \"descricao\": \"Relaxamento\",\r\n    \"tipo\": \"SPA\",\r\n    \"categoria\": \"TERAPEUTICO\",\r\n    \"id_hotel\": 1\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/hotel/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"hotel",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscarTodos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/hotel",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"hotel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletarHotel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/hotel/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"hotel",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterarHotel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Aurora Resourt Deluxe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/hotel/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"hotel",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "InstalacoesAlugaveis",
+			"item": [
+				{
+					"name": "CadastrarInstalacao",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Anfiteatro \",\r\n    \"isDisponivel\": true,\r\n    \"descricao\": \"AnfiTeatro grande pra caralho\",\r\n    \"tipo\": \"AUDITORIO\",\r\n    \"categoria\": \"ANFITEATRO\",\r\n    \"id_hotel\": 1,\r\n    \"_tipo_auditorio\": \"Tipo: AUDITORIO - categoria: ANFITEATRO, TEATRO, CONGRESSO\",\r\n    \"_tipo_spa\": \"Tipo: SPA - categoria:  HIDROTERAPIA, TERAPEUTICO, DETOX\",\r\n    \"_tipo_salao_conferencia\": \"Tipo: SALAODECONFERENCIA - Categoria: BOARDROOM, TRAINING, CO_WORKING\",\r\n    \"_tipo_sauna\": \"Tipo: SAUNA - categoria:  SECA, VAPOR, INFRAVERMELHO, MISTA\",\r\n    \"_tipo_salao_eventos\": \"Tipo: SALAODEEVENTOS - categoria: CASAMENTO, FESTA_INFANTIL, FORMATURA, CORPORATIVO\",\r\n    \"_tipo_quarto\": \"Tipo: QUARTO - categoria: PRESIDENCIAL, DELUXE, EXECUTIVO, STANDARD\"\r\n}\r\n\r\n   ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/instalacoes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"instalacoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscarPorID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/instalacoes/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"instalacoes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscarTodos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/instalacoes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"instalacoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "atualizar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Spa\",\r\n    \"precoBase\": 1000.00,\r\n    \"isDisponivel\": true,\r\n    \"descricao\": \"Relaxamento\",\r\n    \"tipo\": \"SPA\",\r\n    \"categoria\": \"TERAPEUTICO\",\r\n    \"id_hotel\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/instalacoes/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"instalacoes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/instalacoes/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"instalacoes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "orçamento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/instalacoes/orcamento?tipo=TERAPEUTICO&classe=spa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"instalacoes",
+								"orcamento"
+							],
+							"query": [
+								{
+									"key": "tipo",
+									"value": "TERAPEUTICO"
+								},
+								{
+									"key": "classe",
+									"value": "spa"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "LoginFormAdm",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.environment.set(\"token\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"qa@gmail.com\",\r\n    \"senha\": \"Qa@12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginFormFunc",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.environment.set(\"token\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"funcionario@gmail.com\",\r\n    \"senha\": \"func123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginFormCliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.environment.set(\"token\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"erick@gmail.com\",\r\n    \"senha\": \"teste123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "cpf_gerado",
+			"value": ""
+		},
+		{
+			"key": "telefone_gerado",
+			"value": ""
+		},
+		{
+			"key": "cep_gerado",
+			"value": ""
+		},
+		{
+			"key": "uf_gerada",
+			"value": ""
+		},
+		{
+			"key": "cargo_gerado",
+			"value": ""
+		}
+	]
+}

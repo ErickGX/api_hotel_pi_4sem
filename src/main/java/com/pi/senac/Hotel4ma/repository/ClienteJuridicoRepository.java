@@ -5,5 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClienteJuridicoRepository extends JpaRepository<ClienteJuridico, Long> {
         boolean existsByCnpj(String cnpj);
+    // Verifica se o CNPJ existe em OUTRO registro
+    boolean existsByCnpjAndIdNot(String cnpj, Long id);
 
 }

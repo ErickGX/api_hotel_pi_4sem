@@ -1,9 +1,11 @@
 package com.pi.senac.Hotel4ma.validation;
 
+import com.pi.senac.Hotel4ma.exceptions.DuplicateCnpjException;
 import com.pi.senac.Hotel4ma.exceptions.DuplicateCpfException;
 import com.pi.senac.Hotel4ma.exceptions.DuplicateEmailException;
-import com.pi.senac.Hotel4ma.model.Administrador;
 import com.pi.senac.Hotel4ma.model.Cliente;
+import com.pi.senac.Hotel4ma.model.ClienteFisico;
+import com.pi.senac.Hotel4ma.model.ClienteJuridico;
 import com.pi.senac.Hotel4ma.model.Funcionario;
 import com.pi.senac.Hotel4ma.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +20,11 @@ public class ValidationService {
     private final ClienteRepository clienteRepository;
     private final AdministradorRepository administradorRepository;
 
+
+    //Classe criada por causa do trade-off da generalização dos tipos de usuarios
+
     //Metodo específico para validar um novo ClienteFisico
-    public void validateNewClienteFisico(String cpf, String email){
+    public void validateNewClienteFisico(String cpf, String email) {
         if (clienteFisicoRepository.existsByCpf(cpf)) {
             throw new DuplicateCpfException("CPF já existente, tente novamente");
         }
@@ -39,8 +44,8 @@ public class ValidationService {
     }
 
     //Metodo específico para validar um novo administrador
-    public void validateNewAdministrador(String cpf, String email){
-        if (administradorRepository.existsByCpf(cpf)){
+    public void validateNewAdministrador(String cpf, String email) {
+        if (administradorRepository.existsByCpf(cpf)) {
             throw new DuplicateCpfException("CPF já existente, tente novamente");
         }
 
@@ -58,7 +63,6 @@ public class ValidationService {
     }
 
 
-
     //refatorar para Aceitar ClientFisico e juridico, metodo existsByEmailAndIdNot
     //Só existe no repositorio cliente
     public void validateEmailOnUpdateCliente(String newEmail, Cliente existingClient) {
@@ -69,29 +73,29 @@ public class ValidationService {
         }
     }
 
+    public void validateCpfOnUpdateClienteFisico(String newCpf, ClienteFisico existingClient) {
+        // Valida se o CPF foi fornecido, se é diferente do atual, e se já existe em outro cliente
+        if (newCpf != null && !newCpf.equalsIgnoreCase(existingClient.getCpf())
+                && clienteFisicoRepository.existsByCpfAndIdNot(newCpf, existingClient.getId())) {
+            throw new DuplicateCpfException("CPF já existente, tente novamente");
+        }
+    }
 
-//    public void validateEmailOnUpdateAdmin(String newEmail, Administrador existingAdmin) {
-//        // Valida se o e-mail foi fornecido, se é diferente do atual, e se já existe em outro cliente
-//        if (newEmail != null && !newEmail.equalsIgnoreCase(existingAdmin.getEmail())
-//                && administradorRepository.existsByEmailAndIdNot(newEmail, existingAdmin.getId())) {
-//            throw new DuplicateEmailException("Email já existente, tente novamente");
-//        }
-//    }
+    public void validateCnpjOnUpdateClienteJuridico(String newCnpj, ClienteJuridico existingClient) {
+        // Valida se o Cnpj foi fornecido, se é diferente do atual, e se já existe em outro cliente
+        if (newCnpj != null && !newCnpj.equalsIgnoreCase(existingClient.getCnpj())
+                && clienteJuridicoRepository.existsByCnpjAndIdNot(newCnpj, existingClient.getId())) {
+            throw new DuplicateCnpjException("Cnpj já existente, tente novamente");
+        }
+    }
 
-    //    public void validateEmailOnUpdateFuncionario(String newEmail, Funcionario existingFuncionario) {
-//
-//        // Verifica se o e-mail foi fornecido e se é diferente do atual
-//        if (newEmail != null && !newEmail.equalsIgnoreCase(existingFuncionario.getEmail())) {
-//
-//            // CHAMA A NOVA FUNÇÃO e faz a verificação > 0 AQUI
-//            if (funcionarioRepository.countByEmailAndIdNot(newEmail, existingFuncionario.getId()) > 0) {
-//                throw new DuplicateEmailException("Email já existente, tente novamente");
-//            }
-//        }
-//    }
-
-
-
+    public void validateCpfOnUpdateFuncionario(String newCpf, Funcionario existingFuncionario) {
+        // Valida se o CPF foi fornecido, se é diferente do atual, e se já existe em outro cliente
+        if (newCpf != null && !newCpf.equalsIgnoreCase(existingFuncionario.getCpf())
+                && funcionarioRepository.existsByCpfAndIdNot(newCpf, existingFuncionario.getId())) {
+            throw new DuplicateCpfException("CPF já existente, tente novamente");
+        }
+    }
 
 
 }

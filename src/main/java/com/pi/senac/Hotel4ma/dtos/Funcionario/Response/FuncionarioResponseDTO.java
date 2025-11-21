@@ -8,6 +8,7 @@ public record FuncionarioResponseDTO(
         Long id,
         String nome,
         String email,
+        String cpf,
         String telefone,
         String cargo,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

@@ -43,6 +43,7 @@ public abstract class FuncionarioMapper {
     @Mapping(target = "nome", expression = "java(sanitizer.sanitizeText(dto.nome()))")
     @Mapping(target = "email", expression = "java(sanitizer.sanitizeEmail(dto.email()))")
     @Mapping(target = "telefone", expression = "java(sanitizer.sanitizeNumeric(dto.telefone()))")
+    @Mapping(target = "cpf", expression = "java(sanitizer.sanitizeNumeric(dto.cpf()))")
     public abstract void updateEntidadeFromDto(FuncionarioUpdateRequest dto, @MappingTarget Funcionario funcionario);
 
 

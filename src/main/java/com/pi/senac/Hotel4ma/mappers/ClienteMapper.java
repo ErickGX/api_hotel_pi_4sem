@@ -59,6 +59,7 @@ public interface ClienteMapper {
 
     @Mapping(source = "nome", target = "nome" , qualifiedByName = "textSanitizer")
     @Mapping(source = "email", target = "email" , qualifiedByName = "emailSanitizer")
+    @Mapping(source = "cpf", target = "cpf" , qualifiedByName = "numericSanitizer")
     @Mapping(source = "telefone", target = "telefone" , qualifiedByName = "numericSanitizer")
     @Mapping(source = "cep", target = "cep", qualifiedByName = "numericSanitizer")
     @Mapping(source = "logradouro", target = "logradouro" , qualifiedByName = "textSanitizer")
@@ -72,6 +73,7 @@ public interface ClienteMapper {
 
     @Mapping(source = "nome", target = "nome" , qualifiedByName = "textSanitizer")
     @Mapping(source = "email", target = "email" , qualifiedByName = "emailSanitizer")
+    @Mapping(source = "cnpj", target = "cnpj" , qualifiedByName = "numericSanitizer")
     @Mapping(source = "telefone", target = "telefone" , qualifiedByName = "numericSanitizer")
     @Mapping(source = "cep", target = "cep", qualifiedByName = "numericSanitizer")
     @Mapping(source = "logradouro", target = "logradouro" , qualifiedByName = "textSanitizer")

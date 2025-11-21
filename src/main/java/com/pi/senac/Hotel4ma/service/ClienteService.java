@@ -132,6 +132,8 @@ public class ClienteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente Fisico não encontrado com este ID"));
         //encapsulamento em metodo generelatista
         validationService.validateEmailOnUpdateCliente(dto.email(), cliente);
+        validationService.validateCpfOnUpdateClienteFisico(dto.cpf(), cliente);
+
         //Mescla os novos valores automaticamente
         mapper.updateEntidadeFromDto(dto, cliente);
         //Persiste e retorna a resposta
@@ -153,6 +155,7 @@ public class ClienteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente Juridico não encontrado com este ID"));
         //encapsulamento em metodo generelatista
         validationService.validateEmailOnUpdateCliente(dto.email(), cliente);
+        validationService.validateCnpjOnUpdateClienteJuridico(dto.cnpj(), cliente);
         //Mescla os novos valores automaticamente
         mapper.updateEntidadeFromDto(dto, cliente);
         //Persiste e retorna a resposta
@@ -160,15 +163,6 @@ public class ClienteService {
     }
 
 
-//    @Transactional //Hard Delete desativado por requisito de projeto de soft delete
-//    public void deleteById(Long id) {
-//        // Verifica se o recurso existe.
-//        if (!repository.existsById(id)) {
-//            throw new ResourceNotFoundException("Recurso não encontrado com o ID: " + id);
-//        }
-//        // Passo 2: Se existe, manda deletar.
-//        repository.deleteById(id);
-//    }
 
 
     /**
@@ -255,4 +249,16 @@ public class ClienteService {
     public boolean existsData() {
         return repository.count() > 0;
     }
+
+
+    //    @Transactional //Hard Delete desativado por requisito de projeto de soft delete
+//    public void deleteById(Long id) {
+//        // Verifica se o recurso existe.
+//        if (!repository.existsById(id)) {
+//            throw new ResourceNotFoundException("Recurso não encontrado com o ID: " + id);
+//        }
+//        // Passo 2: Se existe, manda deletar.
+//        repository.deleteById(id);
+//    }
+
 }

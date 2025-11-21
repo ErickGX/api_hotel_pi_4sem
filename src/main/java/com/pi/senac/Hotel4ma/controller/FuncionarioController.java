@@ -61,7 +61,7 @@ public class FuncionarioController implements GenericController {
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('FUNCIONARIO')") //permite que o proprio funcionario atualize seus dados
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')") //permite que o  funcionario ou admin atualize seus dados
     public ResponseEntity<Void> update(
             @PathVariable("id") Long id,
             @RequestBody @Valid FuncionarioUpdateRequest request){
